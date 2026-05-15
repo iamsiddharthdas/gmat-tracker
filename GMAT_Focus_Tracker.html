@@ -1,0 +1,2888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0F0F11">
+<title>GMAT Focus Tracker</title>
+<style>
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    margin: 0;
+    padding: 0;
+  }
+  :root {
+    --bg: #0F0F11;
+    --surface: #1A1A1F;
+    --card: #222228;
+    --card-2: #2a2a32;
+    --border: #2e2e36;
+    --accent: #4F8EF7;
+    --success: #3DDC84;
+    --warning: #FFBB33;
+    --danger: #FF5252;
+    --text: #F1F1F3;
+    --muted: #888899;
+    --c-concept: #4F8EF7;
+    --c-drill: #FF8C42;
+    --c-review: #3DDC84;
+    --c-mock: #FF5252;
+    --c-slip: #888899;
+  }
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior-y: none;
+  }
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+  #app {
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding-bottom: 76px;
+    position: relative;
+  }
+  .view {
+    display: none;
+    padding: 18px 16px 12px;
+    animation: fadein 240ms ease-out;
+  }
+  .view.active { display: block; }
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* === NAV === */
+  #nav {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+    z-index: 100;
+  }
+  #nav .nav-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 4px;
+    min-height: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: color 180ms, background 180ms;
+    letter-spacing: 0.4px;
+  }
+  #nav .nav-btn .ico {
+    font-size: 22px;
+    line-height: 1;
+  }
+  #nav .nav-btn.active {
+    color: var(--accent);
+  }
+  #nav .nav-btn:active {
+    background: var(--card);
+  }
+
+  /* === COMMON === */
+  h1, h2, h3, h4 {
+    font-weight: 700;
+    color: var(--text);
+  }
+  .muted { color: var(--muted); }
+  .stack > * + * { margin-top: 12px; }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .row.between { justify-content: space-between; }
+  .pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-type {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    color: #0F0F11;
+  }
+  .badge-type.CONCEPT { background: var(--c-concept); color: #fff; }
+  .badge-type.DRILL   { background: var(--c-drill); color: #fff; }
+  .badge-type.REVIEW  { background: var(--c-review); color: #0F0F11; }
+  .badge-type.MOCK    { background: var(--c-mock); color: #fff; }
+  .badge-type.SLIP, .badge-type.REST { background: var(--c-slip); color: #fff; }
+  .badge-type.EXAM    { background: var(--text); color: #0F0F11; }
+
+  .btn {
+    min-height: 48px;
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 160ms, border-color 160ms;
+  }
+  .btn:active { background: var(--card-2); }
+  .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn.success { background: var(--success); color: #0F0F11; border-color: var(--success); }
+  .btn.warning { background: var(--warning); color: #0F0F11; border-color: var(--warning); }
+  .btn.muted   { background: var(--surface); color: var(--muted); }
+  .btn.small   { min-height: 38px; padding: 6px 12px; font-size: 13px; }
+
+  input[type="text"], input[type="number"], input[type="date"], textarea {
+    width: 100%;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    min-height: 44px;
+  }
+  textarea { min-height: 64px; resize: vertical; }
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  label { color: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase; display: block; margin-bottom: 4px; }
+
+  /* === WEEK VIEW === */
+  .phase-bar {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 6px;
+  }
+  .phase-seg {
+    flex: 1;
+    height: 8px;
+    border-radius: 2px;
+    background: var(--border);
+    transition: box-shadow 200ms;
+  }
+  .phase-seg.current {
+    box-shadow: inset 0 0 0 2px #fff;
+  }
+  .phase-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .phase-labels span { font-weight: 700; }
+
+  .week-header { margin-bottom: 14px; }
+  .week-header .label { font-size: 11px; color: var(--muted); font-weight: 700; letter-spacing: 1px; }
+  .week-header .range { font-size: 22px; font-weight: 800; margin-top: 2px; margin-bottom: 6px; line-height: 1.1; }
+
+  .week-nav {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .week-nav .btn { flex: 1; }
+  .week-nav .btn:disabled { opacity: 0.35; }
+
+  .day-strip {
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+    background: var(--surface);
+    padding: 10px 8px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+  }
+  .day-strip .day {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 2px;
+    border-radius: 8px;
+    cursor: pointer;
+    min-height: 56px;
+    justify-content: center;
+  }
+  .day-strip .day.today { background: rgba(255, 187, 51, 0.10); }
+  .day-strip .day .lbl {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+  .day-strip .day.today .lbl { color: var(--warning); }
+  .day-strip .day .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: transparent;
+    border: 2px solid var(--border);
+  }
+  .day-strip .day.done .dot { background: var(--success); border-color: var(--success); }
+  .day-strip .day.today:not(.done) .dot { background: var(--warning); border-color: var(--warning); }
+  .day-strip .day .dnum { font-size: 9px; color: var(--muted); }
+
+  .win-row {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    cursor: pointer;
+  }
+  .win-row.done { background: rgba(61, 220, 132, 0.10); border-color: var(--success); }
+  .win-row .cbox {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
+  .win-row.done .cbox { background: var(--success); border-color: var(--success); }
+  .win-row.done .cbox::after { content: "✓"; color: #0F0F11; font-weight: 900; font-size: 14px; }
+  .win-row .txt { flex: 1; font-size: 13px; line-height: 1.4; }
+  .win-row .txt .ttl { font-size: 10px; color: var(--warning); font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 3px; }
+
+  .milestone {
+    background: linear-gradient(135deg, rgba(255,187,51,.15), rgba(61,220,132,.15));
+    border: 1px solid var(--warning);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .day-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 10px;
+    transition: opacity 200ms;
+  }
+  .day-card.done { opacity: 0.7; background: var(--surface); }
+  .day-card .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .day-card .head .left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .day-card .head .left .daylbl {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: var(--muted);
+  }
+  .day-card .head .date {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .day-card.done .topic { text-decoration: line-through; color: var(--muted); }
+  .day-card .topic { font-size: 15px; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
+  .day-card .meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+  .day-card .meta strong { color: var(--text); font-weight: 600; }
+  .day-card .actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .day-card .actions .btn { flex: 1; min-width: 130px; }
+
+  /* === MOCKS VIEW === */
+  .section-title {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .sparkline-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+  .sparkline-card .stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .sparkline-card .stats div { text-align: center; }
+  .sparkline-card .stats .val {
+    font-size: 16px;
+    color: var(--text);
+    font-weight: 700;
+    display: block;
+  }
+  .sparkline svg { width: 100%; height: 90px; display: block; }
+
+  .mock-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .mock-card .head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    cursor: pointer;
+    min-height: 56px;
+  }
+  .mock-card .cbox {
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    border-radius: 6px;
+    border: 2px solid var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .mock-card.checked .cbox { background: var(--success); border-color: var(--success); }
+  .mock-card.checked .cbox::after { content: "✓"; color: #0F0F11; font-weight: 900; font-size: 15px; }
+  .mock-card .info { flex: 1; min-width: 0; }
+  .mock-card .info .name { font-size: 14px; font-weight: 700; line-height: 1.3; }
+  .mock-card .info .sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .mock-card .status {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .mock-card.checked .status { color: var(--success); }
+  .mock-card .panel {
+    display: none;
+    padding: 14px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .mock-card.open .panel { display: block; }
+  .attempt-row {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    font-size: 12px;
+  }
+  .attempt-row .topl {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+  .attempt-row .scores {
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .attempt-row .scores strong { color: var(--text); }
+  .attempt-row .notes { color: var(--muted); font-style: italic; }
+
+  .score-form .grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .score-form > * + * { margin-top: 10px; }
+
+  .protocol-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-top: 18px;
+    padding: 14px;
+  }
+  .protocol-section ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 8px;
+  }
+  .protocol-section li {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 4px 0;
+    padding-left: 16px;
+    position: relative;
+  }
+  .protocol-section li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  /* === TOPICS VIEW === */
+  .topic-group {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .topic-group .ghead {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+  }
+  .topic-group .gname { font-size: 14px; font-weight: 700; }
+  .topic-group .gstats { font-size: 11px; color: var(--muted); }
+  .topic-group .gbar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .topic-group .gbar .fill {
+    height: 100%;
+    background: var(--success);
+    transition: width 280ms ease;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .chip {
+    background: var(--card-2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 7px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    transition: all 160ms;
+  }
+  .chip.in_progress {
+    background: rgba(255, 187, 51, 0.18);
+    color: var(--warning);
+    border-color: var(--warning);
+  }
+  .chip.mastered {
+    background: rgba(61, 220, 132, 0.18);
+    color: var(--success);
+    border-color: var(--success);
+  }
+
+  /* === CALENDAR VIEW === */
+  .cal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .cal-header .month-title { font-size: 18px; font-weight: 800; }
+  .cal-header .navbtn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+  }
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 14px;
+  }
+  .cal-wd {
+    text-align: center;
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 4px 0;
+  }
+  .cal-cell {
+    aspect-ratio: 1 / 1;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    position: relative;
+    min-height: 52px;
+  }
+  .cal-cell.empty { background: transparent; border-color: transparent; cursor: default; }
+  .cal-cell.outside { opacity: 0.22; cursor: default; }
+  .cal-cell.today { box-shadow: 0 0 0 2px var(--warning); }
+  .cal-cell.selected { background: rgba(255, 187, 51, 0.16); box-shadow: 0 0 0 2px var(--warning); }
+  .cal-cell .dnum { font-size: 13px; font-weight: 700; color: var(--text); }
+  .cal-cell.outside .dnum { color: var(--muted); }
+  .cal-cell .tdot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+  }
+  .cal-cell .donedot {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--success);
+  }
+  .cal-cell.mockdone .tdot {
+    background: var(--c-mock) !important;
+    position: relative;
+  }
+  .cal-cell.mockdone .tdot::after {
+    content: "🎯";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 9px;
+  }
+
+  .cal-legend {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 10px;
+    color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .cal-legend .lg-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .cal-legend .sw {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+
+  .cal-detail {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 12px;
+  }
+  .cal-detail .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+  .cal-detail .date-lbl {
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .cal-detail .meta-line {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .cal-detail .close-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 22px;
+    cursor: pointer;
+    padding: 0 6px;
+    line-height: 1;
+  }
+  .cal-detail .topic-line { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .cal-detail .topic-line.done { text-decoration: line-through; color: var(--muted); }
+  .cal-detail .field { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .cal-detail .field strong { color: var(--text); font-weight: 600; }
+  .cal-detail .actions { margin-top: 12px; }
+
+  /* === HEADER === */
+  .top-strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .top-strip .brand {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .top-strip .brand b { color: var(--text); }
+  .top-strip .exam-cd {
+    font-size: 10px;
+    color: var(--warning);
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* === CONFETTI === */
+  #confetti {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 200;
+    overflow: hidden;
+  }
+  .confetti-piece {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 1px;
+    pointer-events: none;
+    animation: explode 800ms ease-out forwards;
+  }
+  @keyframes explode {
+    from { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+    to   { transform: translate(var(--dx), var(--dy)) rotate(var(--rot)); opacity: 0; }
+  }
+
+  /* small utility */
+  .gap-sm { height: 6px; }
+  .gap-md { height: 12px; }
+  .empty-state {
+    text-align: center;
+    color: var(--muted);
+    padding: 24px 12px;
+    font-size: 13px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <div id="view-week" class="view active"></div>
+  <div id="view-mocks" class="view"></div>
+  <div id="view-topics" class="view"></div>
+  <div id="view-calendar" class="view"></div>
+
+  <nav id="nav">
+    <button class="nav-btn active" data-view="week" onclick="showView('week')">
+      <span class="ico">📊</span><span>WEEK</span>
+    </button>
+    <button class="nav-btn" data-view="mocks" onclick="showView('mocks')">
+      <span class="ico">🎯</span><span>MOCKS</span>
+    </button>
+    <button class="nav-btn" data-view="topics" onclick="showView('topics')">
+      <span class="ico">📚</span><span>TOPICS</span>
+    </button>
+    <button class="nav-btn" data-view="calendar" onclick="showView('calendar')">
+      <span class="ico">🗓️</span><span>CALENDAR</span>
+    </button>
+  </nav>
+
+</div>
+
+<div id="confetti"></div>
+
+<script>
+// =====================================================================
+// PLAN MARKDOWN — embedded
+// =====================================================================
+const PLAN_MARKDOWN = String.raw`# GMAT Focus Edition — 15-Week Study Plan
+**Target:** 705+
+**Dates:** May 16, 2026 → August 28, 2026 (Exam Day)
+**Total:** 15 weeks + 1 day
+
+---
+
+## How to use this plan
+
+This plan is built for an ADHD brain. The rules are simple and non-negotiable:
+
+1. **One topic. One day. One win.** Each day has exactly one primary task. Do not mix concept-building with timed drilling on the same day.
+2. **Four day types only:**
+   - **CONCEPT** — slow, no timer, write things down by hand
+   - **DRILL** — timed, push speed, mixed problems
+   - **REVIEW** — error log, redo wrong answers, find patterns
+   - **MOCK** — full or sectional, simulate test conditions exactly
+3. **Pomodoro:** 25 min focused work → 5 min break. Repeat 4 times → 15 min long break. No exceptions.
+4. **Stay-warm rule:** Every CONCEPT or DRILL day touches the two non-focus sections lightly using OG hardcopy only. Pick up the book, do 10 questions, close the book. No new platforms, no new tabs.
+5. **Weekdays do the work.** Mon–Thu = 2–3 focused hours. That's where real learning happens.
+6. **Weekends are lighter by design.** Fri = mock or slip. Sat = mock review only. Sun = 15-min error log + 5-min scan of Monday. Done.
+7. **One slip day per week, no guilt.** Use it.
+8. **Error log is sacred.** Log every wrong answer within 24 hours. Update every Sunday.
+
+---
+
+# PHASE 1: FOUNDATION (May 16 – May 29)
+
+**Focus:** Quant Arithmetic + DS introduction + light CR
+**Goal:** Build core arithmetic fluency. Internalize DS answer choices cold.
+
+---
+
+## Week 1 (May 16 – May 22) — Arithmetic Block 1
+
+### SAT May 16 — CONCEPT (Onboarding)
+- **Topic:** Plan walkthrough + DS 5 answer choices
+- **Resource:** This plan + OG DI intro pages
+- **Task:** Read this plan top-to-bottom once. Write the 5 DS answer choices from memory on an index card. Place card where you'll see it daily.
+- **Stay-warm:** None today.
+- **Time:** 60 min
+
+### SUN May 17 — PLANNING
+- **Topic:** Set up error log spreadsheet
+- **Resource:** Google Sheets or Excel
+- **Task:** Build the error log per Appendix 1 format. Add headers, freeze top row, color-code columns. Do not fill anything in yet.
+- **Stay-warm:** None.
+- **Time:** 30 min
+
+### MON May 18 — CONCEPT (Quant)
+- **Topic:** Integers, factors, multiples, primes
+- **Resource:** Manhattan Guide 1 (Number Properties), Ch. 1–2
+- **Task:** Read both chapters. Do every in-chapter example untimed. Write 10 prime numbers and 5 divisibility rules by hand.
+- **Stay-warm:** OG Verbal — 10 easy CR questions (untimed)
+- **Time:** 2 hrs
+
+### TUE May 19 — CONCEPT (Quant)
+- **Topic:** LCM, HCF, divisibility rules
+- **Resource:** Manhattan Guide 1, Ch. 3 + Rodha Quant Playlist (LCM/HCF videos)
+- **Task:** Read Ch. 3. Watch 2 Rodha videos on LCM/HCF. Do 15 OG Quant questions on factors/multiples (untimed).
+- **Stay-warm:** OG DI — 5 easy DS questions (untimed)
+- **Time:** 2.5 hrs
+
+### WED May 20 — CONCEPT (Quant)
+- **Topic:** Fractions, decimals, percentages
+- **Resource:** Manhattan Guide 2 (Fractions, Decimals, Percents), Ch. 1–3
+- **Task:** Read chapters. Do every in-chapter problem set untimed. Write the fraction-to-decimal conversion table by hand.
+- **Stay-warm:** OG Verbal — 10 RC questions (untimed, short passage)
+- **Time:** 2 hrs
+
+### THU May 21 — DRILL (Quant)
+- **Topic:** Mixed arithmetic so far (integers, LCM/HCF, fractions, %)
+- **Resource:** OG Quant 2025-26
+- **Task:** 20 questions, timed at 2 min/each = 40 min. Log every wrong answer. Spend 30 min reviewing wrong answers.
+- **Stay-warm:** OG DI — 5 DS questions (untimed)
+- **Time:** 2 hrs
+
+### FRI May 22 — SLIP DAY
+- **Topic:** Buffer
+- **Resource:** None required
+- **Task:** Use it if you fell behind any day this week. Otherwise: rest.
+- **Time:** 0 if not needed
+
+---
+
+## Week 2 (May 23 – May 29) — Arithmetic Block 2 + Diagnostic Prep
+
+### SAT May 23 — LIGHT REVIEW
+- **Topic:** Week 1 error log scan
+- **Resource:** Your error log
+- **Task:** Read every wrong-answer row from Week 1. Mark top 3 repeated mistakes.
+- **Time:** 45 min
+
+### SUN May 24 — PLANNING
+- **Topic:** Set Monday up
+- **Task:** Update error log. Read Monday's task. Close laptop.
+- **Time:** 20 min
+
+### MON May 25 — CONCEPT (Quant)
+- **Topic:** Ratios and proportions
+- **Resource:** Manhattan Guide 2, Ch. 4 (Ratios)
+- **Task:** Read chapter. Do all in-chapter problems untimed. 10 OG Quant ratio questions.
+- **Stay-warm:** OG Verbal — 10 CR questions
+- **Time:** 2 hrs
+
+### TUE May 26 — CONCEPT (Quant)
+- **Topic:** Powers, roots, surds
+- **Resource:** Manhattan Guide 1, Ch. 4–5 (Exponents and Roots)
+- **Task:** Read chapters. Write exponent rules on an index card from memory. 15 OG Quant questions untimed.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2 hrs
+
+### WED May 27 — CONCEPT (Quant)
+- **Topic:** Number line, absolute values, sequences
+- **Resource:** Manhattan Guide 1, Ch. 6 + GMAT with CJ (number line problems)
+- **Task:** Read Manhattan chapter. Do 5 CJ number line questions with full explanations. 10 OG Quant questions on absolute values.
+- **Stay-warm:** OG Verbal — 10 RC questions
+- **Time:** 2.5 hrs
+
+### THU May 28 — CONCEPT + DRILL (Quant)
+- **Topic:** Statistics — mean, median, mode, range, SD
+- **Resource:** Manhattan Guide 2, Ch. 5 (Statistics)
+- **Task:** Read chapter. Do all in-chapter problems. Then 15 OG Quant stats questions timed at 2 min each.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2.5 hrs
+
+### FRI May 29 — LIGHT PREP for Diagnostic
+- **Topic:** Mock prep
+- **Task:** Activate Manhattan Prep free trial. Test your laptop, camera, room setup. Read mock instructions. Do NOT study. Sleep early.
+- **Time:** 30 min
+
+---
+
+# DIAGNOSTIC DAY: May 30 (Saturday)
+
+### SAT May 30 — MOCK (Diagnostic)
+- **Mock:** Manhattan Starter Kit Free Mock
+- **Start time:** Whatever time you plan to start the real exam (recommend 9:00 AM local)
+- **Conditions:** Full 2h15m. Optional 10-min break at halfway. No pausing. No phone in room.
+- **Same-day review:** Categorize every wrong answer as **Concept / Careless / Timing**. Log all wrongs in error log.
+- **Score does not matter.** This is data only.
+- **Time:** 2h15m mock + 90 min review
+
+### SUN May 31 — REST + PLANNING
+- **Task:** Read the diagnostic breakdown. Note your weakest Quant subtopic and weakest section. Update error log. Plan Monday.
+- **Time:** 30 min
+
+---
+
+# PHASE 2: QUANT + VERBAL HEAVY (June 1 – July 5)
+
+**Focus:** Finish Quant Algebra + Higher topics. Build full CR + RC foundation.
+**Goal:** Complete all CR question types. Comfortable with all OG Quant subtopics.
+
+---
+
+## Week 3 (June 1 – June 7) — Algebra Block 1 + CR Intro
+
+### MON Jun 1 — CONCEPT (Quant)
+- **Topic:** Linear equations (1 and 2 variables)
+- **Resource:** Manhattan Guide 1 (Algebra), Ch. 1–2
+- **Task:** Read both chapters. Do all in-chapter problems. 10 OG Quant linear equation questions.
+- **Stay-warm:** OG Verbal — 10 CR questions
+- **Time:** 2.5 hrs
+
+### TUE Jun 2 — CONCEPT (Quant)
+- **Topic:** Quadratic equations and factoring
+- **Resource:** Manhattan Guide 1, Ch. 3
+- **Task:** Read chapter. Write the quadratic formula and the 3 factoring patterns from memory. 15 OG Quant questions.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2 hrs
+
+### WED Jun 3 — CONCEPT (Verbal)
+- **Topic:** CR — argument structure (premise, conclusion, assumption)
+- **Resource:** PowerScore CR Bible, Ch. 1–2
+- **Task:** Read both chapters. Diagram 10 short arguments by hand: circle conclusion, underline premises.
+- **Stay-warm:** OG Quant — 10 questions on arithmetic (mixed)
+- **Time:** 2 hrs
+
+### THU Jun 4 — CONCEPT (Verbal)
+- **Topic:** CR — strengthen and weaken
+- **Resource:** PowerScore CR Bible, Ch. 6–7
+- **Task:** Read both chapters. 10 OG Verbal CR strengthen/weaken questions untimed with full reasoning written out.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2.5 hrs
+
+### FRI Jun 5 — MOCK
+- **Mock:** GMAT Club Free Mock
+- **Conditions:** Full 2h15m, real test conditions
+- **Time:** 2h15m
+
+### SAT Jun 6 — REVIEW
+- **Task:** Review every wrong answer. Log all. Tag Concept/Careless/Timing.
+- **Time:** 90 min
+
+### SUN Jun 7 — PLANNING
+- **Task:** Update error log. Scan Monday.
+- **Time:** 20 min
+
+---
+
+## Week 4 (June 8 – June 14) — Algebra Block 2 + CR Continue
+
+### MON Jun 8 — CONCEPT (Quant)
+- **Topic:** Inequalities and number line
+- **Resource:** Manhattan Guide 1, Ch. 4 (Inequalities)
+- **Task:** Read chapter. Do 15 OG Quant inequality questions untimed. Pay attention to flipping signs.
+- **Stay-warm:** OG Verbal — 10 CR questions
+- **Time:** 2 hrs
+
+### TUE Jun 9 — CONCEPT (Quant)
+- **Topic:** Functions and notation + exponent rules
+- **Resource:** Manhattan Guide 1, Ch. 5 + Rodha Functions video
+- **Task:** Read chapter. Watch video. 15 OG Quant functions questions.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2.5 hrs
+
+### WED Jun 10 — CONCEPT (Verbal)
+- **Topic:** CR — find the assumption (necessary vs sufficient) + negation technique
+- **Resource:** PowerScore CR Bible, Ch. 8 (Assumption)
+- **Task:** Read chapter. Practice negation on 10 OG CR assumption questions. Write the negation of each answer choice before deciding.
+- **Stay-warm:** OG Quant — 10 questions
+- **Time:** 2.5 hrs
+
+### THU Jun 11 — CONCEPT (Verbal)
+- **Topic:** CR — evaluate the argument
+- **Resource:** PowerScore CR Bible, Ch. 9
+- **Task:** Read chapter. 10 OG Verbal CR evaluate questions untimed.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2 hrs
+
+### FRI Jun 12 — MOCK
+- **Mock:** Expert's Global Full-Length (activate 45-day trial today)
+- **Conditions:** Full 2h15m
+- **Time:** 2h15m
+
+### SAT Jun 13 — REVIEW
+- **Task:** Full mock review. Tag all wrongs.
+- **Time:** 90 min
+
+### SUN Jun 14 — PLANNING
+- **Task:** Update error log. Scan Monday.
+- **Time:** 20 min
+
+---
+
+## Week 5 (June 15 – June 21) — Algebra Block 3 + CR Finish
+
+### MON Jun 15 — CONCEPT (Quant)
+- **Topic:** Word problems — age, work, rate
+- **Resource:** Manhattan Guide 2, Ch. 6 (Word Problems)
+- **Task:** Read chapter. Do 15 OG Quant word problems untimed. For each, write the equation before solving.
+- **Stay-warm:** OG Verbal — 10 CR questions
+- **Time:** 2.5 hrs
+
+### TUE Jun 16 — CONCEPT (Quant)
+- **Topic:** Mixture problems + speed/distance/time
+- **Resource:** Manhattan Guide 2, Ch. 7 + Rodha SDT videos
+- **Task:** Read chapter. Watch 2 SDT videos. 15 OG Quant questions on rates/mixtures.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2.5 hrs
+
+### WED Jun 17 — CONCEPT (Verbal)
+- **Topic:** CR — draw a conclusion / inference
+- **Resource:** PowerScore CR Bible, Ch. 10
+- **Task:** Read chapter. 10 OG Verbal CR inference questions untimed.
+- **Stay-warm:** OG Quant — 10 questions
+- **Time:** 2 hrs
+
+### THU Jun 18 — CONCEPT (Verbal)
+- **Topic:** CR — bold-face + explain discrepancy
+- **Resource:** PowerScore CR Bible, Ch. 11–12
+- **Task:** Read both chapters. 10 OG Verbal CR bold-face/paradox questions untimed.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2.5 hrs
+
+### FRI Jun 19 — MOCK
+- **Mock:** e-GMAT Mock 1 (activate e-GMAT trial today)
+- **Conditions:** Full 2h15m
+- **Time:** 2h15m
+
+### SAT Jun 20 — REVIEW
+- **Task:** Full mock review.
+- **Time:** 90 min
+
+### SUN Jun 21 — PLANNING
+- **Task:** Error log update. Scan Monday.
+- **Time:** 20 min
+
+---
+
+## Week 6 (June 22 – June 28) — Higher Quant + RC Intro
+
+### MON Jun 22 — CONCEPT (Quant)
+- **Topic:** Permutations and combinations
+- **Resource:** Manhattan Guide 2, Ch. 8 (P&C) + Rodha P&C videos
+- **Task:** Read chapter. Watch 2 Rodha videos. Write the difference between P and C on an index card. 15 OG Quant P&C questions untimed.
+- **Stay-warm:** OG Verbal — 10 CR mixed types
+- **Time:** 2.5 hrs
+
+### TUE Jun 23 — CONCEPT (Quant)
+- **Topic:** Probability (basic + conditional)
+- **Resource:** Manhattan Guide 2, Ch. 9 (Probability)
+- **Task:** Read chapter. 15 OG Quant probability questions untimed.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2.5 hrs
+
+### WED Jun 24 — CONCEPT (Verbal)
+- **Topic:** RC — main idea + primary purpose
+- **Resource:** Manhattan Guide 6 (RC), Ch. 1–2
+- **Task:** Read chapters. Do 3 OG RC passages untimed. For each: write the main idea in one sentence before looking at questions.
+- **Stay-warm:** OG Quant — 10 questions
+- **Time:** 2.5 hrs
+
+### THU Jun 25 — CONCEPT (Verbal)
+- **Topic:** RC — supporting detail, inference, author tone
+- **Resource:** Manhattan Guide 6, Ch. 3–4
+- **Task:** Read chapters. Do 3 OG RC passages untimed.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2.5 hrs
+
+### FRI Jun 26 — MOCK
+- **Mock:** e-GMAT Mock 2
+- **Conditions:** Full 2h15m
+- **Time:** 2h15m
+
+### SAT Jun 27 — REVIEW
+- **Task:** Full mock review.
+- **Time:** 90 min
+
+### SUN Jun 28 — PLANNING
+- **Task:** Error log update. Scan Monday.
+- **Time:** 20 min
+
+---
+
+## Week 7 (June 29 – July 5) — Higher Quant Finish + RC Build
+
+### MON Jun 29 — CONCEPT (Quant)
+- **Topic:** Overlapping sets / Venn diagrams
+- **Resource:** Manhattan Guide 2, Ch. 10 (Overlapping Sets)
+- **Task:** Read chapter. Draw the double-set matrix on an index card. 15 OG Quant overlapping sets questions untimed.
+- **Stay-warm:** OG Verbal — 10 CR questions
+- **Time:** 2.5 hrs
+
+### TUE Jun 30 — CONCEPT (Quant)
+- **Topic:** Coordinate geometry basics + profit/loss/interest
+- **Resource:** Manhattan Guide 1, Ch. 7 (Coordinate Geometry)
+- **Task:** Read chapter. 10 OG Quant coordinate questions + 10 OG profit/loss/interest.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2.5 hrs
+
+### WED Jul 1 — CONCEPT (Verbal)
+- **Topic:** RC — logical structure + strengthens/weakens claim
+- **Resource:** Manhattan Guide 6, Ch. 5
+- **Task:** Read chapter. Do 3 OG RC passages untimed. Map the structure of each passage paragraph-by-paragraph in a notebook.
+- **Stay-warm:** OG Quant — 10 questions
+- **Time:** 2.5 hrs
+
+### THU Jul 2 — DRILL (Quant)
+- **Topic:** Mixed Quant — all arithmetic + algebra so far
+- **Resource:** OG Quant
+- **Task:** 21 questions, 45 min timed. Same conditions as section. Review wrongs.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2 hrs (45 drill + 75 review)
+
+### FRI Jul 3 — MOCK
+- **Mock:** GMAT Official Free Mock 1 (first take) — **first official mock**
+- **Conditions:** Full 2h15m, real conditions
+- **Time:** 2h15m
+
+### SAT Jul 4 — REVIEW
+- **Task:** Full review. This is your first official benchmark — note the score, but more importantly note **which section dropped under fatigue**.
+- **Time:** 2 hrs
+
+### SUN Jul 5 — PLANNING
+- **Task:** Compare diagnostic (May 30) score to today. Update error log. Plan Monday.
+- **Time:** 30 min
+
+---
+
+# PHASE 3: QUANT + VERBAL + DI HEAVY (July 6 – August 2)
+
+**Focus:** DS deep dive, full DI question type coverage, mixed timed drilling.
+**Goal:** Every day touches all three sections. Lock section order by Week 11.
+
+---
+
+## Week 8 (July 6 – July 12) — DS Deep Dive
+
+### MON Jul 6 — CONCEPT (DI)
+- **Topic:** DS answer choices + Statement 1 / Statement 2 alone
+- **Resource:** Manhattan Guide 5 (DS strategy) + OG DI
+- **Task:** Read the DS chapter. Write the 5 answer choices from memory three times. Do 20 OG DS questions untimed, marking which statement(s) you used.
+- **Stay-warm:** OG Verbal — 10 mixed CR/RC
+- **Time:** 2.5 hrs
+
+### TUE Jul 7 — DRILL (DI)
+- **Topic:** Quant-based DS
+- **Resource:** OG DI
+- **Task:** 15 DS questions timed at 2 min each. Log all wrongs.
+- **Stay-warm:** OG Quant — 10 questions
+- **Time:** 2 hrs
+
+### WED Jul 8 — CONCEPT (DI)
+- **Topic:** Logic / verbal DS + Yes/No vs Value DS distinction
+- **Resource:** Manhattan Guide 5 + OG DI
+- **Task:** Read the distinction chapter. Do 20 OG DS questions, classifying each as Yes/No or Value before solving.
+- **Stay-warm:** OG Verbal — 10 mixed
+- **Time:** 2.5 hrs
+
+### THU Jul 9 — DRILL (DI)
+- **Topic:** DS traps and patterns
+- **Resource:** OG DI + GMAT Club question bank (filter: DS hard)
+- **Task:** 20 DS questions timed at 2 min each. After each wrong answer, write the trap pattern in your error log.
+- **Stay-warm:** OG Quant — 10 questions
+- **Time:** 2.5 hrs
+
+### FRI Jul 10 — MOCK
+- **Mock:** e-GMAT Mock 3
+- **Conditions:** Full 2h15m
+- **Time:** 2h15m
+
+### SAT Jul 11 — REVIEW
+- **Task:** Full review. Special focus on DS section: did the deep-dive work this week?
+- **Time:** 90 min
+
+### SUN Jul 12 — PLANNING
+- **Task:** Error log update. Scan Monday.
+- **Time:** 20 min
+
+---
+
+## Week 9 (July 13 – July 19) — MSR + Table Analysis
+
+### MON Jul 13 — CONCEPT (DI)
+- **Topic:** MSR — reading 3 tabbed sources fast
+- **Resource:** OG DI (MSR section) + Manhattan Guide 5
+- **Task:** Do 3 MSR question sets untimed. For each tab, write a one-sentence summary in a notebook before reading the question.
+- **Stay-warm:** OG Verbal — 10 CR questions
+- **Time:** 2.5 hrs
+
+### TUE Jul 14 — DRILL (DI)
+- **Topic:** MSR timed
+- **Resource:** OG DI + GMAT with CJ MSR questions
+- **Task:** 3 MSR sets timed at 2.5 min/question. Log wrongs.
+- **Stay-warm:** OG Quant — 10 questions
+- **Time:** 2 hrs
+
+### WED Jul 15 — CONCEPT (DI)
+- **Topic:** Table Analysis — sorting + True/False classification
+- **Resource:** OG DI (Table Analysis section)
+- **Task:** Do 5 Table Analysis questions untimed. Practice sorting columns by relevant criteria before answering.
+- **Stay-warm:** OG Verbal — 10 RC questions
+- **Time:** 2.5 hrs
+
+### THU Jul 16 — DRILL (DI)
+- **Topic:** Table Analysis timed
+- **Resource:** OG DI
+- **Task:** 10 Table Analysis questions timed at 2.5 min each. Log wrongs.
+- **Stay-warm:** OG Quant — 10 questions
+- **Time:** 2 hrs
+
+### FRI Jul 17 — MOCK
+- **Mock:** GMAT Official Paid Mock 3 (first take)
+- **Conditions:** Full 2h15m
+- **Time:** 2h15m
+
+### SAT Jul 18 — REVIEW
+- **Task:** Full review. Compare DI section score to last week's mock.
+- **Time:** 2 hrs
+
+### SUN Jul 19 — PLANNING
+- **Task:** Error log update. Scan Monday.
+- **Time:** 20 min
+
+---
+
+## Week 10 (July 20 – July 26) — Graphics + Two-Part
+
+### MON Jul 20 — CONCEPT (DI)
+- **Topic:** Bar charts, pie charts, line graphs
+- **Resource:** OG DI (Graphics Interpretation section)
+- **Task:** Do 10 Graphics questions untimed. For each, write down what axes/scale represent before answering.
+- **Stay-warm:** OG Verbal — 10 CR questions
+- **Time:** 2 hrs
+
+### TUE Jul 21 — CONCEPT (DI)
+- **Topic:** Scatter plots + curve distributions
+- **Resource:** OG DI + e-GMAT live sessions (Graphics if available)
+- **Task:** Do 10 Graphics scatter/curve questions untimed.
+- **Stay-warm:** OG Quant — 10 questions
+- **Time:** 2 hrs
+
+### WED Jul 22 — CONCEPT (DI)
+- **Topic:** Two-Part — quant simultaneous equations + verbal logical trade-offs
+- **Resource:** OG DI (Two-Part section)
+- **Task:** Do 10 Two-Part questions untimed (mix of quant and verbal).
+- **Stay-warm:** OG Verbal — 10 RC questions
+- **Time:** 2.5 hrs
+
+### THU Jul 23 — DRILL (DI)
+- **Topic:** Full DI mixed timed set
+- **Resource:** OG DI
+- **Task:** 20 DI questions / 45 min timed. Full review of all wrongs.
+- **Stay-warm:** OG Quant — 10 questions
+- **Time:** 2.5 hrs
+
+### FRI Jul 24 — MOCK
+- **Mock:** e-GMAT Mock 4
+- **Conditions:** Full 2h15m
+- **Time:** 2h15m
+
+### SAT Jul 25 — REVIEW
+- **Task:** Full review.
+- **Time:** 90 min
+
+### SUN Jul 26 — PLANNING
+- **Task:** Error log update. Scan Monday.
+- **Time:** 20 min
+
+---
+
+## Week 11 (July 27 – August 2) — Integration + Lock Section Order
+
+### MON Jul 27 — DRILL (Quant)
+- **Topic:** Mixed Quant timed set
+- **Resource:** OG Quant
+- **Task:** 21 Quant questions / 45 min timed. Review all wrongs.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2.5 hrs
+
+### TUE Jul 28 — DRILL (Verbal)
+- **Topic:** Mixed Verbal timed set
+- **Resource:** OG Verbal
+- **Task:** 23 Verbal questions / 45 min timed. Review all wrongs.
+- **Stay-warm:** OG Quant — 10 questions
+- **Time:** 2.5 hrs
+
+### WED Jul 29 — DRILL (DI)
+- **Topic:** Mixed DI timed set
+- **Resource:** OG DI
+- **Task:** 20 DI questions / 45 min timed. Review all wrongs.
+- **Stay-warm:** OG Verbal — 10 CR questions
+- **Time:** 2.5 hrs
+
+### THU Jul 30 — REVIEW (All sections)
+- **Topic:** Error log audit — Phase 3 close
+- **Resource:** Your error log
+- **Task:** Read every wrong answer from July. Find top 3 repeated patterns across all sections. Write a one-sentence fix for each on an index card.
+- **Stay-warm:** None today — review only.
+- **Time:** 2 hrs
+
+### FRI Jul 31 — MOCK (Section Order Test A)
+- **Mock:** e-GMAT Mock 5
+- **Conditions:** Full 2h15m. Try **Quant → DI → Verbal** order today.
+- **Time:** 2h15m
+
+### SAT Aug 1 — REVIEW
+- **Task:** Full review. Note: how did the section order feel?
+- **Time:** 90 min
+
+### SUN Aug 2 — PLANNING + LOCK SECTION ORDER
+- **Task:** Compare today's mock to last week's. Try **Quant → Verbal → DI** on Wednesday's drill mentally. Then **lock your section order for the rest of prep.**
+- **Time:** 30 min
+
+---
+
+# PHASE 4: PEAK — MOCKS + TIMED SETS (Aug 3 – Aug 28)
+
+**Focus:** No new content. Pure repetition, review, endurance.
+**Goal:** Replicate test-day conditions. Drive errors down. Build stamina.
+
+---
+
+## Week 12 (August 3 – August 9) — Mock Frequency Ramp
+
+### MON Aug 3 — DRILL (Quant)
+- **Topic:** Quant timed set focused on top 2 weak areas from error log
+- **Resource:** OG Quant + GMAT with CJ
+- **Task:** 21 Quant / 45 min timed. Filter to topics where you've made the most errors.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2 hrs
+
+### TUE Aug 4 — DRILL (Verbal)
+- **Topic:** Verbal timed set — CR weak type focus
+- **Resource:** OG Verbal
+- **Task:** 23 Verbal / 45 min timed. Focus on your worst CR type from error log.
+- **Stay-warm:** OG Quant — 10 questions
+- **Time:** 2 hrs
+
+### WED Aug 5 — DRILL (DI)
+- **Topic:** DI timed set — DS or MSR focus (whichever is weaker)
+- **Resource:** OG DI
+- **Task:** 20 DI / 45 min timed.
+- **Stay-warm:** OG Verbal — 10 CR questions
+- **Time:** 2 hrs
+
+### THU Aug 6 — REVIEW
+- **Topic:** Mid-week error log scrub
+- **Task:** Read this week's wrongs. Tag each. Identify if any pattern is repeating from June.
+- **Time:** 60 min
+
+### FRI Aug 7 — MOCK
+- **Mock:** GMAT Official Free Mock 2 (first take)
+- **Conditions:** Full conditions, locked section order, real start time
+- **Time:** 2h15m
+
+### SAT Aug 8 — REVIEW
+- **Task:** Full review.
+- **Time:** 2 hrs
+
+### SUN Aug 9 — PLANNING
+- **Task:** Error log update. Scan Monday.
+- **Time:** 20 min
+
+---
+
+## Week 13 (August 10 – August 16) — Endurance Build
+
+### MON Aug 10 — DRILL (Quant)
+- **Topic:** Quant — hard questions only
+- **Resource:** OG Quant (filter: hard) + GMAT Club hard problems
+- **Task:** 15 hard Quant questions, timed. Review every one — even the right ones.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2.5 hrs
+
+### TUE Aug 11 — DRILL (Verbal)
+- **Topic:** Verbal — RC long passages
+- **Resource:** OG Verbal
+- **Task:** 3 long RC passages timed at 8 min/passage including all questions. Then review.
+- **Stay-warm:** OG Quant — 10 questions
+- **Time:** 2.5 hrs
+
+### WED Aug 12 — DRILL (DI)
+- **Topic:** DI — MSR + Graphics hard
+- **Resource:** OG DI (filter: hard)
+- **Task:** 15 hard DI questions / 35 min timed.
+- **Stay-warm:** OG Verbal — 10 CR questions
+- **Time:** 2 hrs
+
+### THU Aug 13 — REVIEW
+- **Topic:** Mock pacing review
+- **Task:** Look at Week 12 mock — where did you lose time? Plan a pacing adjustment.
+- **Time:** 60 min
+
+### FRI Aug 14 — MOCK
+- **Mock:** GMAT Official Paid Mock 4 (first take)
+- **Conditions:** Full conditions
+- **Time:** 2h15m
+
+### SAT Aug 15 — REVIEW + MOCK
+- **Mock:** GMAT Official Paid Mock 5 (first take) — **second mock this week, starts the 2/week cadence**
+- **Conditions:** Full conditions. Yes, back-to-back days. This builds stamina.
+- **Time:** 2h15m + 90 min review later
+
+### SUN Aug 16 — PLANNING
+- **Task:** Error log update. Score average so far across last 3 mocks: write it down.
+- **Time:** 30 min
+
+---
+
+## Week 14 (August 17 – August 23) — Peak Repetition
+
+### MON Aug 17 — DRILL (Mixed)
+- **Topic:** Mixed full section practice — Quant
+- **Resource:** OG Quant
+- **Task:** 21 Quant / 45 min. Focus on pacing — no more than 3 minutes on any single question.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2 hrs
+
+### TUE Aug 18 — DRILL (Mixed)
+- **Topic:** Mixed full section — Verbal
+- **Resource:** OG Verbal
+- **Task:** 23 Verbal / 45 min. Focus on RC pacing.
+- **Stay-warm:** OG Quant — 10 questions
+- **Time:** 2 hrs
+
+### WED Aug 19 — MOCK
+- **Mock:** GMAT Official Paid Mock 6 (first take)
+- **Conditions:** Full, locked section order, real start time
+- **Time:** 2h15m
+
+### THU Aug 20 — REVIEW
+- **Task:** Full review of Wednesday's mock.
+- **Time:** 2 hrs
+
+### FRI Aug 21 — MOCK
+- **Mock:** GMAT Official Free Mock 1 (**second take** — score should be higher this time, that's expected)
+- **Conditions:** Full conditions
+- **Time:** 2h15m
+
+### SAT Aug 22 — REVIEW
+- **Task:** Full review. Compare to first-take score (July 3).
+- **Time:** 90 min
+
+### SUN Aug 23 — PLANNING + FINAL WEEK PREP
+- **Task:** Error log final scrub. Read the Final Week Protocol (Appendix 4) carefully.
+- **Time:** 30 min
+
+---
+
+## Week 15 (August 24 – August 28) — Final Week + Exam
+
+### MON Aug 24 — LIGHT REVIEW
+- **Topic:** Error log highlights + 15 medium questions across all 3 sections
+- **Resource:** OG (all sections) + error log
+- **Task:** Read the top 10 most-repeated error patterns from your log. Then do 5 medium Quant + 5 medium Verbal + 5 medium DI, untimed. Calm pace.
+- **Time:** 90 min
+
+### TUE Aug 25 — DRESS REHEARSAL MOCK
+- **Mock:** GMAT Official Free Mock 2 (**second take**) — your strongest official mock retaken
+- **Conditions:** Exact test-day start time. Same breakfast as exam day. Same clothes. Same room setup. Locked section order. No deviation.
+- **Time:** 2h15m
+
+### WED Aug 26 — LIGHT REVIEW
+- **Topic:** Dress rehearsal review — fixes only
+- **Task:** Read every wrong answer's one-sentence fix from yesterday's mock. Do not redo questions. Do not start anything new.
+- **Time:** 60 min max
+
+### THU Aug 27 — TAPER
+- **Topic:** Read error log one-line fixes only. That's it.
+- **Task:** Read your top 20 one-sentence fixes from error log. Close the laptop. Confirm test logistics: location, ID, time, route, what to wear. Pack everything tonight. Sleep early.
+- **Time:** 30 min total
+
+### FRI Aug 28 — EXAM DAY
+
+**Wake time:** Same as every mock day.
+**Breakfast:** Same as dress rehearsal.
+**Travel:** Leave with 30-min buffer.
+
+**At the test center:**
+- Do not study. Do not open OG.
+- Do not talk to other test-takers about scores.
+- Breathe. Trust the prep.
+- Section order is locked. Pacing is locked. Calculator strategy is locked.
+
+**During the exam:**
+- Max 3 answer changes per section.
+- Take the 10-min break at halfway.
+- One question at a time. One section at a time.
+
+**You've done the work. Take the test.**
+
+---
+
+# APPENDICES
+
+## Appendix 1: Error Log Template
+
+Build as a spreadsheet (Google Sheets or Excel). One row per wrong answer.
+
+| Column | Notes |
+|---|---|
+| Date | When you took the question |
+| Source | OG Quant, OG Verbal, OG DI, e-GMAT Mock 3, etc. |
+| Section | Quant / Verbal / DI |
+| Topic | e.g. Inequalities, CR Assumption, DS Yes/No |
+| Sub-type | Specific question pattern |
+| Difficulty | Easy / Medium / Hard |
+| Concept error? | Y/N |
+| Careless error? | Y/N |
+| Timing error? | Y/N |
+| Your answer | A/B/C/D/E |
+| Correct answer | A/B/C/D/E |
+| Why wrong (1 sentence) | What you misunderstood |
+| Fix (1 sentence) | What to do next time |
+
+**Rules:**
+- Log within 24 hours of every drill and mock.
+- Sunday: scan the week — are concept errors going down?
+- End of each phase: full audit, find top 3 repeated patterns.
+- Phase 4: error log drives every focus session.
+
+---
+
+## Appendix 2: Section Order Guide
+
+**Recommended default:** Quant → DI → Verbal
+
+| Section | Reasoning |
+|---|---|
+| Quant first | Mind is freshest. Quant breaks down fastest under fatigue. |
+| DI second | Rewards working memory and pattern recognition while you're still sharp. |
+| Verbal last | Reading carries you when tired. Verbal is the most fatigue-resistant section. |
+
+**Alternative to test:** Quant → Verbal → DI (some find DI's working-memory load worse when tired).
+
+Try **both orders during Phase 3** (Weeks 8–11). Lock your choice by August 2. **Do not change after Week 12.**
+
+---
+
+## Appendix 3: Mock Schedule — All 21 Mocks Mapped
+
+| # | Date | Day | Mock | Phase |
+|---|---|---|---|---|
+| 1 | May 30 | Sat | Manhattan Starter Kit (Diagnostic) | Phase 1 close |
+| 2 | Jun 5 | Fri | GMAT Club Free | Phase 2 |
+| 3 | Jun 12 | Fri | Expert's Global Full-Length | Phase 2 |
+| 4 | Jun 19 | Fri | e-GMAT Mock 1 | Phase 2 |
+| 5 | Jun 26 | Fri | e-GMAT Mock 2 | Phase 2 |
+| 6 | Jul 3 | Fri | **GMAT Official Free Mock 1** (1st take) | Phase 2 close |
+| 7 | Jul 10 | Fri | e-GMAT Mock 3 | Phase 3 |
+| 8 | Jul 17 | Fri | **GMAT Official Paid Mock 3** (1st take) | Phase 3 |
+| 9 | Jul 24 | Fri | e-GMAT Mock 4 | Phase 3 |
+| 10 | Jul 31 | Fri | e-GMAT Mock 5 | Phase 3 close (section order test) |
+| 11 | Aug 7 | Fri | **GMAT Official Free Mock 2** (1st take) | Phase 4 |
+| 12 | Aug 14 | Fri | **GMAT Official Paid Mock 4** (1st take) | Phase 4 |
+| 13 | Aug 15 | Sat | **GMAT Official Paid Mock 5** (1st take) | Phase 4 — stamina build |
+| 14 | Aug 19 | Wed | **GMAT Official Paid Mock 6** (1st take) | Phase 4 |
+| 15 | Aug 21 | Fri | **GMAT Official Free Mock 1** (2nd take) | Phase 4 |
+| 16 | Aug 25 | Tue | **GMAT Official Free Mock 2** (2nd take) | DRESS REHEARSAL |
+
+**Total mocks taken: 16**
+
+Mocks reserved but not scheduled (use as needed if you fall behind or want extra reps in Phase 4):
+- GMAT Official Paid Mock 3, 4, 5, 6 — second takes (4 mocks)
+- Manhattan Starter Kit retake (1 mock)
+
+You have a buffer of 5 mocks. Do not feel obligated to take them.
+
+---
+
+## Appendix 4: Final Week Checklist (Aug 22–28)
+
+### What TO do
+- ✅ Mon (Aug 24): Skim error log + 15 medium mixed questions
+- ✅ Tue (Aug 25): Dress rehearsal at exact test-day start time
+- ✅ Wed (Aug 26): Read one-line fixes from dress rehearsal
+- ✅ Thu (Aug 27): Read top 20 fixes. Confirm logistics. Pack. Sleep early.
+- ✅ Fri (Aug 28): EXAM
+- ✅ Same breakfast, same wake time, same clothing as dress rehearsal
+- ✅ Test center location confirmed, route timed
+- ✅ ID, water, snack, comfortable clothes ready the night before
+
+### What NOT to do
+- ❌ No new content after August 1
+- ❌ No studying the morning of the exam
+- ❌ No comparing yourself to your best mock — compare to your average
+- ❌ No talking to other test-takers in the waiting room about scores
+- ❌ No alcohol or new food in the final 3 days
+- ❌ No late nights in the final week
+- ❌ No mock the day before the exam
+
+---
+
+## Appendix 5: Resource Activation Schedule (Free Trials)
+
+Do not activate everything at once. Stagger to maximize trial windows.
+
+| Resource | Activate | Used For |
+|---|---|---|
+| Manhattan Prep free mock | May 29 | Diagnostic on May 30 |
+| Expert's Global 45-day trial | June 12 | Mock + short videos through late July |
+| e-GMAT trial | June 19 | 5 mocks + live sessions (Weeks 5–11) |
+| Target Test Prep 5-day trial | Use during Phase 3 (any 5 consecutive days you want extra Quant practice) | Topic chapter videos for weak areas |
+| Magoosh 1-month trial | Activate August 1 | Phase 4 — extra timed sets + video explanations |
+
+---
+
+## Appendix 6: Daily Time Estimates Summary
+
+| Day Type | Total Time |
+|---|---|
+| Weekday CONCEPT or DRILL | 2–2.5 hrs |
+| Friday MOCK | 2h15m |
+| Saturday REVIEW | 60–90 min |
+| Sunday PLANNING | 20–30 min |
+| Slip day | 0 hrs |
+
+**Total weekly load:** ~14–17 hours.
+**Total across 15 weeks:** ~225 hours of focused prep.
+
+---
+
+*End of plan. Print Appendix 4 and pin it above your desk by August 20.*
+`;
+
+// =====================================================================
+// CONSTANTS
+// =====================================================================
+const PLAN_VERSION = '2026-05-16';
+const PLAN_YEAR = 2026;
+const EXAM_DATE = '2026-08-28';
+
+const MONTH_MAP = {
+  Jan:0, January:0, Feb:1, February:1, Mar:2, March:2,
+  Apr:3, April:3, May:4, Jun:5, June:5, Jul:6, July:6,
+  Aug:7, August:7, Sep:8, September:8, Oct:9, October:9,
+  Nov:10, November:10, Dec:11, December:11
+};
+
+const PHASE_OF_WEEK = {
+  1:'Foundation', 2:'Foundation',
+  3:'Drilling', 4:'Drilling', 5:'Drilling', 6:'Drilling', 7:'Drilling',
+  8:'Integration', 9:'Integration', 10:'Integration', 11:'Integration',
+  12:'Peak', 13:'Peak', 14:'Peak', 15:'Peak'
+};
+
+const PHASE_COLOR = {
+  Foundation: '#4F8EF7',
+  Drilling:   '#FF8C42',
+  Integration:'#FFBB33',
+  Peak:       '#FF5252'
+};
+
+// Per-week win conditions and milestone callouts
+const WIN_CONDITIONS = {
+  1:  'All Arithmetic Block 1 topics covered (integers → percentages). Stay-warm done all 4 days.',
+  2:  'Arithmetic complete. Diagnostic mock taken on May 30. First entries in error log.',
+  3:  'Algebra Block 1 done. CR argument structure + strengthen/weaken introduced.',
+  4:  'Inequalities + functions covered. CR assumption (negation technique) practiced.',
+  5:  'Word problems + rates done. CR draws/inference + bold-face/paradox practiced.',
+  6:  'P&C + Probability covered. RC main idea + supporting detail practiced.',
+  7:  'Overlapping sets + coordinate geom done. First official mock taken on Jul 3.',
+  8:  'DS deep dive complete — all 5 answer choices, traps, Yes/No vs Value internalised.',
+  9:  'MSR + Table Analysis covered timed. First paid official mock taken Jul 17.',
+  10: 'Graphics + Two-Part DI complete. Full mixed DI timed set passed.',
+  11: 'Section order tested. Decision locked by Aug 2. Phase 3 error audit done.',
+  12: '2 mocks per week cadence started. Full review on every mock.',
+  13: 'Endurance build — hard questions only. Back-to-back mocks Aug 14–15 done.',
+  14: 'Three mocks this week including second take. Final pacing locked.',
+  15: 'Dress rehearsal Aug 25 done. Test logistics confirmed. Sleep schedule fixed.'
+};
+
+const MILESTONES = {
+  5:  '🏆 MILESTONE — End of Foundation: Quant arithmetic and most algebra covered. CR is your tool now.',
+  10: '🏆 MILESTONE — End of Drilling: All Quant + all CR + RC + DI types touched. Speed comes next.',
+  13: '🏆 MILESTONE — Endurance peak: stamina built across back-to-back mocks. Stay sharp, stay calm.'
+};
+
+// MOCK INVENTORY — single source of truth for the Mocks tab
+const MOCK_INVENTORY = [
+  { id: 'diag',    name: 'Manhattan Starter Kit Free Test',    scheduledWeek: 2,  canRetake: false, dateHint: 'May 30' },
+  { id: 'gc_free', name: 'GMAT Club Free Mock',                scheduledWeek: 3,  canRetake: false, dateHint: 'Jun 5'  },
+  { id: 'eg_fl',   name: "Expert's Global Full-Length Test",   scheduledWeek: 4,  canRetake: false, dateHint: 'Jun 12' },
+  { id: 'eg1',     name: 'e-GMAT Mock 1',                      scheduledWeek: 5,  canRetake: false, dateHint: 'Jun 19' },
+  { id: 'eg2',     name: 'e-GMAT Mock 2',                      scheduledWeek: 6,  canRetake: false, dateHint: 'Jun 26' },
+  { id: 'off_f1',  name: 'GMAT Official Free Mock 1',          scheduledWeek: 7,  canRetake: true,  dateHint: 'Jul 3'  },
+  { id: 'eg3',     name: 'e-GMAT Mock 3',                      scheduledWeek: 8,  canRetake: false, dateHint: 'Jul 10' },
+  { id: 'off_p3',  name: 'GMAT Official Paid Mock 3',          scheduledWeek: 9,  canRetake: true,  dateHint: 'Jul 17' },
+  { id: 'eg4',     name: 'e-GMAT Mock 4',                      scheduledWeek: 10, canRetake: false, dateHint: 'Jul 24' },
+  { id: 'eg5',     name: 'e-GMAT Mock 5',                      scheduledWeek: 11, canRetake: false, dateHint: 'Jul 31' },
+  { id: 'off_f2',  name: 'GMAT Official Free Mock 2',          scheduledWeek: 12, canRetake: true,  dateHint: 'Aug 7'  },
+  { id: 'off_p4',  name: 'GMAT Official Paid Mock 4',          scheduledWeek: 13, canRetake: true,  dateHint: 'Aug 14' },
+  { id: 'off_p5',  name: 'GMAT Official Paid Mock 5',          scheduledWeek: 13, canRetake: true,  dateHint: 'Aug 15' },
+  { id: 'off_p6',  name: 'GMAT Official Paid Mock 6',          scheduledWeek: 14, canRetake: true,  dateHint: 'Aug 19' },
+  { id: 'dress',   name: 'Dress Rehearsal (Official Free Mock 2 retake)', scheduledWeek: 15, canRetake: false, dateHint: 'Aug 25' }
+];
+
+// TOPIC GROUPS
+const TOPIC_GROUPS = [
+  { name: 'Arithmetic', topics: [
+    'Integers, factors, multiples, primes',
+    'LCM, HCF, divisibility rules',
+    'Fractions, decimals, percentages',
+    'Ratios and proportions',
+    'Powers, roots, surds',
+    'Number line, absolute values',
+    'Sequences and series',
+    'Mean, median, mode, range, SD'
+  ]},
+  { name: 'Algebra', topics: [
+    'Linear equations (1 and 2 variables)',
+    'Quadratic equations and factoring',
+    'Inequalities and number line',
+    'Functions and notation',
+    'Exponent rules and simplification',
+    'Word problems (age, work, rate)',
+    'Mixture problems',
+    'Speed, distance, time'
+  ]},
+  { name: 'Higher Topics', topics: [
+    'Permutations and combinations',
+    'Probability (basic + conditional)',
+    'Overlapping sets / Venn diagrams',
+    'Coordinate geometry basics',
+    'Profit, loss, simple/compound interest'
+  ]},
+  { name: 'Verbal — CR', topics: [
+    'CR — Argument structure',
+    'CR — Strengthen',
+    'CR — Weaken',
+    'CR — Find the assumption',
+    'CR — Evaluate the argument',
+    'CR — Draw a conclusion / inference',
+    'CR — Bold-face',
+    'CR — Explain a discrepancy / paradox',
+    'CR — Method of reasoning',
+    'CR — Complete the argument'
+  ]},
+  { name: 'Verbal — RC', topics: [
+    'RC — Main idea / primary purpose',
+    'RC — Supporting detail',
+    'RC — Inference',
+    'RC — Tone / attitude',
+    'RC — Logical structure',
+    'RC — Strengthens / weakens claim',
+    'RC — Analogy questions',
+    'RC — Vocabulary in context',
+    'RC — Short vs long passage strategy'
+  ]},
+  { name: 'Data Insights', topics: [
+    'DS — 5 answer choices internalized',
+    'DS — Statement 1 sufficiency',
+    'DS — Statement 2 sufficiency',
+    'DS — Both together sufficient',
+    'DS — Quant-based (arithmetic + algebra)',
+    'DS — Logic / verbal DS',
+    'DS — Yes/No vs Value distinction',
+    'DS — Common traps and patterns',
+    'MSR — Reading 3 tabbed sources fast',
+    'MSR — Relevant vs irrelevant info',
+    'MSR — Reconciling conflicting data',
+    'MSR — True/False classification',
+    'Table — Sorting columns strategically',
+    'Graphics — Bar, pie, line graphs',
+    'Graphics — Scatter plots',
+    'Graphics — Reading axes carefully',
+    'Two-Part — Quant (simultaneous equations)',
+    'Two-Part — Verbal (logical trade-offs)',
+    'Two-Part — Mixed (quant + verbal logic)'
+  ]}
+];
+
+const STORE_KEYS = {
+  PLAN:    'gmat_parsed_plan',
+  DAYS:    'gmat_day_completions',
+  BUFFER:  'gmat_buffer_days',
+  WINS:    'gmat_week_wins',
+  MOCKS:   'gmat_mocks',
+  TOPICS:  'gmat_topic_mastery'
+};
+
+// =====================================================================
+// STORAGE
+// =====================================================================
+function load(key, dflt) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (raw === null) return dflt;
+    return JSON.parse(raw);
+  } catch (e) {
+    console.warn('load failed for', key, e);
+    return dflt;
+  }
+}
+function save(key, val) {
+  try {
+    localStorage.setItem(key, JSON.stringify(val));
+  } catch (e) {
+    console.warn('save failed for', key, e);
+  }
+}
+function getState() {
+  return {
+    days:    load(STORE_KEYS.DAYS,    {}),
+    buffer:  load(STORE_KEYS.BUFFER,  {}),
+    wins:    load(STORE_KEYS.WINS,    {}),
+    mocks:   load(STORE_KEYS.MOCKS,   null),
+    topics:  load(STORE_KEYS.TOPICS,  {})
+  };
+}
+
+// =====================================================================
+// DATE HELPERS
+// =====================================================================
+function pad2(n) { return String(n).padStart(2, '0'); }
+function ymd(d) {
+  return d.getFullYear() + '-' + pad2(d.getMonth()+1) + '-' + pad2(d.getDate());
+}
+function todayYMD() { return ymd(new Date()); }
+function parseDateStr(str, year) {
+  // "May 16" or "June 8" or "Jul 17"
+  const parts = str.trim().split(/\s+/);
+  const mo = MONTH_MAP[parts[0]];
+  const da = parseInt(parts[1], 10);
+  return new Date(year, mo, da);
+}
+function dayDiff(a, b) {
+  // returns whole days between a and b, ignoring TZ drift
+  const ms = b.getTime() - a.getTime();
+  return Math.round(ms / 86400000);
+}
+function addDays(d, n) {
+  const x = new Date(d);
+  x.setDate(x.getDate() + n);
+  return x;
+}
+function fromYMD(s) {
+  const [y,m,d] = s.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+function fmtDay(d) {
+  return ['SUN','MON','TUE','WED','THU','FRI','SAT'][d.getDay()];
+}
+function fmtMonthName(d, short) {
+  const names = short
+    ? ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+    : ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  return names[d.getMonth()];
+}
+
+// =====================================================================
+// MARKDOWN PARSER
+// =====================================================================
+function parsePlan() {
+  // Try cache
+  const cached = load(STORE_KEYS.PLAN, null);
+  if (cached && cached.version === PLAN_VERSION && cached.weeks && cached.weeks.length === 15) {
+    return cached;
+  }
+
+  const lines = PLAN_MARKDOWN.split('\n');
+  const weeks = [];
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+
+    // Week header: "## Week 1 (May 16 – May 22) — ..."
+    const wkMatch = line.match(/^##\s+Week\s+(\d+)\s+\(([^)]+)\)/);
+    if (wkMatch) {
+      const weekNum = parseInt(wkMatch[1], 10);
+      const dateRange = wkMatch[2].trim(); // "May 16 – May 22"
+      const week = parseWeekBlock(lines, i, weekNum, dateRange);
+      weeks.push(week);
+      i = week._nextIdx;
+      continue;
+    }
+
+    // Diagnostic day standalone — "# DIAGNOSTIC DAY: May 30 (Saturday)"
+    const diagMatch = line.match(/^#\s+DIAGNOSTIC DAY:\s+([A-Z][a-z]+\s+\d+)/);
+    if (diagMatch) {
+      // Attach this day(s) to the previous week (Week 2) as additional entries
+      const prevWeek = weeks[weeks.length - 1];
+      if (prevWeek) {
+        const diagDays = parseStandaloneDays(lines, i);
+        for (const d of diagDays) {
+          prevWeek.days.push(d);
+        }
+        // Extend prevWeek endDate if needed
+        const lastDate = diagDays.map(d => fromYMD(d.date)).sort((a,b)=>b-a)[0];
+        if (lastDate && ymd(lastDate) > prevWeek.endDate) {
+          prevWeek.endDate = ymd(lastDate);
+        }
+      }
+      // Advance past this diagnostic block to the next ## Week or # PHASE header
+      let j = i + 1;
+      while (j < lines.length && !lines[j].match(/^##\s+Week\s+\d+/) && !lines[j].match(/^#\s+PHASE/)) {
+        j++;
+      }
+      i = j;
+      continue;
+    }
+    i++;
+  }
+
+  const parsed = {
+    version: PLAN_VERSION,
+    weeks: weeks
+  };
+  save(STORE_KEYS.PLAN, parsed);
+  return parsed;
+}
+
+function parseStandaloneDays(lines, startIdx) {
+  // Parse all day entries between this header and the next ## Week / # PHASE header
+  const days = [];
+  let i = startIdx + 1;
+  while (i < lines.length) {
+    if (lines[i].match(/^##\s+Week\s+\d+/)) break;
+    if (lines[i].match(/^#\s+PHASE/)) break;
+    const dayMatch = lines[i].match(/^###\s+(MON|TUE|WED|THU|FRI|SAT|SUN)\s+([A-Z][a-z]+\s+\d+)\s+—\s+(.+)$/);
+    if (dayMatch) {
+      const d = parseDayBlock(lines, i, dayMatch);
+      days.push(d.day);
+      i = d.nextIdx;
+      continue;
+    }
+    i++;
+  }
+  return days;
+}
+
+function parseWeekBlock(lines, startIdx, weekNum, dateRange) {
+  // dateRange e.g. "May 16 – May 22"
+  // Find startDate and endDate
+  const rangeParts = dateRange.split(/\s*[–-]\s*/);
+  let startDateStr = rangeParts[0]; // "May 16"
+  let endDateStr = rangeParts[1];    // "May 22"
+  // If endDate is just a number (e.g. "May 16 – 22"), we'd handle it; spec has full "May 22"
+  // But for cross-month ranges like "July 27 – August 2", parsing is straightforward.
+
+  const startDate = parseDateStr(startDateStr, PLAN_YEAR);
+  let endDate;
+  if (/^\d+$/.test(endDateStr.trim())) {
+    // bare day → same month as start
+    endDate = new Date(PLAN_YEAR, startDate.getMonth(), parseInt(endDateStr.trim(), 10));
+  } else {
+    endDate = parseDateStr(endDateStr, PLAN_YEAR);
+  }
+
+  const days = [];
+  let i = startIdx + 1;
+  while (i < lines.length) {
+    // Stop at next week or phase header
+    if (lines[i].match(/^##\s+Week\s+\d+/)) break;
+    if (lines[i].match(/^#\s+PHASE/)) break;
+    if (lines[i].match(/^#\s+DIAGNOSTIC DAY/)) break;
+    if (lines[i].match(/^#\s+APPENDICES/)) break;
+
+    // Day header: "### MON May 18 — CONCEPT (Quant)"
+    const dayMatch = lines[i].match(/^###\s+(MON|TUE|WED|THU|FRI|SAT|SUN)\s+([A-Z][a-z]+\s+\d+)\s+—\s+(.+)$/);
+    if (dayMatch) {
+      const d = parseDayBlock(lines, i, dayMatch);
+      days.push(d.day);
+      i = d.nextIdx;
+      continue;
+    }
+    i++;
+  }
+
+  return {
+    weekNum,
+    dateRange,
+    startDate: ymd(startDate),
+    endDate: ymd(endDate),
+    phase: PHASE_OF_WEEK[weekNum] || '',
+    winCondition: WIN_CONDITIONS[weekNum] || '',
+    days,
+    _nextIdx: i
+  };
+}
+
+function parseDayBlock(lines, startIdx, dayMatch) {
+  const label = dayMatch[1];          // "MON"
+  const dateText = dayMatch[2];       // "May 18"
+  const titleRest = dayMatch[3];      // "CONCEPT (Quant)" or "MOCK (Diagnostic)" etc.
+
+  const dateObj = parseDateStr(dateText, PLAN_YEAR);
+  const dateISO = ymd(dateObj);
+
+  // Determine day type by scanning the titleRest
+  const titleUpper = titleRest.toUpperCase();
+  let type = 'CONCEPT';
+  if      (titleUpper.includes('EXAM'))    type = 'EXAM';
+  else if (titleUpper.includes('MOCK'))    type = 'MOCK';
+  else if (titleUpper.includes('DRILL'))   type = 'DRILL';
+  else if (titleUpper.includes('SLIP'))    type = 'SLIP';
+  else if (titleUpper.includes('REST'))    type = 'SLIP';
+  else if (titleUpper.includes('TAPER'))   type = 'REVIEW';
+  else if (titleUpper.includes('REVIEW'))  type = 'REVIEW';
+  else if (titleUpper.includes('PLANNING')) type = 'REVIEW';
+  else if (titleUpper.includes('LIGHT'))   type = 'REVIEW';
+  else if (titleUpper.includes('DRESS'))   type = 'MOCK';
+  else if (titleUpper.includes('CONCEPT')) type = 'CONCEPT';
+
+  let topic = '', resource = '', task = '', time = '', staywarm = '';
+
+  let i = startIdx + 1;
+  while (i < lines.length) {
+    const l = lines[i];
+    if (l.match(/^###\s+(MON|TUE|WED|THU|FRI|SAT|SUN)\s+/)) break;
+    if (l.match(/^##\s+Week\s+\d+/)) break;
+    if (l.match(/^#\s+PHASE/)) break;
+    if (l.match(/^#\s+DIAGNOSTIC DAY/)) break;
+    if (l.match(/^#\s+APPENDICES/)) break;
+
+    // Match bullet fields: - **Topic:** value
+    const fieldMatch = l.match(/^-\s+\*\*([^*]+):\*\*\s*(.*)$/);
+    if (fieldMatch) {
+      const key = fieldMatch[1].trim().toLowerCase();
+      const val = fieldMatch[2].trim();
+      if (key === 'topic')                     topic = val;
+      else if (key === 'resource' || key === 'resources') resource = val;
+      else if (key === 'task' || key === 'mock' || key === 'conditions') {
+        // The MOCK day uses "Mock:" instead of "Topic:" sometimes
+        if (key === 'mock' && !topic) topic = val;
+        else if (key === 'conditions' && !resource) resource = val;
+        else task = task ? task + ' ' + val : val;
+      }
+      else if (key === 'time')                 time = val;
+      else if (key === 'stay-warm')            staywarm = val;
+    }
+    // Also handle non-bullet bold fields (exam day uses **Wake time:** etc.)
+    const boldMatch = l.match(/^\*\*([^*]+):\*\*\s*(.+)$/);
+    if (boldMatch && !fieldMatch) {
+      const key = boldMatch[1].trim().toLowerCase();
+      const val = boldMatch[2].trim();
+      if (!topic && (key === 'wake time' || key === 'breakfast' || key === 'travel' || key === 'at the test center' || key === 'during the exam')) {
+        // For exam day, build a simple topic and stitch the rest into task
+        if (!topic) topic = 'GMAT FOCUS EDITION — EXAM DAY';
+        task = task ? task + ' • ' + key.charAt(0).toUpperCase() + key.slice(1) + ': ' + val
+                    : key.charAt(0).toUpperCase() + key.slice(1) + ': ' + val;
+      }
+    }
+    i++;
+  }
+
+  if (!topic) topic = titleRest;
+
+  return {
+    nextIdx: i,
+    day: { label, type, topic, resource, task, time, staywarm, date: dateISO, title: titleRest }
+  };
+}
+
+// =====================================================================
+// PLAN DATA
+// =====================================================================
+const PLAN = parsePlan();
+
+// Build a quick date → day-entry index
+const DAY_BY_DATE = {};
+const WEEK_OF_DATE = {};
+for (const w of PLAN.weeks) {
+  for (const d of w.days) {
+    DAY_BY_DATE[d.date] = d;
+    WEEK_OF_DATE[d.date] = w.weekNum;
+  }
+}
+
+// Ensure MOCKS state has a row per inventory mock
+function initMocksIfNeeded() {
+  let mocks = load(STORE_KEYS.MOCKS, null);
+  if (!Array.isArray(mocks)) mocks = [];
+  // Add any missing inventory items
+  for (const inv of MOCK_INVENTORY) {
+    if (!mocks.find(m => m.id === inv.id)) {
+      mocks.push({
+        id: inv.id,
+        name: inv.name,
+        scheduledWeek: inv.scheduledWeek,
+        checked: false,
+        attempts: []
+      });
+    }
+  }
+  save(STORE_KEYS.MOCKS, mocks);
+  return mocks;
+}
+initMocksIfNeeded();
+
+// =====================================================================
+// CURRENT WEEK RESOLUTION
+// =====================================================================
+function getCurrentWeek() {
+  const today = todayYMD();
+  for (const w of PLAN.weeks) {
+    if (today >= w.startDate && today <= w.endDate) return w.weekNum;
+  }
+  // Before plan?
+  if (today < PLAN.weeks[0].startDate) return 1;
+  // After plan
+  return 15;
+}
+
+let viewedWeek = getCurrentWeek();
+let calendarMonth = null; // Date object representing first of viewed month
+
+// =====================================================================
+// UTILITY
+// =====================================================================
+function escapeHtml(s) {
+  if (s === undefined || s === null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function daysUntilExam() {
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const exam = fromYMD(EXAM_DATE);
+  return Math.max(0, dayDiff(today, exam));
+}
+
+// =====================================================================
+// CONFETTI
+// =====================================================================
+function burstConfetti() {
+  const root = document.getElementById('confetti');
+  const colors = ['#4F8EF7','#3DDC84','#FFBB33','#FF5252','#FF8C42','#F1F1F3'];
+  const cx = window.innerWidth / 2;
+  const cy = window.innerHeight / 2;
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.left = cx + 'px';
+    p.style.top = cy + 'px';
+    p.style.background = colors[i % colors.length];
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 90 + Math.random() * 160;
+    p.style.setProperty('--dx', (Math.cos(angle) * dist) + 'px');
+    p.style.setProperty('--dy', (Math.sin(angle) * dist) + 'px');
+    p.style.setProperty('--rot', (Math.random() * 720 - 360) + 'deg');
+    root.appendChild(p);
+    setTimeout(() => p.remove(), 900);
+  }
+}
+
+// =====================================================================
+// CROSS-VIEW RENDER GATES
+// =====================================================================
+function rerenderAll() {
+  renderWeek();
+  renderMocks();
+  renderTopics();
+  renderCalendar();
+}
+
+// =====================================================================
+// WEEK VIEW
+// =====================================================================
+function renderWeek() {
+  const root = document.getElementById('view-week');
+  const state = getState();
+  const week = PLAN.weeks.find(w => w.weekNum === viewedWeek) || PLAN.weeks[0];
+
+  const winChecked = !!state.wins[week.weekNum];
+  const bufferUsed = !!(state.buffer[week.weekNum] && state.buffer[week.weekNum].used);
+
+  // Phase progress bar
+  let phaseBarHTML = '<div class="phase-bar">';
+  for (let i = 1; i <= 15; i++) {
+    const ph = PHASE_OF_WEEK[i];
+    const color = state.wins[i] ? PHASE_COLOR[ph] : (i <= getCurrentWeek() ? PHASE_COLOR[ph] : 'var(--border)');
+    const isCur = (i === week.weekNum) ? ' current' : '';
+    phaseBarHTML += `<div class="phase-seg${isCur}" style="background:${color}"></div>`;
+  }
+  phaseBarHTML += '</div>';
+
+  // Day strip — show all days of this week
+  const today = todayYMD();
+  let stripHTML = '<div class="day-strip">';
+  for (const d of week.days) {
+    const isToday = d.date === today;
+    const isDone = !!state.days[d.date];
+    stripHTML += `
+      <div class="day${isToday ? ' today' : ''}${isDone ? ' done' : ''}" data-date="${d.date}" onclick="scrollToDayCard('${d.date}')">
+        <span class="lbl">${d.label}</span>
+        <span class="dot"></span>
+        <span class="dnum">${parseInt(d.date.split('-')[2],10)}</span>
+      </div>
+    `;
+  }
+  stripHTML += '</div>';
+
+  // Day cards
+  let dayCardsHTML = '';
+  for (const d of week.days) {
+    const isDone = !!state.days[d.date];
+    const dateObj = fromYMD(d.date);
+    const dateLbl = fmtMonthName(dateObj, true) + ' ' + parseInt(d.date.split('-')[2],10);
+    const showBuffer = (d.label === 'FRI' && d.type !== 'MOCK' && !bufferUsed);
+    dayCardsHTML += `
+      <div class="day-card${isDone ? ' done' : ''}" id="card-${d.date}">
+        <div class="head">
+          <div class="left">
+            <span class="daylbl">${d.label}</span>
+            <span class="badge-type ${d.type}">${d.type}</span>
+          </div>
+          <span class="date">${dateLbl}</span>
+        </div>
+        <div class="topic">${escapeHtml(d.topic)}</div>
+        ${d.resource ? `<div class="meta"><strong>Resource:</strong> ${escapeHtml(d.resource)}</div>` : ''}
+        ${d.task ? `<div class="meta"><strong>Task:</strong> ${escapeHtml(d.task)}</div>` : ''}
+        ${d.staywarm ? `<div class="meta"><strong>Stay-warm:</strong> ${escapeHtml(d.staywarm)}</div>` : ''}
+        ${d.time ? `<div class="meta"><strong>Time:</strong> ${escapeHtml(d.time)}</div>` : ''}
+        <div class="actions">
+          <button class="btn ${isDone ? 'success' : 'primary'}" onclick="toggleDay('${d.date}')">${isDone ? '✓ Done' : 'Mark done'}</button>
+          ${showBuffer ? `<button class="btn warning" onclick="useBuffer(${week.weekNum}, '${d.date}')">Use buffer day (1/week)</button>` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  const milestoneHTML = MILESTONES[week.weekNum] ? `<div class="milestone">${escapeHtml(MILESTONES[week.weekNum])}</div>` : '';
+
+  root.innerHTML = `
+    <div class="top-strip">
+      <div class="brand"><b>GMAT</b> · Focus Tracker</div>
+      <div class="exam-cd">${daysUntilExam()}d to exam</div>
+    </div>
+    ${phaseBarHTML}
+    <div class="phase-labels">
+      <span style="color:${PHASE_COLOR.Foundation}">Foundation</span>
+      <span style="color:${PHASE_COLOR.Drilling}">Drilling</span>
+      <span style="color:${PHASE_COLOR.Integration}">Integration</span>
+      <span style="color:${PHASE_COLOR.Peak}">Peak</span>
+    </div>
+
+    <div class="week-header">
+      <div class="label">WEEK ${week.weekNum} OF 15</div>
+      <div class="range">${escapeHtml(week.dateRange)}</div>
+      <span class="pill" style="background:${PHASE_COLOR[week.phase]}40; color:${PHASE_COLOR[week.phase]}; border:1px solid ${PHASE_COLOR[week.phase]}">${escapeHtml(week.phase)}</span>
+    </div>
+
+    <div class="week-nav">
+      <button class="btn small" onclick="changeWeek(-1)" ${week.weekNum === 1 ? 'disabled' : ''}>← Prev</button>
+      <button class="btn small" onclick="goCurrentWeek()">This week</button>
+      <button class="btn small" onclick="changeWeek(1)" ${week.weekNum === 15 ? 'disabled' : ''}>Next →</button>
+    </div>
+
+    ${stripHTML}
+
+    <div class="win-row${winChecked ? ' done' : ''}" onclick="toggleWin(${week.weekNum})">
+      <div class="cbox"></div>
+      <div class="txt">
+        <div class="ttl">Weekly Win</div>
+        ${escapeHtml(week.winCondition || 'Complete the week plan.')}
+      </div>
+    </div>
+
+    ${milestoneHTML}
+
+    <div class="section-title">Days</div>
+    ${dayCardsHTML}
+  `;
+}
+
+function changeWeek(delta) {
+  const newWk = viewedWeek + delta;
+  if (newWk < 1 || newWk > 15) return;
+  viewedWeek = newWk;
+  renderWeek();
+}
+function goCurrentWeek() {
+  viewedWeek = getCurrentWeek();
+  renderWeek();
+}
+function scrollToDayCard(dateStr) {
+  const el = document.getElementById('card-' + dateStr);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+function toggleDay(dateStr) {
+  const days = load(STORE_KEYS.DAYS, {});
+  const wasDone = !!days[dateStr];
+  if (wasDone) {
+    delete days[dateStr];
+  } else {
+    days[dateStr] = true;
+  }
+  save(STORE_KEYS.DAYS, days);
+  if (!wasDone) burstConfetti();
+  renderWeek();
+  renderCalendar();
+}
+function toggleWin(weekNum) {
+  const wins = load(STORE_KEYS.WINS, {});
+  const wasWon = !!wins[weekNum];
+  if (wasWon) {
+    delete wins[weekNum];
+  } else {
+    wins[weekNum] = true;
+  }
+  save(STORE_KEYS.WINS, wins);
+  if (!wasWon) burstConfetti();
+  renderWeek();
+}
+function useBuffer(weekNum, dateStr) {
+  const buf = load(STORE_KEYS.BUFFER, {});
+  buf[weekNum] = { used: true, date: dateStr };
+  save(STORE_KEYS.BUFFER, buf);
+  // Also mark the day done
+  const days = load(STORE_KEYS.DAYS, {});
+  days[dateStr] = true;
+  save(STORE_KEYS.DAYS, days);
+  burstConfetti();
+  renderWeek();
+  renderCalendar();
+}
+
+// =====================================================================
+// MOCKS VIEW
+// =====================================================================
+function renderMocks() {
+  const root = document.getElementById('view-mocks');
+  const mocks = load(STORE_KEYS.MOCKS, []);
+  // Ensure they're in inventory order
+  const ordered = MOCK_INVENTORY.map(inv => mocks.find(m => m.id === inv.id) || { id: inv.id, name: inv.name, scheduledWeek: inv.scheduledWeek, checked: false, attempts: [] });
+
+  // Sparkline
+  const allAttempts = [];
+  for (const m of ordered) {
+    const inv = MOCK_INVENTORY.find(x => x.id === m.id);
+    (m.attempts || []).forEach((a, idx) => {
+      const total = parseInt(a.scores && a.scores.total, 10);
+      if (total) {
+        allAttempts.push({
+          mock: m.name,
+          total,
+          date: a.date || '',
+          attemptNum: a.attemptNum || (idx + 1),
+          scheduledWeek: m.scheduledWeek,
+          isRetake: (a.attemptNum || (idx + 1)) > 1
+        });
+      }
+    });
+  }
+  // Sort by date if available, else by scheduledWeek then attemptNum
+  allAttempts.sort((a, b) => {
+    if (a.date && b.date) return a.date < b.date ? -1 : 1;
+    if (a.scheduledWeek !== b.scheduledWeek) return a.scheduledWeek - b.scheduledWeek;
+    return a.attemptNum - b.attemptNum;
+  });
+
+  let sparkHTML = '';
+  if (allAttempts.length >= 2) {
+    const totals = allAttempts.map(a => a.total);
+    const minT = Math.min(...totals);
+    const maxT = Math.max(...totals);
+    const range = Math.max(maxT - minT, 50);
+    const W = 380, H = 90, padX = 20, padY = 14;
+    const stepX = (W - 2*padX) / (allAttempts.length - 1 || 1);
+    let pathD = '';
+    let dots = '';
+    allAttempts.forEach((a, i) => {
+      const x = padX + i * stepX;
+      const yNorm = (a.total - minT) / range;
+      const y = H - padY - yNorm * (H - 2*padY);
+      pathD += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+      const color = a.isRetake ? '#FFBB33' : '#4F8EF7';
+      dots += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" fill="${color}" stroke="#1A1A1F" stroke-width="2"/>`;
+    });
+    sparkHTML = `
+      <div class="sparkline-card">
+        <div class="section-title" style="margin-bottom:6px">Score Trend</div>
+        <div class="sparkline">
+          <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+            <path d="${pathD}" fill="none" stroke="#4F8EF7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            ${dots}
+          </svg>
+        </div>
+        <div class="stats">
+          <div><span class="val">${minT}</span>Min</div>
+          <div><span class="val">${maxT}</span>Max</div>
+          <div><span class="val">${allAttempts.length}</span>Logged</div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:6px">
+          <span style="color:#4F8EF7">●</span> First take &nbsp; <span style="color:#FFBB33">●</span> Retake
+        </div>
+      </div>
+    `;
+  } else {
+    sparkHTML = `
+      <div class="sparkline-card">
+        <div class="empty-state">Log 2+ mock scores to see your trend</div>
+      </div>
+    `;
+  }
+
+  // Mock cards
+  let cardsHTML = '';
+  for (const inv of MOCK_INVENTORY) {
+    const m = ordered.find(x => x.id === inv.id);
+    const checked = !!m.checked;
+    const hasScores = (m.attempts || []).some(a => a.scores && a.scores.total);
+    const week = PLAN.weeks.find(w => w.weekNum === inv.scheduledWeek);
+    const weekLabel = week ? `Week ${inv.scheduledWeek} · ${week.dateRange}` : `Week ${inv.scheduledWeek}`;
+    const status = hasScores ? 'Scores logged' : (checked ? '✓ Taken' : 'Not taken');
+
+    // Attempts rendering
+    let attemptsHTML = '';
+    const attempts = m.attempts || [];
+    if (attempts.length > 0) {
+      attemptsHTML = attempts.map(a => {
+        const s = a.scores || {};
+        return `
+          <div class="attempt-row">
+            <div class="topl">
+              <span>Attempt ${a.attemptNum}${a.attemptNum > 1 ? ' (Retake)' : ''}</span>
+              <span class="muted">${escapeHtml(a.date || '')}</span>
+            </div>
+            <div class="scores">
+              <strong>Total:</strong> ${escapeHtml(s.total || '—')} ·
+              <strong>Q:</strong> ${escapeHtml(s.quant || '—')} ·
+              <strong>V:</strong> ${escapeHtml(s.verbal || '—')} ·
+              <strong>DI:</strong> ${escapeHtml(s.di || '—')}
+            </div>
+            ${a.notes ? `<div class="notes">${escapeHtml(a.notes)}</div>` : ''}
+            <div style="margin-top:6px"><button class="btn small muted" onclick="deleteAttempt('${m.id}', ${a.attemptNum})">Delete</button></div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Add-new-attempt form (only show if no attempt, or if canRetake and we have 1 attempt)
+    let formHTML = '';
+    const nextAttemptNum = attempts.length + 1;
+    const canAddMore = (nextAttemptNum === 1) || (inv.canRetake && nextAttemptNum === 2);
+    if (canAddMore) {
+      const isRetake = nextAttemptNum > 1;
+      formHTML = `
+        <div class="score-form">
+          <div class="section-title" style="font-size:10px;margin-bottom:8px">${isRetake ? 'Log Retake' : 'Log Attempt'}</div>
+          <div>
+            <label>Date</label>
+            <input type="date" id="date-${m.id}-${nextAttemptNum}" value="${todayYMD()}">
+          </div>
+          <div class="grid2">
+            <div>
+              <label>Total (205–805)</label>
+              <input type="number" id="total-${m.id}-${nextAttemptNum}" placeholder="e.g. 705" min="205" max="805">
+            </div>
+            <div>
+              <label>Quant (60–90)</label>
+              <input type="number" id="quant-${m.id}-${nextAttemptNum}" placeholder="e.g. 85" min="60" max="90">
+            </div>
+            <div>
+              <label>Verbal (60–90)</label>
+              <input type="number" id="verbal-${m.id}-${nextAttemptNum}" placeholder="e.g. 84" min="60" max="90">
+            </div>
+            <div>
+              <label>DI (60–90)</label>
+              <input type="number" id="di-${m.id}-${nextAttemptNum}" placeholder="e.g. 82" min="60" max="90">
+            </div>
+          </div>
+          <div>
+            <label>Notes (Concept / Careless / Timing — quick categorisation OK)</label>
+            <textarea id="notes-${m.id}-${nextAttemptNum}" placeholder="What broke under fatigue?"></textarea>
+          </div>
+          <div>
+            <button class="btn primary" onclick="saveAttempt('${m.id}', ${nextAttemptNum})">Save Attempt ${nextAttemptNum}</button>
+          </div>
+        </div>
+      `;
+    } else if (inv.canRetake && attempts.length >= 2) {
+      formHTML = `<div class="empty-state" style="padding:8px">Both attempts logged.</div>`;
+    } else if (!inv.canRetake && attempts.length >= 1) {
+      formHTML = `<div class="empty-state" style="padding:8px">Attempt logged. (No retake configured for this mock.)</div>`;
+    }
+
+    cardsHTML += `
+      <div class="mock-card${checked ? ' checked' : ''}" id="mock-${m.id}">
+        <div class="head">
+          <div class="cbox" onclick="event.stopPropagation(); toggleMockCheck('${m.id}')"></div>
+          <div class="info" onclick="toggleMockPanel('${m.id}')">
+            <div class="name">${escapeHtml(m.name)}</div>
+            <div class="sub">${escapeHtml(weekLabel)} · ${escapeHtml(inv.dateHint)}</div>
+          </div>
+          <div class="status">${status}</div>
+        </div>
+        <div class="panel">
+          ${attemptsHTML}
+          ${formHTML}
+        </div>
+      </div>
+    `;
+  }
+
+  root.innerHTML = `
+    <div class="top-strip">
+      <div class="brand"><b>MOCKS</b> · ${MOCK_INVENTORY.length} scheduled</div>
+      <div class="exam-cd">${daysUntilExam()}d to exam</div>
+    </div>
+    ${sparkHTML}
+    ${cardsHTML}
+    <div class="protocol-section">
+      <div class="section-title" style="margin-bottom:0">Mock Protocol</div>
+      <ul>
+        <li>No pausing — full 2h15m + optional 10-min break</li>
+        <li>Review every wrong answer same day</li>
+        <li>Classify error: concept / careless / timing</li>
+        <li>Spend equal time reviewing as taking</li>
+        <li>Update error log after every mock</li>
+        <li>From Week 11: run mock at same start time as planned exam</li>
+      </ul>
+    </div>
+  `;
+}
+
+function toggleMockPanel(id) {
+  const el = document.getElementById('mock-' + id);
+  if (el) el.classList.toggle('open');
+}
+function toggleMockCheck(id) {
+  const mocks = load(STORE_KEYS.MOCKS, []);
+  const m = mocks.find(x => x.id === id);
+  if (!m) return;
+  const wasChecked = !!m.checked;
+  m.checked = !wasChecked;
+  save(STORE_KEYS.MOCKS, mocks);
+  if (!wasChecked) burstConfetti();
+  renderMocks();
+  renderCalendar();
+  renderWeek();
+}
+function saveAttempt(id, attemptNum) {
+  const mocks = load(STORE_KEYS.MOCKS, []);
+  const m = mocks.find(x => x.id === id);
+  if (!m) return;
+  const date  = document.getElementById('date-'  + id + '-' + attemptNum).value;
+  const total = document.getElementById('total-' + id + '-' + attemptNum).value;
+  const quant = document.getElementById('quant-' + id + '-' + attemptNum).value;
+  const verbal= document.getElementById('verbal-'+ id + '-' + attemptNum).value;
+  const di    = document.getElementById('di-'    + id + '-' + attemptNum).value;
+  const notes = document.getElementById('notes-' + id + '-' + attemptNum).value;
+  if (!m.attempts) m.attempts = [];
+  m.attempts.push({
+    attemptNum,
+    date,
+    scores: { total, quant, verbal, di },
+    notes
+  });
+  m.checked = true;
+  save(STORE_KEYS.MOCKS, mocks);
+  renderMocks();
+  renderCalendar();
+}
+function deleteAttempt(id, attemptNum) {
+  if (!confirm('Delete attempt ' + attemptNum + '?')) return;
+  const mocks = load(STORE_KEYS.MOCKS, []);
+  const m = mocks.find(x => x.id === id);
+  if (!m) return;
+  m.attempts = (m.attempts || []).filter(a => a.attemptNum !== attemptNum);
+  // Renumber remaining attempts
+  m.attempts.forEach((a, i) => a.attemptNum = i + 1);
+  if (m.attempts.length === 0) m.checked = false;
+  save(STORE_KEYS.MOCKS, mocks);
+  renderMocks();
+  renderCalendar();
+}
+
+// =====================================================================
+// TOPICS VIEW
+// =====================================================================
+function renderTopics() {
+  const root = document.getElementById('view-topics');
+  const state = load(STORE_KEYS.TOPICS, {});
+
+  let groupsHTML = '';
+  let totalAll = 0, masteredAll = 0;
+  for (const g of TOPIC_GROUPS) {
+    let mastered = 0, inProg = 0;
+    let chips = '';
+    for (const t of g.topics) {
+      const key = g.name + '::' + t;
+      const st = state[key] || 'not_started';
+      if (st === 'mastered') mastered++;
+      if (st === 'in_progress') inProg++;
+      chips += `<span class="chip ${st}" onclick="cycleTopic('${escapeJsAttr(key)}')">${escapeHtml(t)}</span>`;
+    }
+    totalAll += g.topics.length;
+    masteredAll += mastered;
+    const pct = Math.round((mastered / g.topics.length) * 100);
+    groupsHTML += `
+      <div class="topic-group">
+        <div class="ghead">
+          <div class="gname">${escapeHtml(g.name)}</div>
+          <div class="gstats">${mastered}/${g.topics.length} mastered · ${inProg} in progress</div>
+        </div>
+        <div class="gbar"><div class="fill" style="width:${pct}%"></div></div>
+        <div class="chips">${chips}</div>
+      </div>
+    `;
+  }
+
+  const overallPct = totalAll ? Math.round(masteredAll / totalAll * 100) : 0;
+
+  root.innerHTML = `
+    <div class="top-strip">
+      <div class="brand"><b>TOPICS</b> · ${masteredAll}/${totalAll} mastered (${overallPct}%)</div>
+      <div class="exam-cd">${daysUntilExam()}d to exam</div>
+    </div>
+    <div class="cal-legend" style="margin-bottom:18px">
+      <span class="lg-item"><span class="sw" style="background:var(--card-2);border:1px solid var(--border)"></span>Not started</span>
+      <span class="lg-item"><span class="sw" style="background:rgba(255,187,51,.4)"></span>In progress</span>
+      <span class="lg-item"><span class="sw" style="background:var(--success)"></span>Mastered</span>
+      <span style="margin-left:auto;color:var(--muted);font-size:10px">Tap a chip to cycle</span>
+    </div>
+    ${groupsHTML}
+  `;
+}
+
+function escapeJsAttr(s) {
+  return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
+function cycleTopic(key) {
+  const state = load(STORE_KEYS.TOPICS, {});
+  const cur = state[key] || 'not_started';
+  const next = cur === 'not_started' ? 'in_progress' : (cur === 'in_progress' ? 'mastered' : 'not_started');
+  state[key] = next;
+  save(STORE_KEYS.TOPICS, state);
+  renderTopics();
+}
+
+// =====================================================================
+// CALENDAR VIEW
+// =====================================================================
+let selectedCalDate = null;
+
+function renderCalendar() {
+  const root = document.getElementById('view-calendar');
+  if (!calendarMonth) {
+    // default to current month within plan range
+    const now = new Date();
+    const planStart = fromYMD(PLAN.weeks[0].startDate);
+    const planEnd   = fromYMD(EXAM_DATE);
+    if (now < planStart) {
+      calendarMonth = new Date(planStart.getFullYear(), planStart.getMonth(), 1);
+    } else if (now > planEnd) {
+      calendarMonth = new Date(planEnd.getFullYear(), planEnd.getMonth(), 1);
+    } else {
+      calendarMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    }
+  }
+
+  const state = getState();
+  const monthName = fmtMonthName(calendarMonth, false) + ' ' + calendarMonth.getFullYear();
+  const planStart = fromYMD(PLAN.weeks[0].startDate);
+  const planEnd   = fromYMD(EXAM_DATE);
+
+  // Prev/Next month bounds (allow May 2026 – Aug 2026)
+  const earliest = new Date(2026, 4, 1);  // May 2026
+  const latest   = new Date(2026, 7, 1);  // Aug 2026
+  const canPrev = calendarMonth > earliest;
+  const canNext = calendarMonth < latest;
+
+  // Mock-day map: for each mock, find the day in that scheduledWeek that has type MOCK
+  const mockDateByMockId = {};
+  for (const m of (state.mocks || [])) {
+    const w = PLAN.weeks.find(w => w.weekNum === m.scheduledWeek);
+    if (!w) continue;
+    // Find the mock day in this week, prefer FRI then SAT, but use whatever has MOCK type
+    const mockDays = w.days.filter(d => d.type === 'MOCK');
+    if (mockDays.length === 0) continue;
+    // Use the inventory dateHint to disambiguate when multiple mocks share a week
+    const inv = MOCK_INVENTORY.find(x => x.id === m.id);
+    let chosen = mockDays[0];
+    if (inv && inv.dateHint) {
+      const hintParts = inv.dateHint.split(/\s+/);
+      const hintMo = MONTH_MAP[hintParts[0]];
+      const hintDa = parseInt(hintParts[1], 10);
+      const match = mockDays.find(d => {
+        const dd = fromYMD(d.date);
+        return dd.getMonth() === hintMo && dd.getDate() === hintDa;
+      });
+      if (match) chosen = match;
+    }
+    mockDateByMockId[m.id] = { date: chosen.date, checked: !!m.checked };
+  }
+  const mockCheckedByDate = {};
+  Object.values(mockDateByMockId).forEach(o => {
+    if (o.checked) mockCheckedByDate[o.date] = true;
+  });
+
+  // Build grid
+  const year = calendarMonth.getFullYear();
+  const month = calendarMonth.getMonth();
+  const first = new Date(year, month, 1);
+  const last = new Date(year, month + 1, 0);
+  const daysInMonth = last.getDate();
+  // Monday-first offset
+  // JS getDay(): 0=Sun..6=Sat. We want Mon=0..Sun=6.
+  let leadOffset = (first.getDay() + 6) % 7;
+
+  let gridHTML = `
+    <div class="cal-grid">
+      <div class="cal-wd">MON</div>
+      <div class="cal-wd">TUE</div>
+      <div class="cal-wd">WED</div>
+      <div class="cal-wd">THU</div>
+      <div class="cal-wd">FRI</div>
+      <div class="cal-wd">SAT</div>
+      <div class="cal-wd">SUN</div>
+  `;
+  for (let i = 0; i < leadOffset; i++) {
+    gridHTML += `<div class="cal-cell empty"></div>`;
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateObj = new Date(year, month, d);
+    const dateStr = ymd(dateObj);
+    const inRange = (dateObj >= planStart && dateObj <= planEnd);
+    const planDay = DAY_BY_DATE[dateStr];
+    const isToday = (dateStr === todayYMD());
+    const isDone = !!state.days[dateStr];
+    const isSelected = (selectedCalDate === dateStr);
+    const isMockDone = !!mockCheckedByDate[dateStr];
+
+    let cls = 'cal-cell';
+    if (!inRange) cls += ' outside';
+    if (isToday) cls += ' today';
+    if (isSelected) cls += ' selected';
+    if (isMockDone) cls += ' mockdone';
+
+    let dotColor = 'transparent';
+    if (planDay) {
+      const t = planDay.type;
+      if (t === 'CONCEPT') dotColor = 'var(--c-concept)';
+      else if (t === 'DRILL') dotColor = 'var(--c-drill)';
+      else if (t === 'REVIEW') dotColor = 'var(--c-review)';
+      else if (t === 'MOCK') dotColor = 'var(--c-mock)';
+      else if (t === 'EXAM') dotColor = 'var(--text)';
+      else dotColor = 'var(--c-slip)';
+    }
+
+    const clickHandler = inRange ? `onclick="selectCalDate('${dateStr}')"` : '';
+    gridHTML += `
+      <div class="${cls}" ${clickHandler}>
+        <span class="dnum">${d}</span>
+        <span class="tdot" style="background:${dotColor}"></span>
+        ${isDone ? `<span class="donedot"></span>` : ''}
+      </div>
+    `;
+  }
+  gridHTML += '</div>';
+
+  // Detail panel
+  let detailHTML = '';
+  if (selectedCalDate && DAY_BY_DATE[selectedCalDate]) {
+    const d = DAY_BY_DATE[selectedCalDate];
+    const wNum = WEEK_OF_DATE[selectedCalDate];
+    const w = PLAN.weeks.find(x => x.weekNum === wNum);
+    const phase = w ? w.phase : '';
+    const isDone = !!state.days[selectedCalDate];
+    const dateObj = fromYMD(selectedCalDate);
+    const dateLbl = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][dateObj.getDay()] + ', ' + fmtMonthName(dateObj, false) + ' ' + dateObj.getDate();
+
+    detailHTML = `
+      <div class="cal-detail">
+        <div class="head">
+          <div>
+            <div class="date-lbl">${dateLbl}</div>
+            <div class="meta-line">Week ${wNum} · ${escapeHtml(phase)} · <span class="badge-type ${d.type}">${d.type}</span></div>
+          </div>
+          <button class="close-btn" onclick="closeCalDetail()">✕</button>
+        </div>
+        <div class="topic-line${isDone ? ' done' : ''}">${escapeHtml(d.topic)}</div>
+        ${d.resource ? `<div class="field"><strong>Resource:</strong> ${escapeHtml(d.resource)}</div>` : ''}
+        ${d.task ? `<div class="field"><strong>Task:</strong> ${escapeHtml(d.task)}</div>` : ''}
+        ${d.staywarm ? `<div class="field"><strong>Stay-warm:</strong> ${escapeHtml(d.staywarm)}</div>` : ''}
+        ${d.time ? `<div class="field"><strong>Time:</strong> ${escapeHtml(d.time)}</div>` : ''}
+        <div class="actions">
+          <button class="btn ${isDone ? 'success' : 'primary'}" onclick="toggleDay('${selectedCalDate}')">${isDone ? '✓ Done' : 'Mark done'}</button>
+        </div>
+      </div>
+    `;
+  } else if (selectedCalDate) {
+    detailHTML = `
+      <div class="cal-detail">
+        <div class="head">
+          <div><div class="date-lbl">${escapeHtml(selectedCalDate)}</div><div class="meta-line">Outside the plan range.</div></div>
+          <button class="close-btn" onclick="closeCalDetail()">✕</button>
+        </div>
+      </div>
+    `;
+  }
+
+  root.innerHTML = `
+    <div class="top-strip">
+      <div class="brand"><b>CALENDAR</b> · May–Aug 2026</div>
+      <div class="exam-cd">${daysUntilExam()}d to exam</div>
+    </div>
+    <div class="cal-header">
+      <button class="navbtn" onclick="changeMonth(-1)" ${canPrev ? '' : 'disabled'}>‹</button>
+      <div class="month-title">${monthName}</div>
+      <button class="navbtn" onclick="changeMonth(1)" ${canNext ? '' : 'disabled'}>›</button>
+    </div>
+    ${gridHTML}
+    <div class="cal-legend">
+      <span class="lg-item"><span class="sw" style="background:var(--c-concept)"></span>Concept</span>
+      <span class="lg-item"><span class="sw" style="background:var(--c-drill)"></span>Drill</span>
+      <span class="lg-item"><span class="sw" style="background:var(--c-review)"></span>Review</span>
+      <span class="lg-item"><span class="sw" style="background:var(--c-mock)"></span>Mock</span>
+      <span class="lg-item"><span class="sw" style="background:var(--c-slip)"></span>Slip/Rest</span>
+      <span class="lg-item"><span class="sw" style="background:var(--success);border-radius:50%"></span>Done</span>
+    </div>
+    ${detailHTML}
+  `;
+}
+
+function changeMonth(delta) {
+  const m = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + delta, 1);
+  const earliest = new Date(2026, 4, 1);
+  const latest   = new Date(2026, 7, 1);
+  if (m < earliest || m > latest) return;
+  calendarMonth = m;
+  selectedCalDate = null;
+  renderCalendar();
+}
+function selectCalDate(dateStr) {
+  selectedCalDate = (selectedCalDate === dateStr) ? null : dateStr;
+  renderCalendar();
+}
+function closeCalDetail() {
+  selectedCalDate = null;
+  renderCalendar();
+}
+
+// =====================================================================
+// NAVIGATION
+// =====================================================================
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('#nav .nav-btn').forEach(b => b.classList.toggle('active', b.dataset.view === name));
+  const el = document.getElementById('view-' + name);
+  if (el) el.classList.add('active');
+  if (name === 'week') renderWeek();
+  else if (name === 'mocks') renderMocks();
+  else if (name === 'topics') renderTopics();
+  else if (name === 'calendar') renderCalendar();
+  window.scrollTo(0, 0);
+}
+
+// =====================================================================
+// BOOT
+// =====================================================================
+renderWeek();
+// Pre-render others so cross-tab updates are fast
+renderMocks();
+renderTopics();
+renderCalendar();
+showView('week');
+</script>
+</body>
+</html>
