@@ -605,15 +605,34 @@
   }
   .cal-cell.mockdone .tdot {
     background: var(--c-mock) !important;
-    position: relative;
   }
-  .cal-cell.mockdone .tdot::after {
-    content: "🎯";
+  .mockdone-tick {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 9px;
+    bottom: 2px;
+    right: 2px;
+    font-size: 8px;
+    font-weight: 900;
+    color: var(--c-mock);
+    line-height: 1;
+  }
+  .cal-cell.mockplanned {
+    border-color: rgba(255, 82, 82, 0.35);
+  }
+  .mock-count-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: var(--c-mock);
+    color: #fff;
+    font-size: 8px;
+    font-weight: 900;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
   }
 
   .cal-legend {
@@ -952,7 +971,7 @@ This plan is built for an ADHD brain. The rules are simple and non-negotiable:
 - **Time:** 2.5 hrs
 
 ### FRI Jun 5 — MOCK
-- **Mock:** GMAT Club Free Mock
+- **Mock:** e-GMAT Mock (1 free — activate trial today)
 - **Conditions:** Full 2h15m, real test conditions
 - **Time:** 2h15m
 
@@ -973,7 +992,7 @@ This plan is built for an ADHD brain. The rules are simple and non-negotiable:
 - **Resource:** Manhattan Guide 1, Ch. 4 (Inequalities)
 - **Task:** Read chapter. Do 15 OG Quant inequality questions untimed. Pay attention to flipping signs.
 - **Stay-warm:** OG Verbal — 10 CR questions
-- **Time:** 2 hrs
+- **Time:** 2 hrs (concept) + 2h15m (Expert's Global mock — take after concept work, activate 45-day trial today)
 
 ### TUE Jun 9 — CONCEPT (Quant)
 - **Topic:** Functions and notation + exponent rules
@@ -997,8 +1016,8 @@ This plan is built for an ADHD brain. The rules are simple and non-negotiable:
 - **Time:** 2 hrs
 
 ### FRI Jun 12 — MOCK
-- **Mock:** Expert's Global Full-Length (activate 45-day trial today)
-- **Conditions:** Full 2h15m
+- **Mock:** GMAT Club Mock 1 (first of 8 — blitz week begins)
+- **Conditions:** Full 2h15m, real test conditions
 - **Time:** 2h15m
 
 ### SAT Jun 13 — REVIEW
@@ -1042,8 +1061,8 @@ This plan is built for an ADHD brain. The rules are simple and non-negotiable:
 - **Time:** 2.5 hrs
 
 ### FRI Jun 19 — MOCK
-- **Mock:** e-GMAT Mock 1 (activate e-GMAT trial today)
-- **Conditions:** Full 2h15m
+- **Mock:** GMAT Club Mock 8 (final day of blitz week)
+- **Conditions:** Full 2h15m, real test conditions
 - **Time:** 2h15m
 
 ### SAT Jun 20 — REVIEW
@@ -1086,10 +1105,11 @@ This plan is built for an ADHD brain. The rules are simple and non-negotiable:
 - **Stay-warm:** OG DI — 5 DS questions
 - **Time:** 2.5 hrs
 
-### FRI Jun 26 — MOCK
-- **Mock:** e-GMAT Mock 2
-- **Conditions:** Full 2h15m
-- **Time:** 2h15m
+### FRI Jun 26 — SLIP DAY
+- **Topic:** Buffer / Rest
+- **Resource:** None
+- **Task:** Use it if you fell behind this week. Otherwise: rest. No GMAT today.
+- **Time:** 0 if not needed
 
 ### SAT Jun 27 — REVIEW
 - **Task:** Full mock review.
@@ -1184,8 +1204,8 @@ This plan is built for an ADHD brain. The rules are simple and non-negotiable:
 - **Time:** 2.5 hrs
 
 ### FRI Jul 10 — MOCK
-- **Mock:** e-GMAT Mock 3
-- **Conditions:** Full 2h15m
+- **Mock:** GMAT Official Free Mock 2 — Take 1
+- **Conditions:** Full 2h15m, real test conditions
 - **Time:** 2h15m
 
 ### SAT Jul 11 — REVIEW
@@ -1274,8 +1294,8 @@ This plan is built for an ADHD brain. The rules are simple and non-negotiable:
 - **Time:** 2.5 hrs
 
 ### FRI Jul 24 — MOCK
-- **Mock:** e-GMAT Mock 4
-- **Conditions:** Full 2h15m
+- **Mock:** GMAT Official Paid Mock 4 — Take 1
+- **Conditions:** Full 2h15m, real test conditions
 - **Time:** 2h15m
 
 ### SAT Jul 25 — REVIEW
@@ -1319,7 +1339,7 @@ This plan is built for an ADHD brain. The rules are simple and non-negotiable:
 - **Time:** 2 hrs
 
 ### FRI Jul 31 — MOCK (Section Order Test A)
-- **Mock:** e-GMAT Mock 5
+- **Mock:** GMAT Official Paid Mock 5 — Take 1
 - **Conditions:** Full 2h15m. Try **Quant → DI → Verbal** order today.
 - **Time:** 2h15m
 
@@ -1369,7 +1389,7 @@ This plan is built for an ADHD brain. The rules are simple and non-negotiable:
 - **Time:** 60 min
 
 ### FRI Aug 7 — MOCK
-- **Mock:** GMAT Official Free Mock 2 (first take)
+- **Mock:** GMAT Official Paid Mock 6 — Take 1
 - **Conditions:** Full conditions, locked section order, real start time
 - **Time:** 2h15m
 
@@ -1412,13 +1432,13 @@ This plan is built for an ADHD brain. The rules are simple and non-negotiable:
 - **Time:** 60 min
 
 ### FRI Aug 14 — MOCK
-- **Mock:** GMAT Official Paid Mock 4 (first take)
+- **Mock:** GMAT Official Free Mock 2 — Take 2
 - **Conditions:** Full conditions
 - **Time:** 2h15m
 
 ### SAT Aug 15 — REVIEW + MOCK
-- **Mock:** GMAT Official Paid Mock 5 (first take) — **second mock this week, starts the 2/week cadence**
-- **Conditions:** Full conditions. Yes, back-to-back days. This builds stamina.
+- **Mock:** GMAT Official Paid Mock 3 — Take 2
+- **Conditions:** Full conditions. Back-to-back with yesterday — this builds stamina.
 - **Time:** 2h15m + 90 min review later
 
 ### SUN Aug 16 — PLANNING
@@ -1429,12 +1449,10 @@ This plan is built for an ADHD brain. The rules are simple and non-negotiable:
 
 ## Week 14 (August 17 – August 23) — Peak Repetition
 
-### MON Aug 17 — DRILL (Mixed)
-- **Topic:** Mixed full section practice — Quant
-- **Resource:** OG Quant
-- **Task:** 21 Quant / 45 min. Focus on pacing — no more than 3 minutes on any single question.
-- **Stay-warm:** OG DI — 5 DS questions
-- **Time:** 2 hrs
+### MON Aug 17 — MOCK
+- **Mock:** GMAT Official Paid Mock 6 — Take 2
+- **Conditions:** Full conditions, locked section order, real start time
+- **Time:** 2h15m
 
 ### TUE Aug 18 — DRILL (Mixed)
 - **Topic:** Mixed full section — Verbal
@@ -1444,7 +1462,7 @@ This plan is built for an ADHD brain. The rules are simple and non-negotiable:
 - **Time:** 2 hrs
 
 ### WED Aug 19 — MOCK
-- **Mock:** GMAT Official Paid Mock 6 (first take)
+- **Mock:** GMAT Official Paid Mock 4 — Take 2
 - **Conditions:** Full, locked section order, real start time
 - **Time:** 2h15m
 
@@ -1453,7 +1471,7 @@ This plan is built for an ADHD brain. The rules are simple and non-negotiable:
 - **Time:** 2 hrs
 
 ### FRI Aug 21 — MOCK
-- **Mock:** GMAT Official Free Mock 1 (**second take** — score should be higher this time, that's expected)
+- **Mock:** GMAT Official Paid Mock 5 — Take 2
 - **Conditions:** Full conditions
 - **Time:** 2h15m
 
@@ -1475,10 +1493,11 @@ This plan is built for an ADHD brain. The rules are simple and non-negotiable:
 - **Task:** Read the top 10 most-repeated error patterns from your log. Then do 5 medium Quant + 5 medium Verbal + 5 medium DI, untimed. Calm pace.
 - **Time:** 90 min
 
-### TUE Aug 25 — DRESS REHEARSAL MOCK
-- **Mock:** GMAT Official Free Mock 2 (**second take**) — your strongest official mock retaken
-- **Conditions:** Exact test-day start time. Same breakfast as exam day. Same clothes. Same room setup. Locked section order. No deviation.
-- **Time:** 2h15m
+### TUE Aug 25 — REST + PLANNING
+- **Topic:** Rest and logistics
+- **Resource:** None
+- **Task:** Confirm test centre location, route, and timing. Pack your bag: ID, water, snack, comfortable clothes. Sleep early. No GMAT.
+- **Time:** 30 min
 
 ### WED Aug 26 — LIGHT REVIEW
 - **Topic:** Dress rehearsal review — fixes only
@@ -1646,7 +1665,7 @@ Do not activate everything at once. Stagger to maximize trial windows.
 // =====================================================================
 // CONSTANTS
 // =====================================================================
-const PLAN_VERSION = '2026-05-16';
+const PLAN_VERSION = '2026-05-23';
 const PLAN_YEAR = 2026;
 const EXAM_DATE = '2026-08-28';
 
@@ -1676,7 +1695,7 @@ const WIN_CONDITIONS = {
   1:  'All Arithmetic Block 1 topics covered (integers → percentages). Stay-warm done all 4 days.',
   2:  'Arithmetic complete. Diagnostic mock taken on May 30. First entries in error log.',
   3:  'Algebra Block 1 done. CR argument structure + strengthen/weaken introduced.',
-  4:  'Inequalities + functions covered. CR assumption (negation technique) practiced.',
+  4:  'GMAT Club blitz complete — 8 mocks Jun 12–19. Error patterns identified from rapid-fire sessions. Score trend visible.',
   5:  'Word problems + rates done. CR draws/inference + bold-face/paradox practiced.',
   6:  'P&C + Probability covered. RC main idea + supporting detail practiced.',
   7:  'Overlapping sets + coordinate geom done. First official mock taken on Jul 3.',
@@ -1698,21 +1717,33 @@ const MILESTONES = {
 
 // MOCK INVENTORY — single source of truth for the Mocks tab
 const MOCK_INVENTORY = [
-  { id: 'diag',    name: 'Manhattan Starter Kit Free Test',    scheduledWeek: 2,  canRetake: false, dateHint: 'May 30' },
-  { id: 'gc_free', name: 'GMAT Club Free Mock',                scheduledWeek: 3,  canRetake: false, dateHint: 'Jun 5'  },
-  { id: 'eg_fl',   name: "Expert's Global Full-Length Test",   scheduledWeek: 4,  canRetake: false, dateHint: 'Jun 12' },
-  { id: 'eg1',     name: 'e-GMAT Mock 1',                      scheduledWeek: 5,  canRetake: false, dateHint: 'Jun 19' },
-  { id: 'eg2',     name: 'e-GMAT Mock 2',                      scheduledWeek: 6,  canRetake: false, dateHint: 'Jun 26' },
-  { id: 'off_f1',  name: 'GMAT Official Free Mock 1',          scheduledWeek: 7,  canRetake: true,  dateHint: 'Jul 3'  },
-  { id: 'eg3',     name: 'e-GMAT Mock 3',                      scheduledWeek: 8,  canRetake: false, dateHint: 'Jul 10' },
-  { id: 'off_p3',  name: 'GMAT Official Paid Mock 3',          scheduledWeek: 9,  canRetake: true,  dateHint: 'Jul 17' },
-  { id: 'eg4',     name: 'e-GMAT Mock 4',                      scheduledWeek: 10, canRetake: false, dateHint: 'Jul 24' },
-  { id: 'eg5',     name: 'e-GMAT Mock 5',                      scheduledWeek: 11, canRetake: false, dateHint: 'Jul 31' },
-  { id: 'off_f2',  name: 'GMAT Official Free Mock 2',          scheduledWeek: 12, canRetake: true,  dateHint: 'Aug 7'  },
-  { id: 'off_p4',  name: 'GMAT Official Paid Mock 4',          scheduledWeek: 13, canRetake: true,  dateHint: 'Aug 14' },
-  { id: 'off_p5',  name: 'GMAT Official Paid Mock 5',          scheduledWeek: 13, canRetake: true,  dateHint: 'Aug 15' },
-  { id: 'off_p6',  name: 'GMAT Official Paid Mock 6',          scheduledWeek: 14, canRetake: true,  dateHint: 'Aug 19' },
-  { id: 'dress',   name: 'Dress Rehearsal (Official Free Mock 2 retake)', scheduledWeek: 15, canRetake: false, dateHint: 'Aug 25' }
+  // Non-official mocks
+  { id: 'diag',       name: 'Manhattan Starter Kit Free Test',       scheduledWeek: 2,  canRetake: false, dateHint: 'May 30', group: 'prep'      },
+  { id: 'egmat',      name: 'e-GMAT Mock (1 free)',                   scheduledWeek: 3,  canRetake: false, dateHint: 'Jun 5',  group: 'prep'      },
+  { id: 'eg_fl',      name: "Expert's Global Full-Length Test",       scheduledWeek: 3,  canRetake: false, dateHint: 'Jun 8',  group: 'prep'      },
+  // GMAT Club blitz — 8 mocks Jun 12-19 (12 available, 8 scheduled)
+  { id: 'gc1',        name: 'GMAT Club Mock 1',                       scheduledWeek: 4,  canRetake: false, dateHint: 'Jun 12', group: 'gmatclub'  },
+  { id: 'gc2',        name: 'GMAT Club Mock 2',                       scheduledWeek: 4,  canRetake: false, dateHint: 'Jun 13', group: 'gmatclub'  },
+  { id: 'gc3',        name: 'GMAT Club Mock 3',                       scheduledWeek: 4,  canRetake: false, dateHint: 'Jun 14', group: 'gmatclub'  },
+  { id: 'gc4',        name: 'GMAT Club Mock 4',                       scheduledWeek: 4,  canRetake: false, dateHint: 'Jun 15', group: 'gmatclub'  },
+  { id: 'gc5',        name: 'GMAT Club Mock 5',                       scheduledWeek: 4,  canRetake: false, dateHint: 'Jun 16', group: 'gmatclub'  },
+  { id: 'gc6',        name: 'GMAT Club Mock 6',                       scheduledWeek: 4,  canRetake: false, dateHint: 'Jun 17', group: 'gmatclub'  },
+  { id: 'gc7',        name: 'GMAT Club Mock 7',                       scheduledWeek: 4,  canRetake: false, dateHint: 'Jun 18', group: 'gmatclub'  },
+  { id: 'gc8',        name: 'GMAT Club Mock 8',                       scheduledWeek: 4,  canRetake: false, dateHint: 'Jun 19', group: 'gmatclub'  },
+  // Official GMAT mocks — Take 1
+  { id: 'off_f1_t1',  name: 'GMAT Official Free Mock 1 — Take 1',    scheduledWeek: 7,  canRetake: false, dateHint: 'Jul 3',  group: 'official'  },
+  { id: 'off_f2_t1',  name: 'GMAT Official Free Mock 2 — Take 1',    scheduledWeek: 8,  canRetake: false, dateHint: 'Jul 10', group: 'official'  },
+  { id: 'off_p3_t1',  name: 'GMAT Official Paid Mock 3 — Take 1',    scheduledWeek: 9,  canRetake: false, dateHint: 'Jul 17', group: 'official'  },
+  { id: 'off_p4_t1',  name: 'GMAT Official Paid Mock 4 — Take 1',    scheduledWeek: 10, canRetake: false, dateHint: 'Jul 24', group: 'official'  },
+  { id: 'off_p5_t1',  name: 'GMAT Official Paid Mock 5 — Take 1',    scheduledWeek: 11, canRetake: false, dateHint: 'Jul 31', group: 'official'  },
+  { id: 'off_p6_t1',  name: 'GMAT Official Paid Mock 6 — Take 1',    scheduledWeek: 12, canRetake: false, dateHint: 'Aug 7',  group: 'official'  },
+  // Official GMAT mocks — Take 2 (compressed, last on Aug 23)
+  { id: 'off_f1_t2',  name: 'GMAT Official Free Mock 1 — Take 2',    scheduledWeek: 12, canRetake: false, dateHint: 'Aug 9',  group: 'official2' },
+  { id: 'off_f2_t2',  name: 'GMAT Official Free Mock 2 — Take 2',    scheduledWeek: 13, canRetake: false, dateHint: 'Aug 14', group: 'official2' },
+  { id: 'off_p3_t2',  name: 'GMAT Official Paid Mock 3 — Take 2',    scheduledWeek: 13, canRetake: false, dateHint: 'Aug 15', group: 'official2' },
+  { id: 'off_p4_t2',  name: 'GMAT Official Paid Mock 4 — Take 2',    scheduledWeek: 14, canRetake: false, dateHint: 'Aug 19', group: 'official2' },
+  { id: 'off_p5_t2',  name: 'GMAT Official Paid Mock 5 — Take 2',    scheduledWeek: 14, canRetake: false, dateHint: 'Aug 21', group: 'official2' },
+  { id: 'off_p6_t2',  name: 'GMAT Official Paid Mock 6 — Take 2',    scheduledWeek: 14, canRetake: false, dateHint: 'Aug 17', group: 'official2' },
 ];
 
 // TOPIC GROUPS
@@ -2420,8 +2451,30 @@ function renderMocks() {
     `;
   }
 
-  // Mock cards
+  // Mock cards — grouped by section header
+  const GROUP_META = {
+    prep:      { label: 'Prep Mocks',                    color: '#4F8EF7', note: 'Diagnostic + e-GMAT + Expert\'s Global' },
+    gmatclub:  { label: 'GMAT Club Blitz',               color: '#FF8C42', note: '8 mocks · Jun 12–19 · 1/day' },
+    official:  { label: 'Official GMAT — Take 1',        color: '#3DDC84', note: '6 tests · Wks 7–12' },
+    official2: { label: 'Official GMAT — Take 2',        color: '#FF5252', note: '6 tests · Wks 12–14 · last Aug 23' },
+  };
+
   let cardsHTML = '';
+  let lastGroup = null;
+
+  // Summary bar counts
+  const totalMocks = MOCK_INVENTORY.length;
+  const takenMocks = ordered.filter(m => m.checked).length;
+  cardsHTML += `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:16px;display:flex;justify-content:space-around;text-align:center;">
+      <div><span style="font-size:22px;font-weight:800;color:var(--text)">${totalMocks}</span><div style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-top:2px">TOTAL</div></div>
+      <div style="width:1px;background:var(--border)"></div>
+      <div><span style="font-size:22px;font-weight:800;color:var(--success)">${takenMocks}</span><div style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-top:2px">TAKEN</div></div>
+      <div style="width:1px;background:var(--border)"></div>
+      <div><span style="font-size:22px;font-weight:800;color:var(--warning)">${totalMocks - takenMocks}</span><div style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-top:2px">REMAINING</div></div>
+    </div>
+  `;
+
   for (const inv of MOCK_INVENTORY) {
     const m = ordered.find(x => x.id === inv.id);
     const checked = !!m.checked;
@@ -2429,6 +2482,21 @@ function renderMocks() {
     const week = PLAN.weeks.find(w => w.weekNum === inv.scheduledWeek);
     const weekLabel = week ? `Week ${inv.scheduledWeek} · ${week.dateRange}` : `Week ${inv.scheduledWeek}`;
     const status = hasScores ? 'Scores logged' : (checked ? '✓ Taken' : 'Not taken');
+    const grp = inv.group || 'prep';
+
+    // Group header
+    if (grp !== lastGroup) {
+      const gm = GROUP_META[grp] || { label: grp, color: 'var(--muted)', note: '' };
+      const groupMocks = MOCK_INVENTORY.filter(x => x.group === grp);
+      const groupTaken = groupMocks.filter(x => ordered.find(o => o.id === x.id && o.checked)).length;
+      cardsHTML += `
+        <div style="display:flex;align-items:baseline;justify-content:space-between;margin:18px 2px 8px;">
+          <span style="font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:${gm.color}">${gm.label}</span>
+          <span style="font-size:10px;color:var(--muted)">${groupTaken}/${groupMocks.length} · ${gm.note}</span>
+        </div>
+      `;
+      lastGroup = grp;
+    }
 
     // Attempts rendering
     let attemptsHTML = '';
@@ -2439,7 +2507,7 @@ function renderMocks() {
         return `
           <div class="attempt-row">
             <div class="topl">
-              <span>Attempt ${a.attemptNum}${a.attemptNum > 1 ? ' (Retake)' : ''}</span>
+              <span>Attempt ${a.attemptNum}</span>
               <span class="muted">${escapeHtml(a.date || '')}</span>
             </div>
             <div class="scores">
@@ -2455,15 +2523,13 @@ function renderMocks() {
       }).join('');
     }
 
-    // Add-new-attempt form (only show if no attempt, or if canRetake and we have 1 attempt)
+    // Score entry form — always show if not yet logged
     let formHTML = '';
     const nextAttemptNum = attempts.length + 1;
-    const canAddMore = (nextAttemptNum === 1) || (inv.canRetake && nextAttemptNum === 2);
-    if (canAddMore) {
-      const isRetake = nextAttemptNum > 1;
+    if (nextAttemptNum === 1) {
       formHTML = `
         <div class="score-form">
-          <div class="section-title" style="font-size:10px;margin-bottom:8px">${isRetake ? 'Log Retake' : 'Log Attempt'}</div>
+          <div class="section-title" style="font-size:10px;margin-bottom:8px">Log Score</div>
           <div>
             <label>Date</label>
             <input type="date" id="date-${m.id}-${nextAttemptNum}" value="${todayYMD()}">
@@ -2487,18 +2553,16 @@ function renderMocks() {
             </div>
           </div>
           <div>
-            <label>Notes (Concept / Careless / Timing — quick categorisation OK)</label>
+            <label>Notes (Concept / Careless / Timing)</label>
             <textarea id="notes-${m.id}-${nextAttemptNum}" placeholder="What broke under fatigue?"></textarea>
           </div>
           <div>
-            <button class="btn primary" onclick="saveAttempt('${m.id}', ${nextAttemptNum})">Save Attempt ${nextAttemptNum}</button>
+            <button class="btn primary" onclick="saveAttempt('${m.id}', ${nextAttemptNum})">Save Score</button>
           </div>
         </div>
       `;
-    } else if (inv.canRetake && attempts.length >= 2) {
-      formHTML = `<div class="empty-state" style="padding:8px">Both attempts logged.</div>`;
-    } else if (!inv.canRetake && attempts.length >= 1) {
-      formHTML = `<div class="empty-state" style="padding:8px">Attempt logged. (No retake configured for this mock.)</div>`;
+    } else {
+      formHTML = `<div class="empty-state" style="padding:8px 0">Score logged.</div>`;
     }
 
     cardsHTML += `
@@ -2521,7 +2585,7 @@ function renderMocks() {
 
   root.innerHTML = `
     <div class="top-strip">
-      <div class="brand"><b>MOCKS</b> · ${MOCK_INVENTORY.length} scheduled</div>
+      <div class="brand"><b>MOCKS</b> · 23 total</div>
       <div class="exam-cd">${daysUntilExam()}d to exam</div>
     </div>
     ${sparkHTML}
@@ -2664,160 +2728,203 @@ let selectedCalDate = null;
 function renderCalendar() {
   const root = document.getElementById('view-calendar');
   if (!calendarMonth) {
-    // default to current month within plan range
     const now = new Date();
     const planStart = fromYMD(PLAN.weeks[0].startDate);
     const planEnd   = fromYMD(EXAM_DATE);
-    if (now < planStart) {
-      calendarMonth = new Date(planStart.getFullYear(), planStart.getMonth(), 1);
-    } else if (now > planEnd) {
-      calendarMonth = new Date(planEnd.getFullYear(), planEnd.getMonth(), 1);
-    } else {
-      calendarMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    }
+    if (now < planStart)     calendarMonth = new Date(planStart.getFullYear(), planStart.getMonth(), 1);
+    else if (now > planEnd)  calendarMonth = new Date(planEnd.getFullYear(),   planEnd.getMonth(),   1);
+    else                     calendarMonth = new Date(now.getFullYear(),        now.getMonth(),        1);
   }
 
-  const state = getState();
+  const state     = getState();
   const monthName = fmtMonthName(calendarMonth, false) + ' ' + calendarMonth.getFullYear();
   const planStart = fromYMD(PLAN.weeks[0].startDate);
   const planEnd   = fromYMD(EXAM_DATE);
+  const earliest  = new Date(2026, 4, 1);
+  const latest    = new Date(2026, 7, 1);
+  const canPrev   = calendarMonth > earliest;
+  const canNext   = calendarMonth < latest;
 
-  // Prev/Next month bounds (allow May 2026 – Aug 2026)
-  const earliest = new Date(2026, 4, 1);  // May 2026
-  const latest   = new Date(2026, 7, 1);  // Aug 2026
-  const canPrev = calendarMonth > earliest;
-  const canNext = calendarMonth < latest;
-
-  // Mock-day map: for each mock, find the day in that scheduledWeek that has type MOCK
-  const mockDateByMockId = {};
+  // ── Build mock lookup: dateISO → { ids[], anyChecked } ──────────────
+  // Derived entirely from MOCK_INVENTORY.dateHint — covers all 23 mocks
+  // including blitz days and Take 2 dates not in the plan markdown.
+  const mockByDate = {};
+  for (const inv of MOCK_INVENTORY) {
+    if (!inv.dateHint) continue;
+    const parts = inv.dateHint.trim().split(/\s+/);
+    const mo    = MONTH_MAP[parts[0]];
+    const da    = parseInt(parts[1], 10);
+    if (mo === undefined || isNaN(da)) continue;
+    const ds = ymd(new Date(PLAN_YEAR, mo, da));
+    if (!mockByDate[ds]) mockByDate[ds] = { ids: [], anyChecked: false };
+    mockByDate[ds].ids.push(inv.id);
+  }
+  // Overlay checked state from saved mocks
   for (const m of (state.mocks || [])) {
-    const w = PLAN.weeks.find(w => w.weekNum === m.scheduledWeek);
-    if (!w) continue;
-    // Find the mock day in this week, prefer FRI then SAT, but use whatever has MOCK type
-    const mockDays = w.days.filter(d => d.type === 'MOCK');
-    if (mockDays.length === 0) continue;
-    // Use the inventory dateHint to disambiguate when multiple mocks share a week
+    if (!m.checked) continue;
     const inv = MOCK_INVENTORY.find(x => x.id === m.id);
-    let chosen = mockDays[0];
-    if (inv && inv.dateHint) {
-      const hintParts = inv.dateHint.split(/\s+/);
-      const hintMo = MONTH_MAP[hintParts[0]];
-      const hintDa = parseInt(hintParts[1], 10);
-      const match = mockDays.find(d => {
-        const dd = fromYMD(d.date);
-        return dd.getMonth() === hintMo && dd.getDate() === hintDa;
-      });
-      if (match) chosen = match;
-    }
-    mockDateByMockId[m.id] = { date: chosen.date, checked: !!m.checked };
+    if (!inv || !inv.dateHint) continue;
+    const parts = inv.dateHint.trim().split(/\s+/);
+    const mo    = MONTH_MAP[parts[0]];
+    const da    = parseInt(parts[1], 10);
+    if (mo === undefined || isNaN(da)) continue;
+    const ds = ymd(new Date(PLAN_YEAR, mo, da));
+    if (mockByDate[ds]) mockByDate[ds].anyChecked = true;
   }
-  const mockCheckedByDate = {};
-  Object.values(mockDateByMockId).forEach(o => {
-    if (o.checked) mockCheckedByDate[o.date] = true;
-  });
 
-  // Build grid
-  const year = calendarMonth.getFullYear();
-  const month = calendarMonth.getMonth();
-  const first = new Date(year, month, 1);
-  const last = new Date(year, month + 1, 0);
-  const daysInMonth = last.getDate();
-  // Monday-first offset
-  // JS getDay(): 0=Sun..6=Sat. We want Mon=0..Sun=6.
-  let leadOffset = (first.getDay() + 6) % 7;
+  // ── Calendar grid ───────────────────────────────────────────────────
+  const year        = calendarMonth.getFullYear();
+  const month       = calendarMonth.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const leadOffset  = (new Date(year, month, 1).getDay() + 6) % 7; // Mon-first
 
-  let gridHTML = `
-    <div class="cal-grid">
-      <div class="cal-wd">MON</div>
-      <div class="cal-wd">TUE</div>
-      <div class="cal-wd">WED</div>
-      <div class="cal-wd">THU</div>
-      <div class="cal-wd">FRI</div>
-      <div class="cal-wd">SAT</div>
-      <div class="cal-wd">SUN</div>
-  `;
-  for (let i = 0; i < leadOffset; i++) {
-    gridHTML += `<div class="cal-cell empty"></div>`;
-  }
+  let gridHTML = `<div class="cal-grid">
+    <div class="cal-wd">MON</div><div class="cal-wd">TUE</div><div class="cal-wd">WED</div>
+    <div class="cal-wd">THU</div><div class="cal-wd">FRI</div><div class="cal-wd">SAT</div>
+    <div class="cal-wd">SUN</div>`;
+
+  for (let i = 0; i < leadOffset; i++) gridHTML += `<div class="cal-cell empty"></div>`;
+
   for (let d = 1; d <= daysInMonth; d++) {
-    const dateObj = new Date(year, month, d);
-    const dateStr = ymd(dateObj);
-    const inRange = (dateObj >= planStart && dateObj <= planEnd);
-    const planDay = DAY_BY_DATE[dateStr];
-    const isToday = (dateStr === todayYMD());
-    const isDone = !!state.days[dateStr];
+    const dateObj  = new Date(year, month, d);
+    const dateStr  = ymd(dateObj);
+    const inRange  = (dateObj >= planStart && dateObj <= planEnd);
+    const planDay  = DAY_BY_DATE[dateStr];
+    const mockInfo = mockByDate[dateStr];
+    const isToday  = (dateStr === todayYMD());
+    const isDone   = !!state.days[dateStr];
     const isSelected = (selectedCalDate === dateStr);
-    const isMockDone = !!mockCheckedByDate[dateStr];
 
+    // CSS classes — identical logic to original
     let cls = 'cal-cell';
-    if (!inRange) cls += ' outside';
-    if (isToday) cls += ' today';
-    if (isSelected) cls += ' selected';
-    if (isMockDone) cls += ' mockdone';
+    if (!inRange)               cls += ' outside';
+    if (isToday)                cls += ' today';
+    if (isSelected)             cls += ' selected';
+    if (mockInfo && mockInfo.anyChecked) cls += ' mockdone';
 
+    // Dot colour — mock dates always red; otherwise use plan day type
     let dotColor = 'transparent';
-    if (planDay) {
+    if (mockInfo) {
+      dotColor = 'var(--c-mock)';
+    } else if (planDay) {
       const t = planDay.type;
-      if (t === 'CONCEPT') dotColor = 'var(--c-concept)';
-      else if (t === 'DRILL') dotColor = 'var(--c-drill)';
-      else if (t === 'REVIEW') dotColor = 'var(--c-review)';
-      else if (t === 'MOCK') dotColor = 'var(--c-mock)';
-      else if (t === 'EXAM') dotColor = 'var(--text)';
-      else dotColor = 'var(--c-slip)';
+      if      (t === 'CONCEPT') dotColor = 'var(--c-concept)';
+      else if (t === 'DRILL')   dotColor = 'var(--c-drill)';
+      else if (t === 'REVIEW')  dotColor = 'var(--c-review)';
+      else if (t === 'MOCK')    dotColor = 'var(--c-mock)';
+      else if (t === 'EXAM')    dotColor = 'var(--text)';
+      else                      dotColor = 'var(--c-slip)';
     }
 
-    const clickHandler = inRange ? `onclick="selectCalDate('${dateStr}')"` : '';
+    const opacity       = (mockInfo && !mockInfo.anyChecked) ? ';opacity:0.45' : '';
+    const clickHandler  = inRange ? `onclick="selectCalDate('${dateStr}')"` : '';
+    const doneDot       = (isDone && !mockInfo) ? `<span class="donedot"></span>` : '';
+    const mockBadge     = (mockInfo && mockInfo.ids.length > 1)
+                            ? `<span style="position:absolute;top:2px;right:2px;background:var(--c-mock);color:#fff;font-size:8px;font-weight:900;width:12px;height:12px;border-radius:50%;display:flex;align-items:center;justify-content:center">${mockInfo.ids.length}</span>`
+                            : '';
+
     gridHTML += `
       <div class="${cls}" ${clickHandler}>
         <span class="dnum">${d}</span>
-        <span class="tdot" style="background:${dotColor}"></span>
-        ${isDone ? `<span class="donedot"></span>` : ''}
-      </div>
-    `;
+        <span class="tdot" style="background:${dotColor}${opacity}"></span>
+        ${doneDot}${mockBadge}
+      </div>`;
   }
   gridHTML += '</div>';
 
-  // Detail panel
+  // ── Detail panel ─────────────────────────────────────────────────────
   let detailHTML = '';
-  if (selectedCalDate && DAY_BY_DATE[selectedCalDate]) {
-    const d = DAY_BY_DATE[selectedCalDate];
-    const wNum = WEEK_OF_DATE[selectedCalDate];
-    const w = PLAN.weeks.find(x => x.weekNum === wNum);
-    const phase = w ? w.phase : '';
-    const isDone = !!state.days[selectedCalDate];
-    const dateObj = fromYMD(selectedCalDate);
-    const dateLbl = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][dateObj.getDay()] + ', ' + fmtMonthName(dateObj, false) + ' ' + dateObj.getDate();
+  if (selectedCalDate) {
+    const planDay  = DAY_BY_DATE[selectedCalDate];
+    const mockInfo = mockByDate[selectedCalDate];
+    const dateObj  = fromYMD(selectedCalDate);
+    const dateLbl  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][dateObj.getDay()]
+                     + ', ' + fmtMonthName(dateObj, false) + ' ' + dateObj.getDate();
 
-    detailHTML = `
-      <div class="cal-detail">
-        <div class="head">
-          <div>
-            <div class="date-lbl">${dateLbl}</div>
-            <div class="meta-line">Week ${wNum} · ${escapeHtml(phase)} · <span class="badge-type ${d.type}">${d.type}</span></div>
+    // Helper: week number for any date
+    const wNum = (() => {
+      for (const w of PLAN.weeks) {
+        if (selectedCalDate >= w.startDate && selectedCalDate <= w.endDate) return w.weekNum;
+      }
+      return null;
+    })();
+    const wObj  = wNum ? PLAN.weeks.find(x => x.weekNum === wNum) : null;
+    const phase = wObj ? wObj.phase : '';
+
+    // Mock list snippet — only shown when plan day is NOT itself a mock
+    // (if planDay.type === 'MOCK', the plan topic already shows the mock name)
+    const mockListHTML = (mockInfo && planDay && planDay.type !== 'MOCK') ? (() => {
+      const rows = mockInfo.ids.map(id => {
+        const inv     = MOCK_INVENTORY.find(x => x.id === id);
+        const mState  = (state.mocks || []).find(x => x.id === id);
+        const checked = mState && mState.checked;
+        const name    = inv ? inv.name : id;
+        return `<div style="font-size:12px;color:${checked ? 'var(--success)' : 'var(--c-mock)'};margin-top:4px;font-weight:600">`
+             + `${checked ? '✓' : '🎯'} ${escapeHtml(name)}</div>`;
+      }).join('');
+      return `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">${rows}</div>`;
+    })() : '';
+
+    if (planDay) {
+      // ── Normal plan day (may also have a mock scheduled) ──
+      const isDone = !!state.days[selectedCalDate];
+      detailHTML = `
+        <div class="cal-detail">
+          <div class="head">
+            <div>
+              <div class="date-lbl">${dateLbl}</div>
+              <div class="meta-line">${wNum ? `Week ${wNum} · ` : ''}${escapeHtml(phase)} · <span class="badge-type ${planDay.type}">${planDay.type}</span></div>
+            </div>
+            <button class="close-btn" onclick="closeCalDetail()">✕</button>
           </div>
-          <button class="close-btn" onclick="closeCalDetail()">✕</button>
-        </div>
-        <div class="topic-line${isDone ? ' done' : ''}">${escapeHtml(d.topic)}</div>
-        ${d.resource ? `<div class="field"><strong>Resource:</strong> ${escapeHtml(d.resource)}</div>` : ''}
-        ${d.task ? `<div class="field"><strong>Task:</strong> ${escapeHtml(d.task)}</div>` : ''}
-        ${d.staywarm ? `<div class="field"><strong>Stay-warm:</strong> ${escapeHtml(d.staywarm)}</div>` : ''}
-        ${d.time ? `<div class="field"><strong>Time:</strong> ${escapeHtml(d.time)}</div>` : ''}
-        <div class="actions">
-          <button class="btn ${isDone ? 'success' : 'primary'}" onclick="toggleDay('${selectedCalDate}')">${isDone ? '✓ Done' : 'Mark done'}</button>
-        </div>
-      </div>
-    `;
-  } else if (selectedCalDate) {
-    detailHTML = `
-      <div class="cal-detail">
-        <div class="head">
-          <div><div class="date-lbl">${escapeHtml(selectedCalDate)}</div><div class="meta-line">Outside the plan range.</div></div>
-          <button class="close-btn" onclick="closeCalDetail()">✕</button>
-        </div>
-      </div>
-    `;
+          <div class="topic-line${isDone ? ' done' : ''}">${escapeHtml(planDay.topic)}</div>
+          ${planDay.resource ? `<div class="field"><strong>Resource:</strong> ${escapeHtml(planDay.resource)}</div>` : ''}
+          ${planDay.task     ? `<div class="field"><strong>Task:</strong> ${escapeHtml(planDay.task)}</div>`         : ''}
+          ${planDay.staywarm ? `<div class="field"><strong>Stay-warm:</strong> ${escapeHtml(planDay.staywarm)}</div>` : ''}
+          ${planDay.time     ? `<div class="field"><strong>Time:</strong> ${escapeHtml(planDay.time)}</div>`         : ''}
+          ${mockListHTML}
+          <div class="actions">
+            <button class="btn ${isDone ? 'success' : 'primary'}" onclick="toggleDay('${selectedCalDate}')">
+              ${isDone ? '✓ Done' : 'Mark done'}
+            </button>
+          </div>
+        </div>`;
+
+    } else if (mockInfo) {
+      // ── Mock-only date (GMAT Club blitz / Take 2 dates not in plan) ──
+      detailHTML = `
+        <div class="cal-detail">
+          <div class="head">
+            <div>
+              <div class="date-lbl">${dateLbl}</div>
+              <div class="meta-line">${wNum ? `Week ${wNum} · ` : ''}<span class="badge-type MOCK">MOCK</span></div>
+            </div>
+            <button class="close-btn" onclick="closeCalDetail()">✕</button>
+          </div>
+          <div class="topic-line">Mock Day</div>
+          ${mockListHTML}
+          <div class="field" style="margin-top:8px">Full 2h15m · No pausing · Review same day</div>
+          <div class="actions">
+            <button class="btn muted small" onclick="closeCalDetail()">Close</button>
+          </div>
+        </div>`;
+
+    } else {
+      // ── Outside plan range ──
+      detailHTML = `
+        <div class="cal-detail">
+          <div class="head">
+            <div>
+              <div class="date-lbl">${dateLbl}</div>
+              <div class="meta-line">Outside the plan range.</div>
+            </div>
+            <button class="close-btn" onclick="closeCalDetail()">✕</button>
+          </div>
+        </div>`;
+    }
   }
 
+  // ── Assemble ─────────────────────────────────────────────────────────
   root.innerHTML = `
     <div class="top-strip">
       <div class="brand"><b>CALENDAR</b> · May–Aug 2026</div>
@@ -2833,9 +2940,10 @@ function renderCalendar() {
       <span class="lg-item"><span class="sw" style="background:var(--c-concept)"></span>Concept</span>
       <span class="lg-item"><span class="sw" style="background:var(--c-drill)"></span>Drill</span>
       <span class="lg-item"><span class="sw" style="background:var(--c-review)"></span>Review</span>
-      <span class="lg-item"><span class="sw" style="background:var(--c-mock)"></span>Mock</span>
+      <span class="lg-item"><span class="sw" style="background:var(--c-mock);opacity:0.45"></span>Mock (due)</span>
+      <span class="lg-item"><span class="sw" style="background:var(--c-mock)"></span>Mock (done)</span>
       <span class="lg-item"><span class="sw" style="background:var(--c-slip)"></span>Slip/Rest</span>
-      <span class="lg-item"><span class="sw" style="background:var(--success);border-radius:50%"></span>Done</span>
+      <span class="lg-item"><span class="sw" style="background:var(--success);border-radius:50%"></span>Day done</span>
     </div>
     ${detailHTML}
   `;
