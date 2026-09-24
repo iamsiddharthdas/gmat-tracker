@@ -138,6 +138,9 @@
   .badge-type.REVIEW  { background: var(--c-review); color: #0F0F11; }
   .badge-type.MOCK    { background: var(--c-mock); color: #fff; }
   .badge-type.SLIP, .badge-type.REST { background: var(--c-slip); color: #fff; }
+  /* Day-editor tag chips: dim until picked, matching the day-editor's pick-any-tags UI */
+  .day-editor .badge-type { opacity: 0.35; transition: opacity .12s; }
+  .day-editor .badge-type.selected { opacity: 1; }
   .badge-type.EXAM    { background: var(--text); color: #0F0F11; }
 
   .btn {
@@ -285,6 +288,16 @@
   .win-row.done .cbox::after { content: "✓"; color: #0F0F11; font-weight: 900; font-size: 14px; }
   .win-row .txt { flex: 1; font-size: 13px; line-height: 1.4; }
   .win-row .txt .ttl { font-size: 10px; color: var(--warning); font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 3px; }
+
+  .next-mock-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+  .next-mock-card .ttl { font-size: 10px; color: var(--c-mock); font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase; }
+  .next-mock-card input[type="text"] { width: 100%; background: var(--card-2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; color: var(--text); font-size: 13px; margin-top: 4px; }
 
   .milestone {
     background: linear-gradient(135deg, rgba(255,187,51,.15), rgba(61,220,132,.15));
@@ -784,12 +797,12 @@
 // =====================================================================
 // PLAN MARKDOWN — embedded
 // =====================================================================
-const PLAN_MARKDOWN = String.raw`# GMAT Focus Edition — 11-Week Study Plan (Compressed)
+const PLAN_MARKDOWN = String.raw`# GMAT Focus Edition — 19-Week Study Plan
 **Target:** 705+
-**Dates:** September 12, 2026 → November 27, 2026 (Exam Day)
-**Total:** 11 weeks
+**Dates:** September 28, 2026 → February 2, 2027 (Exam Day)
+**Total:** 18 full weeks + a 2-day final taper (128 days)
 
-> **Note:** This is a compressed version of the original 15-week plan, fit into an 11-week window. All topics are preserved — weeks are merged and volume is trimmed (fewer repeat drills, one mock cluster instead of two) to fit the shorter runway. Pace will feel denser, especially Week 1 and Week 2.
+> **Note:** This is the expanded version of the plan, built for a longer runway. Every topic gets its own dedicated day again (no more merged days), and the mock schedule has grown from 12 to 22 mocks — 19 scheduled plus 3 flexible slots with no fixed date — roughly one a week, with a genuine second full cycle through all 6 official tests, a back-to-back stamina block, and a real dress rehearsal, all with proper review time in between instead of being crammed together.
 
 ---
 
@@ -806,532 +819,855 @@ This plan is built for an ADHD brain. The rules are simple and non-negotiable:
 3. **Pomodoro:** 25 min focused work → 5 min break. Repeat 4 times → 15 min long break. No exceptions.
 4. **Stay-warm rule:** Every CONCEPT or DRILL day touches the two non-focus sections lightly using OG hardcopy only. Pick up the book, do 10 questions, close the book. No new platforms, no new tabs.
 5. **Weekdays do the work.** Mon–Thu = 2–3 focused hours. That's where real learning happens.
-6. **Weekends are lighter by design.** Fri = mock or slip. Sat = mock review only. Sun = 15-min error log + 5-min scan of Monday. Done.
+6. **Weekends are lighter by design.** Fri = mock (most weeks). Sat = mock review only. Sun = 15-min error log + 5-min scan of Monday. Done.
 7. **One slip day per week, no guilt.** Use it.
 8. **Error log is sacred.** Log every wrong answer within 24 hours. Update every Sunday.
 
 ---
 
-# PHASE 1: FOUNDATION (Sep 12 – Sep 25)
+# PHASE 1: FOUNDATION (Sep 28 – Oct 11)
 
-**Focus:** Quant Arithmetic + DS introduction + light CR
-**Goal:** Build core arithmetic fluency. Internalize DS answer choices cold.
+**Focus:** Quant Arithmetic complete + DS introduction + light CR
+**Goal:** Build core arithmetic fluency. Internalize DS answer choices cold. Diagnostic mock taken.
 
 ---
 
-## Week 1 (Sep 12 – Sep 18) — Arithmetic Complete + Diagnostic
+## Week 1 (Sep 28 – Oct 4) — Arithmetic Block 1
 
-### SAT Sep 12 — CONCEPT (Onboarding)
+### MON Sep 28 — CONCEPT (Onboarding)
 - **Topic:** Plan walkthrough + DS 5 answer choices
 - **Resource:** This plan + OG DI intro pages
-- **Task:** Read this plan top-to-bottom once. Write the 5 DS answer choices from memory on an index card. Place card where you'll see it daily.
+- **Task:** Read this plan top-to-bottom once. Write the 5 DS answer choices from memory on an index card. Place card where you'll see it daily. Then set up your error log spreadsheet per Appendix 1 — headers, freeze top row, color-code columns. Don't fill anything in yet.
 - **Stay-warm:** None today.
-- **Time:** 60 min
+- **Time:** 90 min
 
-### SUN Sep 13 — PLANNING
-- **Topic:** Set up error log spreadsheet
-- **Resource:** Google Sheets or Excel
-- **Task:** Build the error log per Appendix 1 format. Add headers, freeze top row, color-code columns. Do not fill anything in yet.
-- **Stay-warm:** None.
-- **Time:** 30 min
-
-### MON Sep 14 — CONCEPT (Quant)
-- **Topic:** Integers, factors, multiples, primes, LCM, HCF, divisibility rules
-- **Resource:** Manhattan Guide 1 (Number Properties), Ch. 1–3 + Rodha Quant Playlist (LCM/HCF videos)
-- **Task:** Read all three chapters. Do every in-chapter example untimed. Watch 2 Rodha LCM/HCF videos. Write 10 prime numbers and 5 divisibility rules by hand. 15 OG Quant questions on factors/multiples.
+### TUE Sep 29 — CONCEPT (Quant)
+- **Topic:** Integers, factors, multiples, primes, divisibility rules
+- **Resource:** Manhattan Guide 1 (Number Properties), Ch. 1–2
+- **Task:** Read both chapters. Do every in-chapter example untimed. Write 10 prime numbers and 5 divisibility rules by hand. 15 OG Quant questions on factors/multiples.
 - **Stay-warm:** OG Verbal — 10 easy CR questions (untimed)
 - **Time:** 2.5 hrs
 
-### TUE Sep 15 — CONCEPT (Quant)
-- **Topic:** Fractions, decimals, percentages, ratios and proportions
-- **Resource:** Manhattan Guide 2 (Fractions, Decimals, Percents), Ch. 1–3 + Ch. 4 (Ratios)
-- **Task:** Read all chapters. Do every in-chapter problem set untimed. Write the fraction-to-decimal conversion table by hand. 10 OG Quant ratio questions.
+### WED Sep 30 — CONCEPT (Quant)
+- **Topic:** LCM and HCF
+- **Resource:** Manhattan Guide 1, Ch. 3 + Rodha Quant Playlist (LCM/HCF videos)
+- **Task:** Read the chapter. Watch 2 Rodha LCM/HCF videos. 15 OG Quant questions on LCM/HCF.
 - **Stay-warm:** OG DI — 5 easy DS questions (untimed)
-- **Time:** 2.5 hrs
+- **Time:** 2 hrs
 
-### WED Sep 16 — CONCEPT (Quant)
-- **Topic:** Powers, roots, surds, number line, absolute values, sequences
-- **Resource:** Manhattan Guide 1, Ch. 4–6 (Exponents, Roots, Number Line)
-- **Task:** Read chapters. Write exponent rules on an index card from memory. 15 OG Quant questions on exponents untimed + 10 OG Quant questions on absolute values.
+### THU Oct 1 — CONCEPT (Quant)
+- **Topic:** Fractions and decimals
+- **Resource:** Manhattan Guide 2 (Fractions, Decimals, Percents), Ch. 1–2
+- **Task:** Read both chapters. Write the fraction-to-decimal conversion table by hand. 15 OG Quant questions on fractions/decimals.
 - **Stay-warm:** OG Verbal — 10 RC questions (untimed, short passage)
 - **Time:** 2.5 hrs
 
-### THU Sep 17 — CONCEPT + DRILL (Quant)
-- **Topic:** Statistics (mean, median, mode, range, SD) + mixed arithmetic drill
-- **Resource:** Manhattan Guide 2, Ch. 5 (Statistics) + OG Quant
-- **Task:** Read the statistics chapter. Do all in-chapter problems. Then 15 questions, timed at 2 min/each, mixing integers, LCM/HCF, fractions, %, exponents, and stats. Log every wrong answer.
+### FRI Oct 2 — CONCEPT (Quant)
+- **Topic:** Percentages, ratios and proportions
+- **Resource:** Manhattan Guide 2, Ch. 3–4
+- **Task:** Read both chapters. Do all in-chapter problem sets untimed. 15 OG Quant questions on percentages/ratios.
 - **Stay-warm:** OG DI — 5 DS questions
 - **Time:** 2.5 hrs
 
-### FRI Sep 18 — MOCK (Diagnostic)
+### SAT Oct 3 — REVIEW
+- **Topic:** Week 1 error log scrub
+- **Task:** Log every wrong answer from this week. Tag Concept/Careless/Timing.
+- **Time:** 60 min
+
+### SUN Oct 4 — PLANNING
+- **Task:** Scan Monday. No new content.
+- **Time:** 20 min
+
+---
+
+## Week 2 (Oct 5 – Oct 11) — Arithmetic Block 2 + Diagnostic
+
+### MON Oct 5 — CONCEPT (Quant)
+- **Topic:** Powers, roots, surds
+- **Resource:** Manhattan Guide 1, Ch. 4–5 (Exponents, Roots)
+- **Task:** Read both chapters. Write exponent rules on an index card from memory. 15 OG Quant questions on exponents/roots untimed.
+- **Stay-warm:** OG Verbal — 10 CR questions
+- **Time:** 2.5 hrs
+
+### TUE Oct 6 — CONCEPT (Quant)
+- **Topic:** Number line, absolute values, sequences
+- **Resource:** Manhattan Guide 1, Ch. 6
+- **Task:** Read the chapter. 15 OG Quant questions on absolute values/sequences untimed.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2 hrs
+
+### WED Oct 7 — CONCEPT (Quant)
+- **Topic:** Statistics — mean, median, mode, range, standard deviation
+- **Resource:** Manhattan Guide 2, Ch. 5 (Statistics)
+- **Task:** Read the chapter. Do all in-chapter problems. 15 OG Quant statistics questions untimed.
+- **Stay-warm:** OG Verbal — 10 RC questions
+- **Time:** 2.5 hrs
+
+### THU Oct 8 — DRILL (Quant)
+- **Topic:** Mixed arithmetic drill
+- **Resource:** OG Quant
+- **Task:** 15 questions, timed at 2 min/each, mixing integers, LCM/HCF, fractions, %, exponents, and stats. Log every wrong answer.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2 hrs
+
+### FRI Oct 9 — MOCK (Diagnostic)
 - **Mock:** Mock 1
 - **Start time:** Whatever time you plan to start the real exam (recommend 9:00 AM local)
 - **Conditions:** Full 2h15m. Optional 10-min break at halfway. No pausing. No phone in room.
 - **Task:** Score does not matter — this is data only. Prep the night before: activate Manhattan Prep free trial, test your laptop/camera/room setup, read mock instructions, sleep early.
 - **Time:** 2h15m mock
 
----
-
-## Week 2 (Sep 19 – Sep 25) — Algebra Block 1+2 + CR Intro
-
-### SAT Sep 19 — REVIEW (Diagnostic)
+### SAT Oct 10 — REVIEW (Diagnostic)
 - **Topic:** Diagnostic mock review
 - **Resource:** Your error log
-- **Task:** Categorize every wrong answer as Concept / Careless / Timing. Log all wrongs in error log.
+- **Task:** Categorize every wrong answer as Concept / Careless / Timing. Log all wrongs.
 - **Time:** 90 min
 
-### SUN Sep 20 — PLANNING
+### SUN Oct 11 — PLANNING
 - **Topic:** Diagnostic breakdown
 - **Task:** Note your weakest Quant subtopic and weakest section. Update error log. Plan Monday.
 - **Time:** 30 min
 
-### MON Sep 21 — CONCEPT (Quant)
-- **Topic:** Linear equations (1 and 2 variables) + quadratic equations and factoring
-- **Resource:** Manhattan Guide 1 (Algebra), Ch. 1–3
-- **Task:** Read all three chapters. Do all in-chapter problems. Write the quadratic formula and the 3 factoring patterns from memory. 15 OG Quant questions across linear + quadratic.
+---
+
+# PHASE 2: ALGEBRA + CR FOUNDATION (Oct 12 – Oct 25)
+
+**Focus:** Full Quant Algebra + CR fundamentals through Evaluate the Argument.
+**Goal:** Comfortable diagramming any CR argument. Algebra fluent.
+
+---
+
+## Week 3 (Oct 12 – Oct 18) — Algebra Block 1 + CR Intro
+
+### MON Oct 12 — CONCEPT (Quant)
+- **Topic:** Linear equations (1 and 2 variables)
+- **Resource:** Manhattan Guide 1 (Algebra), Ch. 1
+- **Task:** Read the chapter. Do all in-chapter problems. 15 OG Quant questions on linear equations.
 - **Stay-warm:** OG Verbal — 10 CR questions
 - **Time:** 2.5 hrs
 
-### TUE Sep 22 — CONCEPT (Verbal)
-- **Topic:** CR — argument structure (premise, conclusion, assumption) + strengthen/weaken
-- **Resource:** PowerScore CR Bible, Ch. 1–2, 6–7
-- **Task:** Read all four chapters. Diagram 10 short arguments by hand: circle conclusion, underline premises. Then 10 OG Verbal CR strengthen/weaken questions untimed with full reasoning written out.
+### TUE Oct 13 — CONCEPT (Quant)
+- **Topic:** Quadratic equations and factoring
+- **Resource:** Manhattan Guide 1, Ch. 2–3
+- **Task:** Read both chapters. Write the quadratic formula and the 3 factoring patterns from memory. 15 OG Quant questions on quadratics.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2.5 hrs
+
+### WED Oct 14 — CONCEPT (Verbal)
+- **Topic:** CR — argument structure (premise, conclusion, assumption)
+- **Resource:** PowerScore CR Bible, Ch. 1–2
+- **Task:** Read both chapters. Diagram 10 short arguments by hand: circle conclusion, underline premises.
 - **Stay-warm:** OG Quant — 10 questions (mixed)
-- **Time:** 2.5 hrs
+- **Time:** 2 hrs
 
-### WED Sep 23 — CONCEPT (Quant)
-- **Topic:** Inequalities and number line + functions and notation + exponent rules
-- **Resource:** Manhattan Guide 1, Ch. 4–5 (Inequalities, Functions)
-- **Task:** Read both chapters. Do 15 OG Quant inequality questions untimed — pay attention to flipping signs. 10 OG Quant functions questions.
+### THU Oct 15 — CONCEPT (Verbal)
+- **Topic:** CR — strengthen and weaken
+- **Resource:** PowerScore CR Bible, Ch. 6–7
+- **Task:** Read both chapters. 10 OG Verbal CR strengthen/weaken questions untimed with full reasoning written out.
 - **Stay-warm:** OG DI — 5 DS questions
 - **Time:** 2.5 hrs
 
-### THU Sep 24 — CONCEPT (Verbal)
-- **Topic:** CR — find the assumption (necessary vs sufficient) + negation technique + evaluate the argument
-- **Resource:** PowerScore CR Bible, Ch. 8–9 (Assumption, Evaluate)
-- **Task:** Read both chapters. Practice negation on 10 OG CR assumption questions — write the negation of each answer choice before deciding. Then 10 OG Verbal CR evaluate questions untimed.
-- **Stay-warm:** OG DI — 5 DS questions
-- **Time:** 2.5 hrs
-
-### FRI Sep 25 — MOCK
+### FRI Oct 16 — MOCK
 - **Mock:** Mock 2
-- **Conditions:** Full 2h15m, real test conditions. Activate trial today.
+- **Conditions:** Full 2h15m, real test conditions. Activate e-GMAT trial today.
 - **Time:** 2h15m
 
----
-
-# PHASE 2: QUANT + VERBAL HEAVY (Sep 26 – Oct 23)
-
-**Focus:** Finish Quant Algebra + Higher topics. Build full CR + RC foundation.
-**Goal:** Complete all CR question types. Comfortable with all OG Quant subtopics.
-
----
-
-## Week 3 (Sep 26 – Oct 2) — Algebra Block 3 + CR Finish
-
-### SAT Sep 26 — REVIEW
+### SAT Oct 17 — REVIEW
 - **Task:** Full mock review. Log all wrongs. Tag Concept/Careless/Timing.
 - **Time:** 90 min
 
-### SUN Sep 27 — PLANNING
+### SUN Oct 18 — PLANNING
 - **Task:** Update error log. Scan Monday.
 - **Time:** 20 min
 
-### MON Sep 28 — CONCEPT (Quant)
+---
+
+## Week 4 (Oct 19 – Oct 25) — Algebra Block 2 + CR Continue
+
+### MON Oct 19 — CONCEPT (Quant)
+- **Topic:** Inequalities and number line
+- **Resource:** Manhattan Guide 1, Ch. 4
+- **Task:** Read the chapter. 15 OG Quant inequality questions untimed — pay attention to flipping signs.
+- **Stay-warm:** OG Verbal — 10 CR questions
+- **Time:** 2 hrs
+
+### TUE Oct 20 — CONCEPT (Quant)
+- **Topic:** Functions and notation + exponent rules recap
+- **Resource:** Manhattan Guide 1, Ch. 5
+- **Task:** Read the chapter. 15 OG Quant functions questions untimed.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2 hrs
+
+### WED Oct 21 — CONCEPT (Verbal)
+- **Topic:** CR — find the assumption (necessary vs sufficient) + negation technique
+- **Resource:** PowerScore CR Bible, Ch. 8
+- **Task:** Read the chapter. Practice negation on 10 OG CR assumption questions — write the negation of each answer choice before deciding.
+- **Stay-warm:** OG Quant — 10 questions
+- **Time:** 2.5 hrs
+
+### THU Oct 22 — CONCEPT (Verbal)
+- **Topic:** CR — evaluate the argument
+- **Resource:** PowerScore CR Bible, Ch. 9
+- **Task:** Read the chapter. 10 OG Verbal CR evaluate questions untimed.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2 hrs
+
+### FRI Oct 23 — MOCK
+- **Mock:** Mock 3
+- **Conditions:** Full 2h15m, real test conditions. Pick any test from GMAT Club's free bank.
+- **Time:** 2h15m
+
+### SAT Oct 24 — REVIEW
+- **Task:** Full mock review.
+- **Time:** 90 min
+
+### SUN Oct 25 — PLANNING
+- **Task:** Error log update. Scan Monday.
+- **Time:** 20 min
+
+---
+
+# PHASE 3: DRILLING — HIGHER QUANT + CR/RC COMPLETE (Oct 26 – Nov 15)
+
+**Focus:** Finish Quant Algebra + higher topics. Build full CR + RC foundation.
+**Goal:** Complete all CR question types. Comfortable with every OG Quant subtopic. First official mock taken.
+
+---
+
+## Week 5 (Oct 26 – Nov 1) — Algebra Block 3 + CR Finish
+
+### MON Oct 26 — CONCEPT (Quant)
 - **Topic:** Word problems — age, work, rate
 - **Resource:** Manhattan Guide 2, Ch. 6 (Word Problems)
 - **Task:** Read chapter. Do 15 OG Quant word problems untimed. For each, write the equation before solving.
 - **Stay-warm:** OG Verbal — 10 CR questions
 - **Time:** 2.5 hrs
 
-### TUE Sep 29 — CONCEPT (Quant)
+### TUE Oct 27 — CONCEPT (Quant)
 - **Topic:** Mixture problems + speed/distance/time
 - **Resource:** Manhattan Guide 2, Ch. 7 + Rodha SDT videos
 - **Task:** Read chapter. Watch 2 SDT videos. 15 OG Quant questions on rates/mixtures.
 - **Stay-warm:** OG DI — 5 DS questions
 - **Time:** 2.5 hrs
 
-### WED Sep 30 — CONCEPT (Verbal)
+### WED Oct 28 — CONCEPT (Verbal)
 - **Topic:** CR — draw a conclusion / inference
 - **Resource:** PowerScore CR Bible, Ch. 10
 - **Task:** Read chapter. 10 OG Verbal CR inference questions untimed.
 - **Stay-warm:** OG Quant — 10 questions
 - **Time:** 2 hrs
 
-### THU Oct 1 — CONCEPT (Verbal)
+### THU Oct 29 — CONCEPT (Verbal)
 - **Topic:** CR — bold-face + explain discrepancy
 - **Resource:** PowerScore CR Bible, Ch. 11–12
 - **Task:** Read both chapters. 10 OG Verbal CR bold-face/paradox questions untimed.
 - **Stay-warm:** OG DI — 5 DS questions
 - **Time:** 2.5 hrs
 
-### FRI Oct 2 — MOCK
-- **Mock:** Mock 3
-- **Conditions:** Full 2h15m, real test conditions. Pick any test from GMAT Club's free bank.
-- **Time:** 2h15m
-
----
-
-## Week 4 (Oct 3 – Oct 9) — Higher Quant Finish + RC Build
-
-### SAT Oct 3 — REVIEW
-- **Task:** Full mock review.
-- **Time:** 90 min
-
-### SUN Oct 4 — PLANNING
-- **Task:** Error log update. Scan Monday.
-- **Time:** 20 min
-
-### MON Oct 5 — CONCEPT (Quant)
-- **Topic:** Permutations and combinations + probability (basic + conditional)
-- **Resource:** Manhattan Guide 2, Ch. 8–9 (P&C, Probability) + Rodha P&C videos
-- **Task:** Read both chapters. Watch 2 Rodha videos. Write the difference between P and C on an index card. 15 OG Quant P&C questions + 15 OG Quant probability questions untimed.
-- **Stay-warm:** OG Verbal — 10 CR mixed types
-- **Time:** 2.5 hrs
-
-### TUE Oct 6 — CONCEPT (Verbal)
-- **Topic:** RC — main idea, primary purpose, supporting detail, inference, author tone
-- **Resource:** Manhattan Guide 6 (RC), Ch. 1–4
-- **Task:** Read all four chapters. Do 4 OG RC passages untimed. For each: write the main idea in one sentence before looking at questions.
-- **Stay-warm:** OG Quant — 10 questions
-- **Time:** 2.5 hrs
-
-### WED Oct 7 — CONCEPT (Quant)
-- **Topic:** Overlapping sets / Venn diagrams + coordinate geometry basics + profit/loss/interest
-- **Resource:** Manhattan Guide 2, Ch. 10 (Overlapping Sets) + Manhattan Guide 1, Ch. 7 (Coordinate Geometry)
-- **Task:** Read both chapters. Draw the double-set matrix on an index card. 10 OG Quant overlapping sets questions + 10 coordinate geometry + 10 profit/loss/interest, all untimed.
-- **Stay-warm:** OG DI — 5 DS questions
-- **Time:** 2.5 hrs
-
-### THU Oct 8 — CONCEPT + DRILL
-- **Topic:** RC logical structure + mixed Quant timed drill
-- **Resource:** Manhattan Guide 6, Ch. 5 + OG Quant
-- **Task:** Read the RC structure chapter. Do 2 OG RC passages untimed, mapping the structure paragraph-by-paragraph. Then 21 mixed Quant questions, 45 min timed. Review wrongs.
-- **Stay-warm:** OG DI — 5 DS questions
-- **Time:** 2.5 hrs
-
-### FRI Oct 9 — MOCK
+### FRI Oct 30 — MOCK
 - **Mock:** Mock 4
 - **Conditions:** Full 2h15m, real conditions. **First official mock.**
 - **Time:** 2h15m
 
----
-
-# PHASE 3: QUANT + VERBAL + DI HEAVY (Oct 10 – Nov 6)
-
-**Focus:** DS deep dive, full DI question type coverage, mixed timed drilling.
-**Goal:** Every day touches all three sections. Lock section order by Week 8.
-
----
-
-## Week 5 (Oct 10 – Oct 16) — DS Deep Dive
-
-### SAT Oct 10 — REVIEW
-- **Task:** Full review. This is your first official benchmark — note the score, but more importantly note which section dropped under fatigue. Compare to the diagnostic (Sep 18).
+### SAT Oct 31 — REVIEW
+- **Task:** Full review. This is your first official benchmark — note the score, but more importantly note which section dropped under fatigue. Compare to the diagnostic (Oct 9).
 - **Time:** 2 hrs
 
-### SUN Oct 11 — PLANNING
+### SUN Nov 1 — PLANNING
 - **Task:** Update error log. Plan Monday.
 - **Time:** 20 min
 
-### MON Oct 12 — CONCEPT (DI)
+---
+
+## Week 6 (Nov 2 – Nov 8) — Higher Quant Block
+
+### MON Nov 2 — CONCEPT (Quant)
+- **Topic:** Permutations and combinations
+- **Resource:** Manhattan Guide 2, Ch. 8 + Rodha P&C videos
+- **Task:** Read the chapter. Watch 2 Rodha videos. Write the difference between P and C on an index card. 15 OG Quant P&C questions untimed.
+- **Stay-warm:** OG Verbal — 10 CR mixed types
+- **Time:** 2.5 hrs
+
+### TUE Nov 3 — CONCEPT (Quant)
+- **Topic:** Probability (basic + conditional)
+- **Resource:** Manhattan Guide 2, Ch. 9
+- **Task:** Read the chapter. 15 OG Quant probability questions untimed.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2.5 hrs
+
+### WED Nov 4 — CONCEPT (Quant)
+- **Topic:** Overlapping sets / Venn diagrams
+- **Resource:** Manhattan Guide 2, Ch. 10
+- **Task:** Read the chapter. Draw the double-set matrix on an index card. 10 OG Quant overlapping sets questions untimed.
+- **Stay-warm:** OG Verbal — 10 CR questions
+- **Time:** 2 hrs
+
+### THU Nov 5 — CONCEPT (Quant)
+- **Topic:** Coordinate geometry basics + profit/loss/interest
+- **Resource:** Manhattan Guide 1, Ch. 7 (Coordinate Geometry)
+- **Task:** Read the chapter. 10 OG Quant coordinate geometry questions + 10 profit/loss/interest questions, all untimed.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2.5 hrs
+
+### FRI Nov 6 — MOCK
+- **Mock:** Mock 5
+- **Conditions:** Full 2h15m, real test conditions
+- **Time:** 2h15m
+
+### SAT Nov 7 — REVIEW
+- **Task:** Full review.
+- **Time:** 90 min
+
+### SUN Nov 8 — PLANNING
+- **Task:** Error log update. Scan Monday.
+- **Time:** 20 min
+
+---
+
+## Week 7 (Nov 9 – Nov 15) — RC Build + Mixed Drill
+
+### MON Nov 9 — CONCEPT (Verbal)
+- **Topic:** RC — main idea, primary purpose, supporting detail
+- **Resource:** Manhattan Guide 6 (RC), Ch. 1–2
+- **Task:** Read both chapters. Do 2 OG RC passages untimed. For each: write the main idea in one sentence before looking at questions.
+- **Stay-warm:** OG Quant — 10 questions
+- **Time:** 2.5 hrs
+
+### TUE Nov 10 — CONCEPT (Verbal)
+- **Topic:** RC — inference and author tone
+- **Resource:** Manhattan Guide 6, Ch. 3–4
+- **Task:** Read both chapters. Do 2 OG RC passages untimed.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2.5 hrs
+
+### WED Nov 11 — CONCEPT (Verbal)
+- **Topic:** RC — logical structure and passage mapping
+- **Resource:** Manhattan Guide 6, Ch. 5
+- **Task:** Read the chapter. Do 2 OG RC passages untimed, mapping the structure paragraph-by-paragraph.
+- **Stay-warm:** OG Verbal — 10 CR questions
+- **Time:** 2.5 hrs
+
+### THU Nov 12 — DRILL (Quant)
+- **Topic:** Mixed Quant timed drill
+- **Resource:** OG Quant
+- **Task:** 21 mixed Quant questions, 45 min timed. Review all wrongs.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2 hrs
+
+### FRI Nov 13 — MOCK
+- **Mock:** Mock 6
+- **Conditions:** Full 2h15m, real test conditions
+- **Time:** 2h15m
+
+### SAT Nov 14 — REVIEW
+- **Task:** Full review.
+- **Time:** 90 min
+
+### SUN Nov 15 — PLANNING
+- **Task:** Error log update. Scan Monday.
+- **Time:** 20 min
+
+---
+
+# PHASE 4: INTEGRATION — FULL DI + SECTION ORDER (Nov 16 – Dec 13)
+
+**Focus:** DS deep dive, full DI question type coverage, mixed timed drilling.
+**Goal:** Every day touches all three sections. Section order locked by Week 11.
+
+---
+
+## Week 8 (Nov 16 – Nov 22) — DS Deep Dive
+
+### MON Nov 16 — CONCEPT (DI)
 - **Topic:** DS answer choices + Statement 1 / Statement 2 alone
 - **Resource:** Manhattan Guide 5 (DS strategy) + OG DI
 - **Task:** Read the DS chapter. Write the 5 answer choices from memory three times. Do 20 OG DS questions untimed, marking which statement(s) you used.
 - **Stay-warm:** OG Verbal — 10 mixed CR/RC
 - **Time:** 2.5 hrs
 
-### TUE Oct 13 — DRILL (DI)
+### TUE Nov 17 — DRILL (DI)
 - **Topic:** Quant-based DS
 - **Resource:** OG DI
 - **Task:** 15 DS questions timed at 2 min each. Log all wrongs.
 - **Stay-warm:** OG Quant — 10 questions
 - **Time:** 2 hrs
 
-### WED Oct 14 — CONCEPT (DI)
+### WED Nov 18 — CONCEPT (DI)
 - **Topic:** Logic / verbal DS + Yes/No vs Value DS distinction
 - **Resource:** Manhattan Guide 5 + OG DI
 - **Task:** Read the distinction chapter. Do 20 OG DS questions, classifying each as Yes/No or Value before solving.
 - **Stay-warm:** OG Verbal — 10 mixed
 - **Time:** 2.5 hrs
 
-### THU Oct 15 — DRILL (DI)
+### THU Nov 19 — DRILL (DI)
 - **Topic:** DS traps and patterns
 - **Resource:** OG DI + GMAT Club question bank (filter: DS hard)
 - **Task:** 20 DS questions timed at 2 min each. After each wrong answer, write the trap pattern in your error log.
 - **Stay-warm:** OG Quant — 10 questions
 - **Time:** 2.5 hrs
 
-### FRI Oct 16 — MOCK
-- **Mock:** Mock 5
+### FRI Nov 20 — MOCK
+- **Mock:** Mock 7
 - **Conditions:** Full 2h15m, real test conditions
 - **Time:** 2h15m
 
----
-
-## Week 6 (Oct 17 – Oct 23) — MSR + Table Analysis
-
-### SAT Oct 17 — REVIEW
+### SAT Nov 21 — REVIEW
 - **Task:** Full review. Special focus on DS section: did the deep-dive work this week?
 - **Time:** 90 min
 
-### SUN Oct 18 — PLANNING
+### SUN Nov 22 — PLANNING
 - **Task:** Error log update. Scan Monday.
 - **Time:** 20 min
 
-### MON Oct 19 — CONCEPT (DI)
+---
+
+## Week 9 (Nov 23 – Nov 29) — MSR + Table Analysis
+
+### MON Nov 23 — CONCEPT (DI)
 - **Topic:** MSR — reading 3 tabbed sources fast
 - **Resource:** OG DI (MSR section) + Manhattan Guide 5
 - **Task:** Do 3 MSR question sets untimed. For each tab, write a one-sentence summary in a notebook before reading the question.
 - **Stay-warm:** OG Verbal — 10 CR questions
 - **Time:** 2.5 hrs
 
-### TUE Oct 20 — DRILL (DI)
+### TUE Nov 24 — DRILL (DI)
 - **Topic:** MSR timed
 - **Resource:** OG DI + GMAT with CJ MSR questions
 - **Task:** 3 MSR sets timed at 2.5 min/question. Log wrongs.
 - **Stay-warm:** OG Quant — 10 questions
 - **Time:** 2 hrs
 
-### WED Oct 21 — CONCEPT (DI)
+### WED Nov 25 — CONCEPT (DI)
 - **Topic:** Table Analysis — sorting + True/False classification
 - **Resource:** OG DI (Table Analysis section)
 - **Task:** Do 5 Table Analysis questions untimed. Practice sorting columns by relevant criteria before answering.
 - **Stay-warm:** OG Verbal — 10 RC questions
 - **Time:** 2.5 hrs
 
-### THU Oct 22 — DRILL (DI)
+### THU Nov 26 — DRILL (DI)
 - **Topic:** Table Analysis timed
 - **Resource:** OG DI
 - **Task:** 10 Table Analysis questions timed at 2.5 min each. Log wrongs.
 - **Stay-warm:** OG Quant — 10 questions
 - **Time:** 2 hrs
 
-### FRI Oct 23 — MOCK
-- **Mock:** Mock 6
+### FRI Nov 27 — MOCK
+- **Mock:** Mock 8
 - **Conditions:** Full 2h15m
 - **Time:** 2h15m
 
----
-
-## Week 7 (Oct 24 – Oct 30) — Graphics + Two-Part
-
-### SAT Oct 24 — REVIEW
+### SAT Nov 28 — REVIEW
 - **Task:** Full review. Compare DI section score to last week's mock.
 - **Time:** 2 hrs
 
-### SUN Oct 25 — PLANNING
+### SUN Nov 29 — PLANNING
 - **Task:** Error log update. Scan Monday.
 - **Time:** 20 min
 
-### MON Oct 26 — CONCEPT (DI)
+---
+
+## Week 10 (Nov 30 – Dec 6) — Graphics + Two-Part
+
+### MON Nov 30 — CONCEPT (DI)
 - **Topic:** Bar charts, pie charts, line graphs
 - **Resource:** OG DI (Graphics Interpretation section)
 - **Task:** Do 10 Graphics questions untimed. For each, write down what axes/scale represent before answering.
 - **Stay-warm:** OG Verbal — 10 CR questions
 - **Time:** 2 hrs
 
-### TUE Oct 27 — CONCEPT (DI)
+### TUE Dec 1 — CONCEPT (DI)
 - **Topic:** Scatter plots + curve distributions
 - **Resource:** OG DI + e-GMAT live sessions (Graphics if available)
 - **Task:** Do 10 Graphics scatter/curve questions untimed.
 - **Stay-warm:** OG Quant — 10 questions
 - **Time:** 2 hrs
 
-### WED Oct 28 — CONCEPT (DI)
+### WED Dec 2 — CONCEPT (DI)
 - **Topic:** Two-Part — quant simultaneous equations + verbal logical trade-offs
 - **Resource:** OG DI (Two-Part section)
 - **Task:** Do 10 Two-Part questions untimed (mix of quant and verbal).
 - **Stay-warm:** OG Verbal — 10 RC questions
 - **Time:** 2.5 hrs
 
-### THU Oct 29 — DRILL (DI)
+### THU Dec 3 — DRILL (DI)
 - **Topic:** Full DI mixed timed set
 - **Resource:** OG DI
 - **Task:** 20 DI questions / 45 min timed. Full review of all wrongs.
 - **Stay-warm:** OG Quant — 10 questions
 - **Time:** 2.5 hrs
 
-### FRI Oct 30 — MOCK
-- **Mock:** Mock 7
+### FRI Dec 4 — MOCK
+- **Mock:** Mock 9
 - **Conditions:** Full 2h15m, real test conditions
 - **Time:** 2h15m
 
----
+### SAT Dec 5 — REVIEW
+- **Task:** Full review. Compare DI section score to last week's mock.
+- **Time:** 2 hrs
 
-## Week 8 (Oct 31 – Nov 6) — Integration + Lock Section Order
-
-### SAT Oct 31 — REVIEW
-- **Task:** Full review.
-- **Time:** 90 min
-
-### SUN Nov 1 — PLANNING
+### SUN Dec 6 — PLANNING
 - **Task:** Error log update. Scan Monday.
 - **Time:** 20 min
 
-### MON Nov 2 — DRILL (Quant)
+---
+
+## Week 11 (Dec 7 – Dec 13) — Integration + Lock Section Order
+
+### MON Dec 7 — DRILL (Quant)
 - **Topic:** Mixed Quant timed set
 - **Resource:** OG Quant
 - **Task:** 21 Quant questions / 45 min timed. Review all wrongs.
 - **Stay-warm:** OG DI — 5 DS questions
 - **Time:** 2.5 hrs
 
-### TUE Nov 3 — DRILL (Verbal)
+### TUE Dec 8 — DRILL (Verbal)
 - **Topic:** Mixed Verbal timed set
 - **Resource:** OG Verbal
 - **Task:** 23 Verbal questions / 45 min timed. Review all wrongs.
 - **Stay-warm:** OG Quant — 10 questions
 - **Time:** 2.5 hrs
 
-### WED Nov 4 — DRILL (DI)
+### WED Dec 9 — DRILL (DI)
 - **Topic:** Mixed DI timed set
 - **Resource:** OG DI
 - **Task:** 20 DI questions / 45 min timed. Review all wrongs.
 - **Stay-warm:** OG Verbal — 10 CR questions
 - **Time:** 2.5 hrs
 
-### THU Nov 5 — REVIEW (All sections)
-- **Topic:** Error log audit — Phase 3 close
+### THU Dec 10 — REVIEW (All sections)
+- **Topic:** Error log audit — Phase 4 close
 - **Resource:** Your error log
-- **Task:** Read every wrong answer from the last month. Find top 3 repeated patterns across all sections. Write a one-sentence fix for each on an index card.
+- **Task:** Read every wrong answer from the last two months. Find top 3 repeated patterns across all sections. Write a one-sentence fix for each on an index card.
 - **Stay-warm:** None today — review only.
 - **Time:** 2 hrs
 
-### FRI Nov 6 — MOCK (Section Order Test)
-- **Mock:** Mock 8
+### FRI Dec 11 — MOCK (Section Order Test)
+- **Mock:** Mock 10
 - **Conditions:** Full 2h15m. Try Quant → DI → Verbal order today.
 - **Time:** 2h15m
 
----
-
-# PHASE 4: PEAK — MOCKS + TIMED SETS (Nov 7 – Nov 27)
-
-**Focus:** No new content. Pure repetition, review, endurance.
-**Goal:** Replicate test-day conditions. Drive errors down. Build stamina.
-
----
-
-## Week 9 (Nov 7 – Nov 13) — Mock Frequency Ramp
-
-### SAT Nov 7 — REVIEW
+### SAT Dec 12 — REVIEW
 - **Task:** Full review of Friday's mock. Note how the section order felt.
 - **Time:** 90 min
 
-### SUN Nov 8 — PLANNING + LOCK SECTION ORDER
+### SUN Dec 13 — PLANNING + LOCK SECTION ORDER
 - **Task:** Compare Friday's mock to earlier ones. Then lock your section order for the rest of prep.
 - **Time:** 30 min
 
-### MON Nov 9 — DRILL (Quant)
+---
+
+# PHASE 5: PEAK — MOCK MARATHON + TAPER (Dec 14 – Feb 2)
+
+**Focus:** No new content from here. Pure repetition, review, endurance — a full second cycle through all 6 official tests, then a stamina block, dress rehearsal, and taper.
+**Goal:** Replicate test-day conditions repeatedly. Drive errors down. Walk into the real thing having already run the exact routine over a dozen times.
+
+---
+
+## Week 12 (Dec 14 – Dec 20) — Second Cycle Begins
+
+### MON Dec 14 — DRILL (Quant)
 - **Topic:** Quant timed set focused on top 2 weak areas from error log
 - **Resource:** OG Quant + GMAT with CJ
 - **Task:** 21 Quant / 45 min timed. Filter to topics where you've made the most errors.
 - **Stay-warm:** OG DI — 5 DS questions
 - **Time:** 2 hrs
 
-### TUE Nov 10 — DRILL (Verbal)
+### TUE Dec 15 — DRILL (Verbal)
 - **Topic:** Verbal timed set — CR weak type focus
 - **Resource:** OG Verbal
 - **Task:** 23 Verbal / 45 min timed. Focus on your worst CR type from error log.
 - **Stay-warm:** OG Quant — 10 questions
 - **Time:** 2 hrs
 
-### WED Nov 11 — DRILL (DI)
+### WED Dec 16 — DRILL (DI)
 - **Topic:** DI timed set — DS or MSR focus (whichever is weaker)
 - **Resource:** OG DI
 - **Task:** 20 DI / 45 min timed.
 - **Stay-warm:** OG Verbal — 10 CR questions
 - **Time:** 2 hrs
 
-### THU Nov 12 — REVIEW
+### THU Dec 17 — REVIEW
 - **Topic:** Mid-week error log scrub
 - **Task:** Read this week's wrongs. Tag each. Identify if any pattern is repeating from earlier phases.
 - **Time:** 60 min
 
-### FRI Nov 13 — MOCK
-- **Mock:** Mock 9
+### FRI Dec 18 — MOCK
+- **Mock:** Mock 11
 - **Conditions:** Full conditions, locked section order, real start time
 - **Time:** 2h15m
 
----
-
-## Week 10 (Nov 14 – Nov 20) — Endurance Build + Peak Repetition
-
-### SAT Nov 14 — REVIEW
+### SAT Dec 19 — REVIEW
 - **Task:** Full review.
 - **Time:** 2 hrs
 
-### SUN Nov 15 — PLANNING
+### SUN Dec 20 — PLANNING
 - **Task:** Error log update. Score average so far across last 3 mocks: write it down.
 - **Time:** 30 min
 
-### MON Nov 16 — DRILL (Quant)
+---
+
+## Week 13 (Dec 21 – Dec 27) — Endurance Build
+
+> **Note:** Mock day is shifted to Wednesday this week so it doesn't land on Christmas.
+
+### MON Dec 21 — DRILL (Quant)
 - **Topic:** Quant — hard questions only
 - **Resource:** OG Quant (filter: hard) + GMAT Club hard problems
 - **Task:** 15 hard Quant questions, timed. Review every one — even the right ones.
 - **Stay-warm:** OG DI — 5 DS questions
 - **Time:** 2.5 hrs
 
-### TUE Nov 17 — DRILL (Verbal)
+### TUE Dec 22 — DRILL (Verbal)
 - **Topic:** Verbal — RC long passages
 - **Resource:** OG Verbal
 - **Task:** 3 long RC passages timed at 8 min/passage including all questions. Then review.
 - **Stay-warm:** OG Quant — 10 questions
 - **Time:** 2.5 hrs
 
-### WED Nov 18 — MOCK
-- **Mock:** Mock 10
-- **Conditions:** Full conditions. **Dress rehearsal** — start at the exact time you'll start the real exam.
-- **Time:** 2h15m
-
-### THU Nov 19 — MOCK + REVIEW
-- **Mock:** Mock 11
-- **Conditions:** Full conditions. Back-to-back with yesterday — this builds stamina.
-- **Task:** Full review of both this mock and yesterday's, back to back.
-- **Time:** 2h15m + 90 min review
-
-### FRI Nov 20 — MOCK
+### WED Dec 23 — MOCK
 - **Mock:** Mock 12
 - **Conditions:** Full conditions, locked section order, real start time
 - **Time:** 2h15m
 
----
+### THU Dec 24 — LIGHT REVIEW
+- **Topic:** Christmas Eve — light touch only
+- **Task:** 15-min error log scan. Nothing new.
+- **Time:** 15 min
 
-## Week 11 (Nov 21 – Nov 27) — Final Week + Exam
+### FRI Dec 25 — REST
+- **Topic:** Christmas — no GMAT today.
+- **Time:** 0 min
 
-### SAT Nov 21 — REVIEW
-- **Task:** Full review of this week's three mocks. Compare to your average — not your best.
+### SAT Dec 26 — REVIEW
+- **Task:** Full review of Wednesday's mock.
 - **Time:** 2 hrs
 
-### SUN Nov 22 — PLANNING + FINAL WEEK PREP
-- **Task:** Error log final scrub. Read the Final Week Protocol (Appendix 4) carefully.
+### SUN Dec 27 — PLANNING
+- **Task:** Error log update. Scan Monday.
+- **Time:** 20 min
+
+---
+
+## Week 14 (Dec 28 – Jan 3) — Peak Repetition
+
+> **Note:** Mock day is shifted to Saturday this week so it doesn't land on New Year's Day.
+
+### MON Dec 28 — DRILL (DI)
+- **Topic:** MSR + Graphics — hard mixed set
+- **Resource:** OG DI (filter: hard)
+- **Task:** 15 hard DI questions timed. Review every one.
+- **Stay-warm:** OG Quant — 10 questions
+- **Time:** 2.5 hrs
+
+### TUE Dec 29 — DRILL (Mixed)
+- **Topic:** Full mixed timed set — Quant + Verbal + DI
+- **Resource:** OG (all sections)
+- **Task:** 20 questions across all three sections, 40 min timed. Review all wrongs.
+- **Stay-warm:** None — this is already mixed.
+- **Time:** 2 hrs
+
+### WED Dec 30 — REVIEW
+- **Topic:** Mock pacing review
+- **Task:** Look back at your last 2 mocks — where did you lose time? Plan a pacing adjustment for Saturday's mock.
+- **Time:** 60 min
+
+### THU Dec 31 — LIGHT REVIEW
+- **Topic:** New Year's Eve — light touch only
+- **Task:** 15-min error log scan. Nothing new.
+- **Time:** 15 min
+
+### FRI Jan 1 — REST
+- **Topic:** New Year's Day — no GMAT today.
+- **Time:** 0 min
+
+### SAT Jan 2 — MOCK
+- **Mock:** Mock 13
+- **Conditions:** Full conditions, locked section order, real start time
+- **Time:** 2h15m
+
+### SUN Jan 3 — REVIEW + PLANNING
+- **Task:** Full review of Saturday's mock. Update error log. Plan Monday.
+- **Time:** 90 min
+
+---
+
+## Week 15 (Jan 4 – Jan 10) — Second Cycle: DS + Verbal Retest
+
+### MON Jan 4 — DRILL (DI)
+- **Topic:** DS retest — full timed set
+- **Resource:** OG DI + GMAT Club (filter: DS hard)
+- **Task:** 20 DS questions timed at 2 min each. Compare error rate to Week 8's first pass.
+- **Stay-warm:** OG Verbal — 10 CR questions
+- **Time:** 2 hrs
+
+### TUE Jan 5 — DRILL (Verbal)
+- **Topic:** CR full retest — all question types mixed
+- **Resource:** OG Verbal
+- **Task:** 23 CR/RC mixed questions, 45 min timed. Log wrongs by CR sub-type.
+- **Stay-warm:** OG Quant — 10 questions
+- **Time:** 2 hrs
+
+### WED Jan 6 — DRILL (Quant)
+- **Topic:** Algebra + word problems retest
+- **Resource:** OG Quant
+- **Task:** 21 Quant questions timed, filtered to algebra and word problems. Review all wrongs.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2 hrs
+
+### THU Jan 7 — REVIEW
+- **Topic:** Mid-week error log scrub
+- **Task:** Read this week's wrongs. Tag each.
+- **Time:** 60 min
+
+### FRI Jan 8 — MOCK
+- **Mock:** Mock 14
+- **Conditions:** Full conditions, locked section order, real start time
+- **Time:** 2h15m
+
+### SAT Jan 9 — REVIEW
+- **Task:** Full review.
+- **Time:** 2 hrs
+
+### SUN Jan 10 — PLANNING
+- **Task:** Error log update. Scan Monday.
+- **Time:** 20 min
+
+---
+
+## Week 16 (Jan 11 – Jan 17) — Second Cycle: MSR + Higher Quant Retest
+
+### MON Jan 11 — DRILL (DI)
+- **Topic:** MSR + Table Analysis retest
+- **Resource:** OG DI + GMAT with CJ
+- **Task:** 3 MSR sets + 10 Table Analysis questions, all timed. Compare error rate to Week 9.
+- **Stay-warm:** OG Verbal — 10 RC questions
+- **Time:** 2.5 hrs
+
+### TUE Jan 12 — DRILL (Quant)
+- **Topic:** P&C, probability, overlapping sets retest
+- **Resource:** OG Quant
+- **Task:** 20 questions timed, filtered to these three topics. Review all wrongs.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2 hrs
+
+### WED Jan 13 — DRILL (Verbal)
+- **Topic:** RC retest — long passages
+- **Resource:** OG Verbal
+- **Task:** 3 long RC passages timed at 8 min/passage including questions. Review.
+- **Stay-warm:** OG Quant — 10 questions
+- **Time:** 2.5 hrs
+
+### THU Jan 14 — REVIEW
+- **Topic:** Mid-week error log scrub
+- **Task:** Read this week's wrongs. Tag each.
+- **Time:** 60 min
+
+### FRI Jan 15 — MOCK
+- **Mock:** Mock 15
+- **Conditions:** Full conditions, locked section order, real start time
+- **Time:** 2h15m
+
+### SAT Jan 16 — REVIEW
+- **Task:** Full review. This closes the second cycle through all 6 official tests — compare your Take 1 vs Take 2 average.
+- **Time:** 2 hrs
+
+### SUN Jan 17 — PLANNING
+- **Task:** Error log update. Scan Monday.
+- **Time:** 20 min
+
+---
+
+## Week 17 (Jan 18 – Jan 24) — Stamina Block
+
+### MON Jan 18 — DRILL (Quant)
+- **Topic:** Quant — hard questions only, timed tight
+- **Resource:** OG Quant (filter: hard)
+- **Task:** 15 hard Quant questions, timed at 90 sec/question. Review every one.
+- **Stay-warm:** OG DI — 5 DS questions
+- **Time:** 2 hrs
+
+### TUE Jan 19 — DRILL (Mixed)
+- **Topic:** Full mixed timed set — all three sections
+- **Resource:** OG (all sections)
+- **Task:** 20 questions across all three sections, 40 min timed. Review all wrongs.
+- **Time:** 2 hrs
+
+### WED Jan 20 — MOCK
+- **Mock:** Mock 16
+- **Conditions:** Full conditions, locked section order, real start time
+- **Time:** 2h15m
+
+### THU Jan 21 — MOCK + REVIEW
+- **Mock:** Mock 17
+- **Conditions:** Full conditions. Back-to-back with yesterday — this builds stamina for a retake scenario.
+- **Task:** Full review of both this mock and yesterday's, back to back.
+- **Time:** 2h15m + 90 min review
+
+### FRI Jan 22 — REVIEW
+- **Topic:** Stamina block review
+- **Task:** Compare both back-to-back mocks. Which section held up better on day 2? Write one fix.
+- **Time:** 60 min
+
+### SAT Jan 23 — REST
+- **Topic:** Slip day — full rest.
+- **Time:** 0 min
+
+### SUN Jan 24 — PLANNING
+- **Task:** Error log update. Read Appendix 4 (Final Week Checklist) once, start to finish.
 - **Time:** 30 min
 
-### MON Nov 23 — LIGHT REVIEW
+---
+
+## Week 18 (Jan 25 – Jan 31) — Dress Rehearsal + Taper Begins
+
+### MON Jan 25 — LIGHT REVIEW
 - **Topic:** Error log highlights + 15 medium questions across all 3 sections
 - **Resource:** OG (all sections) + error log
 - **Task:** Read the top 10 most-repeated error patterns from your log. Then do 5 medium Quant + 5 medium Verbal + 5 medium DI, untimed. Calm pace.
 - **Time:** 90 min
 
-### TUE Nov 24 — REST + PLANNING
-- **Topic:** Rest and logistics
+### TUE Jan 26 — REST + PLANNING
+- **Topic:** Logistics
 - **Resource:** None
-- **Task:** Confirm test centre location, route, and timing. Pack your bag: ID, water, snack, comfortable clothes. Sleep early. No GMAT.
+- **Task:** Confirm test centre location, route, and timing. Decide what you'll wear and eat on exam day. No GMAT.
 - **Time:** 30 min
 
-### WED Nov 25 — LIGHT REVIEW
+### WED Jan 27 — MOCK
+- **Mock:** Mock 18
+- **Conditions:** Full conditions. **Dress rehearsal** — start at the exact time you'll start the real exam. Wear what you'll wear. Eat what you'll eat.
+- **Time:** 2h15m
+
+### THU Jan 28 — LIGHT REVIEW
 - **Topic:** Dress rehearsal review — fixes only
-- **Task:** Read every wrong answer's one-sentence fix from the Nov 18 dress rehearsal. Do not redo questions. Do not start anything new.
+- **Task:** Read every wrong answer's one-sentence fix from Wednesday's dress rehearsal. Do not redo questions.
 - **Time:** 60 min max
 
-### THU Nov 26 — TAPER
+### FRI Jan 29 — MOCK
+- **Mock:** Mock 19
+- **Conditions:** Full conditions, locked section order — your last full mock before the real thing.
+- **Time:** 2h15m
+
+### SAT Jan 30 — REVIEW
+- **Task:** Full review of Friday's mock. Compare to your average — not your best. This is your last full review before the exam.
+- **Time:** 2 hrs
+
+### SUN Jan 31 — PLANNING + FINAL WEEK PREP
+- **Task:** Error log final scrub. Reread the Final Week Protocol (Appendix 4) carefully.
+- **Time:** 30 min
+
+---
+
+## Week 19 (Feb 1 – Feb 2) — Final Taper + Exam
+
+### MON Feb 1 — TAPER
 - **Topic:** Read error log one-line fixes only. That's it.
 - **Task:** Read your top 20 one-sentence fixes from error log. Close the laptop. Confirm test logistics: location, ID, time, route, what to wear. Pack everything tonight. Sleep early.
 - **Time:** 30 min total
 
-### FRI Nov 27 — EXAM DAY
+### TUE Feb 2 — EXAM DAY
 
 **Wake time:** Same as every mock day.
-**Breakfast:** Same as dress rehearsal.
+**Breakfast:** Same as the Jan 27 dress rehearsal.
 **Travel:** Leave with 30-min buffer.
 
 **At the test center:**
@@ -1345,7 +1681,7 @@ This plan is built for an ADHD brain. The rules are simple and non-negotiable:
 - Take the 10-min break at halfway.
 - One question at a time. One section at a time.
 
-**You've done the work. Take the test.**
+**You've done the work — twenty-two mocks' worth. Take the test.**
 
 ---
 
@@ -1375,7 +1711,7 @@ Build as a spreadsheet (Google Sheets or Excel). One row per wrong answer.
 - Log within 24 hours of every drill and mock.
 - Sunday: scan the week — are concept errors going down?
 - End of each phase: full audit, find top 3 repeated patterns.
-- Phase 4: error log drives every focus session.
+- Phase 5: error log drives every focus session.
 
 ---
 
@@ -1391,58 +1727,66 @@ Build as a spreadsheet (Google Sheets or Excel). One row per wrong answer.
 
 **Alternative to test:** Quant → Verbal → DI (some find DI's working-memory load worse when tired).
 
-Try **both orders during Phase 3** (Weeks 5–8). Lock your choice by November 6. **Do not change after Week 9.**
+Try **both orders during Phase 4** (Weeks 8–11). Lock your choice by December 13. **Do not change after Week 12.**
 
 ---
 
-## Appendix 3: Mock Schedule — All 12 Mocks Mapped
+## Appendix 3: Mock Schedule — 19 Scheduled + 3 Flexible
 
 | # | Date | Day | Mock | Phase |
 |---|---|---|---|---|
-| 1 | Sep 18 | Fri | Mock 1 (Diagnostic) | Phase 1 close |
-| 2 | Sep 25 | Fri | Mock 2 | Phase 1 close |
-| 3 | Oct 2 | Fri | Mock 3 | Phase 2 |
-| 4 | Oct 9 | Fri | **Mock 4** (1st take) | Phase 2 close |
-| 5 | Oct 16 | Fri | **Mock 5** (1st take) | Phase 3 |
-| 6 | Oct 23 | Fri | **Mock 6** (1st take) | Phase 3 |
-| 7 | Oct 30 | Fri | **Mock 7** (1st take) | Phase 3 |
-| 8 | Nov 6 | Fri | **Mock 8** (1st take, section order test) | Phase 3 close |
-| 9 | Nov 13 | Fri | **Mock 9** (1st take) | Phase 4 |
-| 10 | Nov 18 | Wed | **Mock 10** (2nd take) — DRESS REHEARSAL | Phase 4 |
-| 11 | Nov 19 | Thu | **Mock 11** (2nd take) — stamina build | Phase 4 |
-| 12 | Nov 20 | Fri | **Mock 12** (2nd take) | Phase 4 |
+| 1 | Oct 9 | Fri | Mock 1 (Diagnostic) | Phase 1 |
+| 2 | Oct 16 | Fri | Mock 2 | Phase 2 |
+| 3 | Oct 23 | Fri | Mock 3 | Phase 2 close |
+| 4 | Oct 30 | Fri | **Mock 4** (1st take) | Phase 3 |
+| 5 | Nov 6 | Fri | **Mock 5** (1st take) | Phase 3 |
+| 6 | Nov 13 | Fri | **Mock 6** (1st take) | Phase 3 close |
+| 7 | Nov 20 | Fri | **Mock 7** (1st take) | Phase 4 |
+| 8 | Nov 27 | Fri | **Mock 8** (1st take) | Phase 4 |
+| 9 | Dec 4 | Fri | **Mock 9** (1st take) | Phase 4 |
+| 10 | Dec 11 | Fri | **Mock 10** (1st take, section order test) | Phase 4 close |
+| 11 | Dec 18 | Fri | **Mock 11** (2nd take) | Phase 5 |
+| 12 | Dec 23 | Wed | **Mock 12** (2nd take) — moved off Christmas week's Friday | Phase 5 |
+| 13 | Jan 2 | Sat | **Mock 13** (2nd take) — moved off New Year's Day | Phase 5 |
+| 14 | Jan 8 | Fri | **Mock 14** (2nd take) | Phase 5 |
+| 15 | Jan 15 | Fri | **Mock 15** (2nd take) — closes the second full cycle | Phase 5 |
+| 16 | Jan 20 | Wed | **Mock 16** — stamina block | Phase 5 |
+| 17 | Jan 21 | Thu | **Mock 17** — back-to-back with Mock 16 | Phase 5 |
+| 18 | Jan 27 | Wed | **Mock 18** — DRESS REHEARSAL | Phase 5 |
+| 19 | Jan 29 | Fri | **Mock 19** — final full mock before taper | Phase 5 |
+| 20 | Flexible | — | **Mock 20** — no fixed date, take whenever fits | Phase 5 |
+| 21 | Flexible | — | **Mock 21** — no fixed date, take whenever fits | Phase 5 |
+| 22 | Flexible | — | **Mock 22** — no fixed date, take whenever fits | Phase 5 |
 
-**Total mocks taken: 12**
+**Total mocks: 22** (19 scheduled + 3 flexible)
 
-Mocks reserved but not scheduled (use as needed if you fall behind or want extra reps in Phase 4):
-- Mock 4, Mock 7, Mock 8 — second takes (3 mocks)
-- Mock 1 retake (1 mock)
-
-You have a buffer of 4 mocks. Do not feel obligated to take them.
+This gives you a complete first pass through all 6 official tests (Mocks 4–10, weeks 5–11), a complete second pass (Mocks 11–15, weeks 12–16), a diagnostic, two early calibration mocks, a two-mock stamina block, a dress rehearsal, a final mock — and 3 extra flexible slots with no fixed date, for whenever you want another rep. Mock source/type isn't pre-labeled anywhere; log whatever you actually used when you record the attempt.
 
 ---
 
-## Appendix 4: Final Week Checklist (Nov 21–27)
+## Appendix 4: Final Week Checklist (Jan 25 – Feb 2)
 
 ### What TO do
-- ✅ Sat–Sun (Nov 21–22): Full review of the week's mocks + final error log scrub
-- ✅ Mon (Nov 23): Skim error log + 15 medium mixed questions
-- ✅ Tue (Nov 24): Rest and logistics — no GMAT
-- ✅ Wed (Nov 25): Read one-line fixes from Nov 18 dress rehearsal
-- ✅ Thu (Nov 26): Read top 20 fixes. Confirm logistics. Pack. Sleep early.
-- ✅ Fri (Nov 27): EXAM
-- ✅ Same breakfast, same wake time, same clothing as dress rehearsal
+- ✅ Sat–Sun (Jan 30–31): Full review of the last mock + final error log scrub
+- ✅ Mon (Jan 25): Skim error log + 15 medium mixed questions
+- ✅ Tue (Jan 26): Rest and logistics — no GMAT
+- ✅ Wed (Jan 27): Dress rehearsal mock — wear/eat exactly what you will on exam day
+- ✅ Thu (Jan 28): Read one-line fixes from the dress rehearsal only
+- ✅ Fri (Jan 29): Final full mock
+- ✅ Mon (Feb 1): Read top 20 fixes. Confirm logistics. Pack. Sleep early.
+- ✅ Tue (Feb 2): EXAM
+- ✅ Same breakfast, same wake time, same clothing as the Jan 27 dress rehearsal
 - ✅ Test center location confirmed, route timed
 - ✅ ID, water, snack, comfortable clothes ready the night before
 
 ### What NOT to do
-- ❌ No new content after November 6
+- ❌ No new content after Week 11 (Dec 13)
 - ❌ No studying the morning of the exam
 - ❌ No comparing yourself to your best mock — compare to your average
 - ❌ No talking to other test-takers in the waiting room about scores
 - ❌ No alcohol or new food in the final 3 days
 - ❌ No late nights in the final week
-- ❌ No mock the day before the exam
+- ❌ No mock the day before the exam (Feb 1 is mock-free by design)
 
 ---
 
@@ -1452,10 +1796,10 @@ Do not activate everything at once. Stagger to maximize trial windows.
 
 | Resource | Activate | Used For |
 |---|---|---|
-| Manhattan Prep free mock | Sep 17 | Diagnostic on Sep 18 |
-| e-GMAT trial | Sep 25 | Mocks + live sessions (Weeks 2–8) |
-| Target Test Prep 5-day trial | Use during Phase 2 (any 5 consecutive days you want extra Quant practice) | Topic chapter videos for weak areas |
-| Magoosh 1-month trial | Activate October 31 | Phase 4 — extra timed sets + video explanations |
+| Manhattan Prep free mock | Oct 8 | Diagnostic on Oct 9 |
+| e-GMAT trial | Oct 16 | Mocks + live sessions (Weeks 3–10) |
+| Target Test Prep 5-day trial | Use during Phase 3 (any 5 consecutive days you want extra Quant practice) | Topic chapter videos for weak areas |
+| Magoosh 1-month trial | Activate Dec 11 | Phase 5 — extra timed sets + video explanations for the second mock cycle |
 
 ---
 
@@ -1464,23 +1808,30 @@ Do not activate everything at once. Stagger to maximize trial windows.
 | Day Type | Total Time |
 |---|---|
 | Weekday CONCEPT or DRILL | 2–2.5 hrs |
-| Friday MOCK | 2h15m |
-| Saturday REVIEW | 60 min–2 hrs |
-| Sunday PLANNING | 20–30 min |
+| Mock day | 2h15m |
+| Review day | 60 min–2 hrs |
+| Planning day | 20–30 min |
 
-**Total weekly load:** ~15–18 hours.
-**Total across 11 weeks:** ~170 hours of focused prep.
+**Total weekly load:** ~15–18 hours (lighter around Christmas/New Year weeks).
+**Total across 18 full weeks + taper:** ~260 hours of focused prep.
 
 ---
 
-*End of plan. Print Appendix 4 and pin it above your desk by November 19.*
+*End of plan. Print Appendix 4 and pin it above your desk by January 24.*
 `;
 
 // =====================================================================
 // CONSTANTS
-const PLAN_VERSION = '2026-09-12-b';
+const PLAN_VERSION = '2026-09-28-c';
 const PLAN_YEAR = 2026;
-const EXAM_DATE = '2026-11-27';
+const EXAM_DATE = '2027-02-02';
+
+// The plan spans two calendar years (Sep 2026 -> Feb 2027). Any month before
+// the plan's own start month belongs to the following year, not PLAN_YEAR.
+const PLAN_START_MONTH = 8; // September, 0-indexed
+function yearFor(monthIdx) {
+  return monthIdx < PLAN_START_MONTH ? PLAN_YEAR + 1 : PLAN_YEAR;
+}
 
 const MONTH_MAP = {
   Jan:0, January:0, Feb:1, February:1, Mar:2, March:2,
@@ -1491,9 +1842,9 @@ const MONTH_MAP = {
 
 const PHASE_OF_WEEK = {
   1:'Foundation', 2:'Foundation',
-  3:'Drilling', 4:'Drilling',
-  5:'Integration', 6:'Integration', 7:'Integration', 8:'Integration',
-  9:'Peak', 10:'Peak', 11:'Peak'
+  3:'Drilling', 4:'Drilling', 5:'Drilling', 6:'Drilling', 7:'Drilling',
+  8:'Integration', 9:'Integration', 10:'Integration', 11:'Integration',
+  12:'Peak', 13:'Peak', 14:'Peak', 15:'Peak', 16:'Peak', 17:'Peak', 18:'Peak', 19:'Peak'
 };
 
 const PHASE_COLOR = {
@@ -1505,42 +1856,44 @@ const PHASE_COLOR = {
 
 // Per-week win conditions and milestone callouts
 const WIN_CONDITIONS = {
-  1:  'All arithmetic covered (integers → statistics). Diagnostic mock taken Sep 18. Stay-warm done all 4 days.',
-  2:  'Algebra Block 1+2 done. CR argument structure, strengthen/weaken, assumption, and evaluate introduced.',
-  3:  'Word problems + rates done. CR draws/inference + bold-face/paradox practiced.',
-  4:  'P&C + Probability + overlapping sets + coordinate geometry covered. RC fully introduced. First official mock taken Oct 9.',
-  5:  'DS deep dive complete — all 5 answer choices, traps, Yes/No vs Value internalised.',
-  6:  'MSR + Table Analysis covered timed.',
-  7:  'Graphics + Two-Part DI complete. Full mixed DI timed set passed.',
-  8:  'Section order tested. Decision locked by Nov 6. Phase 3 error audit done.',
-  9:  '2 mocks per week cadence started. Full review on every mock.',
-  10: 'Endurance build — hard questions only. Back-to-back mocks Nov 18–19 done, including dress rehearsal.',
-  11: 'Dress rehearsal fixes reviewed. Test logistics confirmed. Sleep schedule fixed.'
+  1:  'Arithmetic Block 1 done (integers through ratios). Error log set up.',
+  2:  'Arithmetic Block 2 done (powers through stats). Diagnostic mock taken Oct 9.',
+  3:  'Algebra Block 1 done. CR argument structure + strengthen/weaken introduced.',
+  4:  'Algebra Block 2 done. CR assumption + evaluate introduced.',
+  5:  'Algebra complete (word/mixture/rate problems). All CR types covered. First official mock taken Oct 30.',
+  6:  'P&C, probability, overlapping sets, coordinate geometry, profit/loss/interest covered.',
+  7:  'RC fully introduced. Mixed Quant drill passed.',
+  8:  'DS deep dive complete — all 5 answer choices, traps, Yes/No vs Value internalised.',
+  9:  'MSR + Table Analysis covered timed.',
+  10: 'Graphics + Two-Part DI complete. Full mixed DI timed set passed.',
+  11: 'Section order tested. Decision locked by Dec 13. Phase 4 error audit done.',
+  12: 'Second mock cycle begins. Weak-area drilling started.',
+  13: 'Endurance build — hard questions only.',
+  14: 'Peak repetition — full mixed timed sets across all sections.',
+  15: 'DS + CR/RC full retest complete. Comparing to first-pass error rate.',
+  16: 'MSR + Higher Quant retest complete. Second full cycle through all 6 official tests closed.',
+  17: 'Stamina block done — back-to-back mocks completed and reviewed.',
+  18: 'Dress rehearsal complete. Final full mock taken. Test logistics confirmed.',
+  19: 'Taper complete. Walk in ready.'
 };
 
 const MILESTONES = {
-  4:  '🏆 MILESTONE — Foundation + Algebra complete: all Quant arithmetic/algebra and CR fundamentals covered.',
-  8:  '🏆 MILESTONE — Full syllabus touched: all Quant + CR + RC + DI question types covered. Section order locked.',
-  10: '🏆 MILESTONE — Endurance peak: stamina built across back-to-back mocks. Stay sharp, stay calm.'
+  4:  '🏆 MILESTONE — Algebra + CR fundamentals complete: all core Quant algebra and CR argument types covered.',
+  11: '🏆 MILESTONE — Full syllabus touched: all Quant + CR + RC + DI question types covered. Section order locked.',
+  16: '🏆 MILESTONE — Second full mock cycle complete: all 6 official tests taken twice each. Compare your Take 1 vs Take 2 average.',
+  18: '🏆 MILESTONE — Dress rehearsal + final mock done. From here it is taper only.'
 };
 
 // MOCK INVENTORY — single source of truth for the Mocks tab
-const MOCK_INVENTORY = [
-  // Prep mocks
-  { id: 'diag',       name: 'Mock 1',                                scheduledWeek: 1,  canRetake: false, dateHint: 'Sep 18', group: 'prep'      },
-  { id: 'egmat',      name: 'Mock 2',                                scheduledWeek: 2,  canRetake: false, dateHint: 'Sep 25', group: 'prep'      },
-  { id: 'gc1',        name: 'Mock 3',                                scheduledWeek: 3,  canRetake: false, dateHint: 'Oct 2',  group: 'prep'      },
-  // Official GMAT mocks — Take 1
-  { id: 'off_f1_t1',  name: 'Mock 4',                                scheduledWeek: 4,  canRetake: false, dateHint: 'Oct 9',  group: 'official'  },
-  { id: 'off_f2_t1',  name: 'Mock 5',                                scheduledWeek: 5,  canRetake: false, dateHint: 'Oct 16', group: 'official'  },
-  { id: 'off_p3_t1',  name: 'Mock 6',                                scheduledWeek: 6,  canRetake: false, dateHint: 'Oct 23', group: 'official'  },
-  { id: 'off_p4_t1',  name: 'Mock 7',                                scheduledWeek: 7,  canRetake: false, dateHint: 'Oct 30', group: 'official'  },
-  { id: 'off_p5_t1',  name: 'Mock 8',                                scheduledWeek: 8,  canRetake: false, dateHint: 'Nov 6',  group: 'official'  },
-  { id: 'off_p6_t1',  name: 'Mock 9',                                scheduledWeek: 9,  canRetake: false, dateHint: 'Nov 13', group: 'official'  },
-  // Official GMAT mocks — Take 2 (compressed, all in Week 10)
-  { id: 'off_f2_t2',  name: 'Mock 10',                               scheduledWeek: 10, canRetake: false, dateHint: 'Nov 18', group: 'official2' },
-  { id: 'off_p3_t2',  name: 'Mock 11',                               scheduledWeek: 10, canRetake: false, dateHint: 'Nov 19', group: 'official2' },
-  { id: 'off_p6_t2',  name: 'Mock 12',                               scheduledWeek: 10, canRetake: false, dateHint: 'Nov 20', group: 'official2' },
+// One-time seed list — used only the very first time this app runs on a device
+// (i.e. when no mocks exist in storage yet). After that, STORE_KEYS.MOCKS in
+// localStorage is the single source of truth: mocks are added/removed freely
+// from the Mocks tab, and no mock carries a pre-set date — the date shown on
+// the Calendar tab comes from whatever date you actually log an attempt under.
+const MOCK_SEED_IDS = [
+  'diag','egmat','gc1','off_f1_t1','off_f2_t1','off_p3_t1','off_p4_t1','off_p5_t1','off_p6_t1',
+  'off_f1_t2','off_f2_t2','off_p3_t2','off_p4_t2','off_p5_t2','off_p6_t2',
+  'stamina1','stamina2','dress','final1','extra1','extra2','extra3'
 ];
 
 // TOPIC GROUPS
@@ -1621,10 +1974,11 @@ const TOPIC_GROUPS = [
 const STORE_KEYS = {
   PLAN:    'gmat_parsed_plan',
   DAYS:    'gmat_day_completions',
-  BUFFER:  'gmat_buffer_days',
   WINS:    'gmat_week_wins',
   MOCKS:   'gmat_mocks',
-  TOPICS:  'gmat_topic_mastery'
+  TOPICS:  'gmat_topic_mastery',
+  DAY_OVERRIDES: 'gmat_day_overrides',
+  NEXT_MOCK: 'gmat_next_mock_plan'
 };
 
 // =====================================================================
@@ -1650,11 +2004,71 @@ function save(key, val) {
 function getState() {
   return {
     days:    load(STORE_KEYS.DAYS,    {}),
-    buffer:  load(STORE_KEYS.BUFFER,  {}),
     wins:    load(STORE_KEYS.WINS,    {}),
     mocks:   load(STORE_KEYS.MOCKS,   null),
-    topics:  load(STORE_KEYS.TOPICS,  {})
+    topics:  load(STORE_KEYS.TOPICS,  {}),
+    dayOverrides: load(STORE_KEYS.DAY_OVERRIDES, {})
   };
+}
+
+// Shared by the Week and Calendar tabs: maps dateISO -> { ids[], anyChecked }
+// by scanning every logged attempt on every mock. Mocks carry no pre-set date,
+// so this is the only source of truth for "was a mock taken on this day".
+function buildMockByDate(mocks) {
+  const byDate = {};
+  for (const m of (mocks || [])) {
+    for (const a of (m.attempts || [])) {
+      if (!a.date) continue;
+      const ds = a.date; // already "YYYY-MM-DD" from the <input type="date">
+      if (!byDate[ds]) byDate[ds] = { ids: [], anyChecked: false };
+      byDate[ds].ids.push(m.id);
+      byDate[ds].anyChecked = true; // a logged attempt means it was taken that day
+    }
+  }
+  return byDate;
+}
+
+// Shared by the Week and Calendar tabs: renders ONLY what the person has
+// actually logged for a day — their chosen tags, chosen topics, their notes,
+// and any mock attempt logged that day. Never renders the original plan's
+// prewritten topic/resource/task/stay-warm/time content.
+function renderDayContentHTML(dateStr, mockInfo, mocksArr) {
+  const overrides = load(STORE_KEYS.DAY_OVERRIDES, {});
+  const override = overrides[dateStr];
+  let html = '';
+
+  if (override) {
+    const tagsHTML = (override.tags || []).map(t =>
+      `<span class="badge-type ${t}" style="margin:0 6px 6px 0;display:inline-block">${t}</span>`
+    ).join('');
+    if (tagsHTML) html += `<div style="margin-top:2px">${tagsHTML}</div>`;
+
+    if ((override.topics || []).length) {
+      html += `<div class="section-title" style="margin-top:10px">Topics</div>
+        <ul style="margin:4px 0 0;padding-left:18px;font-size:13px;color:var(--text)">
+          ${override.topics.map(k => `<li>${escapeHtml(k.split('::').pop())}</li>`).join('')}
+        </ul>`;
+    }
+    if (override.notes) {
+      html += `<div class="section-title" style="margin-top:10px">Notes</div><div class="field">${escapeHtml(override.notes)}</div>`;
+    }
+  }
+
+  if (mockInfo) {
+    const rows = mockInfo.ids.map(id => {
+      const mState  = (mocksArr || []).find(x => x.id === id);
+      const checked = mState && mState.checked;
+      const name    = mState ? mState.name : id;
+      return `<div style="font-size:12px;color:${checked ? 'var(--success)' : 'var(--c-mock)'};margin-top:4px;font-weight:600">`
+           + `${checked ? '✓' : '🎯'} ${escapeHtml(name)}</div>`;
+    }).join('');
+    html += `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">${rows}</div>`;
+  }
+
+  if (!html) {
+    html = `<div class="empty-state" style="padding:6px 0">Nothing logged for this day yet.</div>`;
+  }
+  return html;
 }
 
 // =====================================================================
@@ -1665,12 +2079,13 @@ function ymd(d) {
   return d.getFullYear() + '-' + pad2(d.getMonth()+1) + '-' + pad2(d.getDate());
 }
 function todayYMD() { return ymd(new Date()); }
-function parseDateStr(str, year) {
-  // "May 16" or "June 8" or "Jul 17"
+function parseDateStr(str) {
+  // "May 16" or "June 8" or "Jul 17" — year is auto-resolved via yearFor()
+  // since the plan can span a calendar-year boundary.
   const parts = str.trim().split(/\s+/);
   const mo = MONTH_MAP[parts[0]];
   const da = parseInt(parts[1], 10);
-  return new Date(year, mo, da);
+  return new Date(yearFor(mo), mo, da);
 }
 function dayDiff(a, b) {
   // returns whole days between a and b, ignoring TZ drift
@@ -1702,7 +2117,7 @@ function fmtMonthName(d, short) {
 function parsePlan() {
   // Try cache
   const cached = load(STORE_KEYS.PLAN, null);
-  if (cached && cached.version === PLAN_VERSION && cached.weeks && cached.weeks.length === 11) {
+  if (cached && cached.version === PLAN_VERSION && cached.weeks && cached.weeks.length === 19) {
     return cached;
   }
 
@@ -1786,13 +2201,13 @@ function parseWeekBlock(lines, startIdx, weekNum, dateRange) {
   // If endDate is just a number (e.g. "May 16 – 22"), we'd handle it; spec has full "May 22"
   // But for cross-month ranges like "July 27 – August 2", parsing is straightforward.
 
-  const startDate = parseDateStr(startDateStr, PLAN_YEAR);
+  const startDate = parseDateStr(startDateStr);
   let endDate;
   if (/^\d+$/.test(endDateStr.trim())) {
-    // bare day → same month as start
-    endDate = new Date(PLAN_YEAR, startDate.getMonth(), parseInt(endDateStr.trim(), 10));
+    // bare day → same month AND same resolved year as start (never crosses a year boundary)
+    endDate = new Date(startDate.getFullYear(), startDate.getMonth(), parseInt(endDateStr.trim(), 10));
   } else {
-    endDate = parseDateStr(endDateStr, PLAN_YEAR);
+    endDate = parseDateStr(endDateStr);
   }
 
   const days = [];
@@ -1832,7 +2247,7 @@ function parseDayBlock(lines, startIdx, dayMatch) {
   const dateText = dayMatch[2];       // "May 18"
   const titleRest = dayMatch[3];      // "CONCEPT (Quant)" or "MOCK (Diagnostic)" etc.
 
-  const dateObj = parseDateStr(dateText, PLAN_YEAR);
+  const dateObj = parseDateStr(dateText);
   const dateISO = ymd(dateObj);
 
   // Determine day type by scanning the titleRest
@@ -1918,31 +2333,55 @@ for (const w of PLAN.weeks) {
 // Ensure MOCKS state has a row per inventory mock
 function initMocksIfNeeded() {
   let mocks = load(STORE_KEYS.MOCKS, null);
-  if (!Array.isArray(mocks)) mocks = [];
-  // Add any missing inventory items, and sync display fields (name, scheduledWeek)
-  // for existing ones so edits to MOCK_INVENTORY (e.g. renames) always show up,
-  // even if this browser already cached mock state from an earlier version of the plan.
-  for (const inv of MOCK_INVENTORY) {
-    const existing = mocks.find(m => m.id === inv.id);
-    if (!existing) {
-      mocks.push({
-        id: inv.id,
-        name: inv.name,
-        scheduledWeek: inv.scheduledWeek,
-        checked: false,
-        attempts: []
-      });
-    } else {
-      existing.name = inv.name;
-      existing.scheduledWeek = inv.scheduledWeek;
-    }
+  if (Array.isArray(mocks) && mocks.length > 0) {
+    // Storage already has mocks (from prior use, or an earlier version of this
+    // app) — that IS the mock list now. Nothing to sync against, no dates to
+    // enforce; leave it exactly as the person has it, including any custom
+    // mocks they've already added or renamed.
+    return mocks;
   }
-  // Drop any cached mocks that are no longer in the inventory (e.g. from an older plan version)
-  mocks = mocks.filter(m => MOCK_INVENTORY.find(inv => inv.id === m.id));
+  // First run on this device — seed a starting set of 22 generically-named
+  // mocks (Mock 1..22), no dates attached. The person can add or delete as many
+  // more as they want from the Mocks tab from here on.
+  mocks = MOCK_SEED_IDS.map((id, i) => ({
+    id, name: 'Mock ' + (i + 1), checked: false, attempts: []
+  }));
   save(STORE_KEYS.MOCKS, mocks);
   return mocks;
 }
 initMocksIfNeeded();
+
+function nextMockDefaultName() {
+  const mocks = load(STORE_KEYS.MOCKS, []);
+  return 'Mock ' + (mocks.length + 1);
+}
+function addMock(rawName) {
+  const mocks = load(STORE_KEYS.MOCKS, []);
+  const name = (rawName || '').trim() || nextMockDefaultName();
+  const id = 'mock_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+  mocks.push({ id, name, checked: false, attempts: [] });
+  save(STORE_KEYS.MOCKS, mocks);
+  const nameEl = document.getElementById('new-mock-name');
+  if (nameEl) nameEl.value = '';
+  renderMocks();
+}
+function requestDeleteMock(id) {
+  pendingDeleteMock = id;
+  renderMocks();
+}
+function cancelDeleteMock() {
+  pendingDeleteMock = null;
+  renderMocks();
+}
+function deleteMock(id) {
+  let mocks = load(STORE_KEYS.MOCKS, []);
+  mocks = mocks.filter(m => m.id !== id);
+  save(STORE_KEYS.MOCKS, mocks);
+  pendingDeleteMock = null;
+  openMockCards.delete(id);
+  renderMocks();
+  renderCalendar();
+}
 
 // =====================================================================
 // CURRENT WEEK RESOLUTION
@@ -1955,11 +2394,15 @@ function getCurrentWeek() {
   // Before plan?
   if (today < PLAN.weeks[0].startDate) return 1;
   // After plan
-  return 11;
+  return 19;
 }
 
 let viewedWeek = getCurrentWeek();
 let calendarMonth = null; // Date object representing first of viewed month
+let pendingDeleteAttempt = null; // "id-attemptNum" of an attempt awaiting inline delete confirmation (avoids relying on window.confirm, which some embedded/webview contexts block silently)
+let openMockCards = new Set(); // ids of mock cards currently expanded — renderMocks() rebuilds all card HTML from scratch, so without tracking this separately every expanded panel (and anything inside it, like a delete confirmation) would silently collapse shut on the very next re-render
+let editingNextMock = false; // whether the Next Mock widget (Week tab) is currently in edit mode
+let pendingDeleteMock = null; // id of a whole mock awaiting inline delete confirmation (same pattern as pendingDeleteAttempt)
 
 // =====================================================================
 // UTILITY
@@ -2018,19 +2461,98 @@ function rerenderAll() {
 // =====================================================================
 // WEEK VIEW
 // =====================================================================
+// ── Next Mock widget (Week tab) — replaces the old prewritten "Weekly Win" ──
+// Fully editable: the person writes their own next mock name/type and picks
+// when they'll sit it. Nothing here is prewritten by the plan.
+function startEditNextMock() {
+  editingNextMock = true;
+  renderWeek();
+}
+function cancelEditNextMock() {
+  editingNextMock = false;
+  renderWeek();
+}
+function saveNextMockPlan() {
+  const nameEl = document.getElementById('next-mock-name-input');
+  const dateEl = document.getElementById('next-mock-date-input');
+  const timeEl = document.getElementById('next-mock-time-input');
+  const name = nameEl ? nameEl.value.trim() : '';
+  const date = dateEl ? dateEl.value : '';
+  const time = timeEl ? timeEl.value : '';
+  save(STORE_KEYS.NEXT_MOCK, { name, date, time });
+  editingNextMock = false;
+  renderWeek();
+}
+function clearNextMockPlan() {
+  save(STORE_KEYS.NEXT_MOCK, null);
+  editingNextMock = false;
+  renderWeek();
+}
+function renderNextMockWidgetHTML() {
+  const plan = load(STORE_KEYS.NEXT_MOCK, null);
+
+  if (editingNextMock) {
+    return `
+      <div class="next-mock-card">
+        <div class="ttl">Next Mock</div>
+        <div style="margin-top:8px">
+          <label style="font-size:11px;color:var(--muted)">Mock name / type</label>
+          <input type="text" id="next-mock-name-input" value="${escapeHtml(plan ? plan.name : '')}" placeholder="e.g. Official GMAT Mock 5">
+        </div>
+        <div class="grid2" style="margin-top:8px">
+          <div>
+            <label style="font-size:11px;color:var(--muted)">Date</label>
+            <input type="date" id="next-mock-date-input" value="${escapeHtml(plan ? plan.date : '')}">
+          </div>
+          <div>
+            <label style="font-size:11px;color:var(--muted)">Time</label>
+            <input type="time" id="next-mock-time-input" value="${escapeHtml(plan ? plan.time : '')}">
+          </div>
+        </div>
+        <div class="actions" style="margin-top:10px">
+          <button class="btn primary" onclick="saveNextMockPlan()">Save</button>
+          <button class="btn muted" onclick="cancelEditNextMock()">Cancel</button>
+          ${plan ? `<button class="btn muted small" onclick="clearNextMockPlan()">Clear</button>` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  if (plan && (plan.name || plan.date || plan.time)) {
+    const whenParts = [];
+    if (plan.date) { const dO = fromYMD(plan.date); whenParts.push(fmtMonthName(dO, true) + ' ' + dO.getDate()); }
+    if (plan.time) whenParts.push(plan.time);
+    return `
+      <div class="next-mock-card">
+        <div class="ttl">Next Mock</div>
+        <div style="margin-top:4px;font-size:14px;font-weight:700;color:var(--text)">${escapeHtml(plan.name || 'Untitled mock')}</div>
+        ${whenParts.length ? `<div style="font-size:12px;color:var(--muted);margin-top:2px">${escapeHtml(whenParts.join(' · '))}</div>` : ''}
+        <div style="margin-top:8px"><button class="btn small muted" onclick="startEditNextMock()">Edit</button></div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="next-mock-card">
+      <div class="ttl">Next Mock</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">No mock planned yet</div>
+      <div style="margin-top:8px"><button class="btn small primary" onclick="startEditNextMock()">+ Plan next mock</button></div>
+    </div>
+  `;
+}
+
 function renderWeek() {
   const root = document.getElementById('view-week');
   const state = getState();
   const week = PLAN.weeks.find(w => w.weekNum === viewedWeek) || PLAN.weeks[0];
 
-  const winChecked = !!state.wins[week.weekNum];
-  const bufferUsed = !!(state.buffer[week.weekNum] && state.buffer[week.weekNum].used);
+  const mockByDate = buildMockByDate(state.mocks);
 
   // Phase progress bar
   let phaseBarHTML = '<div class="phase-bar">';
-  for (let i = 1; i <= 11; i++) {
+  for (let i = 1; i <= 19; i++) {
     const ph = PHASE_OF_WEEK[i];
-    const color = state.wins[i] ? PHASE_COLOR[ph] : (i <= getCurrentWeek() ? PHASE_COLOR[ph] : 'var(--border)');
+    const color = i <= getCurrentWeek() ? PHASE_COLOR[ph] : 'var(--border)';
     const isCur = (i === week.weekNum) ? ' current' : '';
     phaseBarHTML += `<div class="phase-seg${isCur}" style="background:${color}"></div>`;
   }
@@ -2052,36 +2574,32 @@ function renderWeek() {
   }
   stripHTML += '</div>';
 
-  // Day cards
+  // Day cards — show ONLY what's been logged for each day (tags/topics/notes/mock),
+  // never the plan's original prewritten topic/resource/task/stay-warm/time.
+  const overrides = state.dayOverrides;
   let dayCardsHTML = '';
   for (const d of week.days) {
     const isDone = !!state.days[d.date];
     const dateObj = fromYMD(d.date);
     const dateLbl = fmtMonthName(dateObj, true) + ' ' + parseInt(d.date.split('-')[2],10);
-    const showBuffer = (d.label === 'FRI' && d.type !== 'MOCK' && !bufferUsed);
+    const override = overrides[d.date];
+    const mockInfo = mockByDate[d.date];
     dayCardsHTML += `
       <div class="day-card${isDone ? ' done' : ''}" id="card-${d.date}">
         <div class="head">
           <div class="left">
             <span class="daylbl">${d.label}</span>
-            <span class="badge-type ${d.type}">${d.type}</span>
           </div>
           <span class="date">${dateLbl}</span>
         </div>
-        <div class="topic">${escapeHtml(d.topic)}</div>
-        ${d.resource ? `<div class="meta"><strong>Resource:</strong> ${escapeHtml(d.resource)}</div>` : ''}
-        ${d.task ? `<div class="meta"><strong>Task:</strong> ${escapeHtml(d.task)}</div>` : ''}
-        ${d.staywarm ? `<div class="meta"><strong>Stay-warm:</strong> ${escapeHtml(d.staywarm)}</div>` : ''}
-        ${d.time ? `<div class="meta"><strong>Time:</strong> ${escapeHtml(d.time)}</div>` : ''}
+        ${renderDayContentHTML(d.date, mockInfo, state.mocks)}
         <div class="actions">
           <button class="btn ${isDone ? 'success' : 'primary'}" onclick="toggleDay('${d.date}')">${isDone ? '✓ Done' : 'Mark done'}</button>
-          ${showBuffer ? `<button class="btn warning" onclick="useBuffer(${week.weekNum}, '${d.date}')">Use buffer day (1/week)</button>` : ''}
+          <button class="btn muted" onclick="selectCalDate('${d.date}'); showView('calendar')">${override ? 'Edit' : '+ Add schedule'}</button>
         </div>
       </div>
     `;
   }
-
-  const milestoneHTML = MILESTONES[week.weekNum] ? `<div class="milestone">${escapeHtml(MILESTONES[week.weekNum])}</div>` : '';
 
   root.innerHTML = `
     <div class="top-strip">
@@ -2097,7 +2615,7 @@ function renderWeek() {
     </div>
 
     <div class="week-header">
-      <div class="label">WEEK ${week.weekNum} OF 11</div>
+      <div class="label">WEEK ${week.weekNum} OF 19</div>
       <div class="range">${escapeHtml(week.dateRange)}</div>
       <span class="pill" style="background:${PHASE_COLOR[week.phase]}40; color:${PHASE_COLOR[week.phase]}; border:1px solid ${PHASE_COLOR[week.phase]}">${escapeHtml(week.phase)}</span>
     </div>
@@ -2105,20 +2623,12 @@ function renderWeek() {
     <div class="week-nav">
       <button class="btn small" onclick="changeWeek(-1)" ${week.weekNum === 1 ? 'disabled' : ''}>← Prev</button>
       <button class="btn small" onclick="goCurrentWeek()">This week</button>
-      <button class="btn small" onclick="changeWeek(1)" ${week.weekNum === 11 ? 'disabled' : ''}>Next →</button>
+      <button class="btn small" onclick="changeWeek(1)" ${week.weekNum === 19 ? 'disabled' : ''}>Next →</button>
     </div>
 
     ${stripHTML}
 
-    <div class="win-row${winChecked ? ' done' : ''}" onclick="toggleWin(${week.weekNum})">
-      <div class="cbox"></div>
-      <div class="txt">
-        <div class="ttl">Weekly Win</div>
-        ${escapeHtml(week.winCondition || 'Complete the week plan.')}
-      </div>
-    </div>
-
-    ${milestoneHTML}
+    ${renderNextMockWidgetHTML()}
 
     <div class="section-title">Days</div>
     ${dayCardsHTML}
@@ -2127,7 +2637,7 @@ function renderWeek() {
 
 function changeWeek(delta) {
   const newWk = viewedWeek + delta;
-  if (newWk < 1 || newWk > 11) return;
+  if (newWk < 1 || newWk > 19) return;
   viewedWeek = newWk;
   renderWeek();
 }
@@ -2164,32 +2674,17 @@ function toggleWin(weekNum) {
   if (!wasWon) burstConfetti();
   renderWeek();
 }
-function useBuffer(weekNum, dateStr) {
-  const buf = load(STORE_KEYS.BUFFER, {});
-  buf[weekNum] = { used: true, date: dateStr };
-  save(STORE_KEYS.BUFFER, buf);
-  // Also mark the day done
-  const days = load(STORE_KEYS.DAYS, {});
-  days[dateStr] = true;
-  save(STORE_KEYS.DAYS, days);
-  burstConfetti();
-  renderWeek();
-  renderCalendar();
-}
 
 // =====================================================================
 // MOCKS VIEW
 // =====================================================================
 function renderMocks() {
   const root = document.getElementById('view-mocks');
-  const mocks = load(STORE_KEYS.MOCKS, []);
-  // Ensure they're in inventory order
-  const ordered = MOCK_INVENTORY.map(inv => mocks.find(m => m.id === inv.id) || { id: inv.id, name: inv.name, scheduledWeek: inv.scheduledWeek, checked: false, attempts: [] });
+  const ordered = load(STORE_KEYS.MOCKS, []);
 
   // Sparkline
   const allAttempts = [];
   for (const m of ordered) {
-    const inv = MOCK_INVENTORY.find(x => x.id === m.id);
     (m.attempts || []).forEach((a, idx) => {
       const total = parseInt(a.scores && a.scores.total, 10);
       if (total) {
@@ -2198,16 +2693,16 @@ function renderMocks() {
           total,
           date: a.date || '',
           attemptNum: a.attemptNum || (idx + 1),
-          scheduledWeek: m.scheduledWeek,
           isRetake: (a.attemptNum || (idx + 1)) > 1
         });
       }
     });
   }
-  // Sort by date if available, else by scheduledWeek then attemptNum
+  // Sort by date (mocks no longer carry a pre-set schedule, so date is all we have)
   allAttempts.sort((a, b) => {
-    if (a.date && b.date) return a.date < b.date ? -1 : 1;
-    if (a.scheduledWeek !== b.scheduledWeek) return a.scheduledWeek - b.scheduledWeek;
+    if (a.date && b.date && a.date !== b.date) return a.date < b.date ? -1 : 1;
+    if (a.date && !b.date) return -1;
+    if (!a.date && b.date) return 1;
     return a.attemptNum - b.attemptNum;
   });
 
@@ -2256,18 +2751,11 @@ function renderMocks() {
     `;
   }
 
-  // Mock cards — grouped by section header
-  const GROUP_META = {
-    prep:      { label: 'Prep Mocks',                    color: '#4F8EF7', note: 'Diagnostic + e-GMAT + Expert\'s Global' },
-    official:  { label: 'Official GMAT — Take 1',        color: '#3DDC84', note: '6 tests · Wks 4–9' },
-    official2: { label: 'Official GMAT — Take 2',        color: '#FF5252', note: '3 tests · Wk 10 · last Nov 20' },
-  };
-
+  // Mock cards — flat list, no section headers, no pre-set dates
   let cardsHTML = '';
-  let lastGroup = null;
 
   // Summary bar counts
-  const totalMocks = MOCK_INVENTORY.length;
+  const totalMocks = ordered.length;
   const takenMocks = ordered.filter(m => m.checked).length;
   cardsHTML += `
     <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:16px;display:flex;justify-content:space-around;text-align:center;">
@@ -2279,35 +2767,38 @@ function renderMocks() {
     </div>
   `;
 
-  for (const inv of MOCK_INVENTORY) {
-    const m = ordered.find(x => x.id === inv.id);
+  // Add Mock control — no native prompt(), just an inline text field + button
+  cardsHTML += `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:16px;display:flex;gap:8px;align-items:center">
+      <input type="text" id="new-mock-name" placeholder="${escapeHtml(nextMockDefaultName())}" style="flex:1;background:var(--card-2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-size:13px" onkeydown="if(event.key==='Enter'){addMock(this.value);}">
+      <button class="btn primary small" onclick="addMock(document.getElementById('new-mock-name').value)">+ Add Mock</button>
+    </div>
+  `;
+
+  for (const m of ordered) {
     const checked = !!m.checked;
     const hasScores = (m.attempts || []).some(a => a.scores && a.scores.total);
-    const week = PLAN.weeks.find(w => w.weekNum === inv.scheduledWeek);
-    const weekLabel = week ? `Week ${inv.scheduledWeek} · ${week.dateRange}` : `Week ${inv.scheduledWeek}`;
     const status = hasScores ? 'Scores logged' : (checked ? '✓ Taken' : 'Not taken');
-    const grp = inv.group || 'prep';
-
-    // Group header
-    if (grp !== lastGroup) {
-      const gm = GROUP_META[grp] || { label: grp, color: 'var(--muted)', note: '' };
-      const groupMocks = MOCK_INVENTORY.filter(x => x.group === grp);
-      const groupTaken = groupMocks.filter(x => ordered.find(o => o.id === x.id && o.checked)).length;
-      cardsHTML += `
-        <div style="display:flex;align-items:baseline;justify-content:space-between;margin:18px 2px 8px;">
-          <span style="font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:${gm.color}">${gm.label}</span>
-          <span style="font-size:10px;color:var(--muted)">${groupTaken}/${groupMocks.length} · ${gm.note}</span>
-        </div>
-      `;
-      lastGroup = grp;
-    }
+    const attempts = m.attempts || [];
+    const attemptDates = attempts.map(a => a.date).filter(Boolean);
+    const subLine = attemptDates.length
+      ? (attemptDates.length === 1 ? attemptDates[0] : attemptDates.length + ' attempts logged')
+      : 'No attempts logged yet';
 
     // Attempts rendering
     let attemptsHTML = '';
-    const attempts = m.attempts || [];
     if (attempts.length > 0) {
       attemptsHTML = attempts.map(a => {
         const s = a.scores || {};
+        const deleteKey = m.id + '-' + a.attemptNum;
+        const confirming = pendingDeleteAttempt === deleteKey;
+        const deleteControlHTML = confirming
+          ? `<div style="margin-top:6px;display:flex;gap:8px;align-items:center">
+               <span style="font-size:12px;color:var(--danger,#FF5252);font-weight:600">Delete this attempt?</span>
+               <button class="btn small" style="background:var(--danger,#FF5252);color:#fff" onclick="deleteAttempt('${m.id}', ${a.attemptNum})">Yes, delete</button>
+               <button class="btn small muted" onclick="cancelDeleteAttempt()">Cancel</button>
+             </div>`
+          : `<div style="margin-top:6px"><button class="btn small muted" onclick="requestDeleteAttempt('${m.id}', ${a.attemptNum})">Delete</button></div>`;
         return `
           <div class="attempt-row">
             <div class="topl">
@@ -2321,19 +2812,17 @@ function renderMocks() {
               <strong>DI:</strong> ${escapeHtml(s.di || '—')}
             </div>
             ${a.notes ? `<div class="notes">${escapeHtml(a.notes)}</div>` : ''}
-            <div style="margin-top:6px"><button class="btn small muted" onclick="deleteAttempt('${m.id}', ${a.attemptNum})">Delete</button></div>
+            ${deleteControlHTML}
           </div>
         `;
       }).join('');
     }
 
-    // Score entry form — always show if not yet logged
-    let formHTML = '';
+    // Score entry form — always available, so every mock can be retaken as many times as needed
     const nextAttemptNum = attempts.length + 1;
-    if (nextAttemptNum === 1) {
-      formHTML = `
+    const formHTML = `
         <div class="score-form">
-          <div class="section-title" style="font-size:10px;margin-bottom:8px">Log Score</div>
+          <div class="section-title" style="font-size:10px;margin-bottom:8px">${nextAttemptNum === 1 ? 'Log Score' : 'Log Retake — Attempt ' + nextAttemptNum}</div>
           <div>
             <label>Date</label>
             <input type="date" id="date-${m.id}-${nextAttemptNum}" value="${todayYMD()}">
@@ -2361,24 +2850,32 @@ function renderMocks() {
             <textarea id="notes-${m.id}-${nextAttemptNum}" placeholder="What broke under fatigue?"></textarea>
           </div>
           <div>
-            <button class="btn primary" onclick="saveAttempt('${m.id}', ${nextAttemptNum})">Save Score</button>
+            <button class="btn primary" onclick="saveAttempt('${m.id}', ${nextAttemptNum})">${nextAttemptNum === 1 ? 'Save Score' : 'Save Retake'}</button>
           </div>
         </div>
       `;
-    } else {
-      formHTML = `<div class="empty-state" style="padding:8px 0">Score logged.</div>`;
-    }
+
+    const deletingMock = pendingDeleteMock === m.id;
+    const deleteMockControlHTML = deletingMock
+      ? `<div style="padding:10px 14px;display:flex;gap:8px;align-items:center;border-top:1px solid var(--border)">
+           <span style="font-size:12px;color:var(--danger,#FF5252);font-weight:600">Delete "${escapeHtml(m.name)}" and all its logged attempts?</span>
+           <button class="btn small" style="background:var(--danger,#FF5252);color:#fff" onclick="event.stopPropagation(); deleteMock('${m.id}')">Yes, delete</button>
+           <button class="btn small muted" onclick="event.stopPropagation(); cancelDeleteMock()">Cancel</button>
+         </div>`
+      : '';
 
     cardsHTML += `
-      <div class="mock-card${checked ? ' checked' : ''}" id="mock-${m.id}">
+      <div class="mock-card${checked ? ' checked' : ''}${openMockCards.has(m.id) ? ' open' : ''}" id="mock-${m.id}">
         <div class="head">
           <div class="cbox" onclick="event.stopPropagation(); toggleMockCheck('${m.id}')"></div>
           <div class="info" onclick="toggleMockPanel('${m.id}')">
             <div class="name">${escapeHtml(m.name)}</div>
-            <div class="sub">${escapeHtml(weekLabel)} · ${escapeHtml(inv.dateHint)}</div>
+            <div class="sub">${escapeHtml(subLine)}</div>
           </div>
           <div class="status">${status}</div>
+          <button class="btn small muted" style="margin-left:8px" onclick="event.stopPropagation(); requestDeleteMock('${m.id}')" title="Delete mock">🗑</button>
         </div>
+        ${deleteMockControlHTML}
         <div class="panel">
           ${attemptsHTML}
           ${formHTML}
@@ -2389,7 +2886,7 @@ function renderMocks() {
 
   root.innerHTML = `
     <div class="top-strip">
-      <div class="brand"><b>MOCKS</b> · 12 total</div>
+      <div class="brand"><b>MOCKS</b> · ${totalMocks} total</div>
       <div class="exam-cd">${daysUntilExam()}d to exam</div>
     </div>
     ${sparkHTML}
@@ -2402,13 +2899,15 @@ function renderMocks() {
         <li>Classify error: concept / careless / timing</li>
         <li>Spend equal time reviewing as taking</li>
         <li>Update error log after every mock</li>
-        <li>From Week 8: run mock at same start time as planned exam</li>
+        <li>Once you're deep into mock season, run each one at your planned real exam start time</li>
       </ul>
     </div>
   `;
 }
 
 function toggleMockPanel(id) {
+  if (openMockCards.has(id)) openMockCards.delete(id);
+  else openMockCards.add(id);
   const el = document.getElementById('mock-' + id);
   if (el) el.classList.toggle('open');
 }
@@ -2446,8 +2945,18 @@ function saveAttempt(id, attemptNum) {
   renderMocks();
   renderCalendar();
 }
+function requestDeleteAttempt(id, attemptNum) {
+  pendingDeleteAttempt = id + '-' + attemptNum;
+  renderMocks();
+}
+function cancelDeleteAttempt() {
+  pendingDeleteAttempt = null;
+  renderMocks();
+}
 function deleteAttempt(id, attemptNum) {
-  if (!confirm('Delete attempt ' + attemptNum + '?')) return;
+  // No native confirm() here by design — some embedded/webview contexts silently
+  // block or no-op window.confirm(), which made this button appear broken.
+  // Confirmation now happens inline via requestDeleteAttempt/cancelDeleteAttempt.
   const mocks = load(STORE_KEYS.MOCKS, []);
   const m = mocks.find(x => x.id === id);
   if (!m) return;
@@ -2456,6 +2965,7 @@ function deleteAttempt(id, attemptNum) {
   m.attempts.forEach((a, i) => a.attemptNum = i + 1);
   if (m.attempts.length === 0) m.checked = false;
   save(STORE_KEYS.MOCKS, mocks);
+  pendingDeleteAttempt = null;
   renderMocks();
   renderCalendar();
 }
@@ -2524,10 +3034,61 @@ function cycleTopic(key) {
   renderTopics();
 }
 
+// Builds the inline day-schedule editor: tag chips + topic checkboxes (pulled
+// live from TOPIC_GROUPS, the same list the Topics tab uses) + a notes field.
+// Tag/topic selections mutate dayEditDraft directly via onclick/onchange (no
+// re-render), so the notes textarea never loses focus or unsent text mid-edit.
+function renderDayEditorHTML(dateStr) {
+  const draft = dayEditDraft || { tags: new Set(), topics: new Set() };
+  const tagChipsHTML = DAY_TAGS.map(tag => {
+    const sel = draft.tags.has(tag);
+    return `<span class="badge-type ${tag}${sel ? ' selected' : ''}" style="cursor:pointer;margin:0 6px 6px 0;display:inline-block" onclick="toggleDraftTag(this,'${tag}')">${tag}</span>`;
+  }).join('');
+
+  const topicGroupsHTML = TOPIC_GROUPS.map(g => {
+    const itemsHTML = g.topics.map(t => {
+      const key = g.name + '::' + t;
+      const checked = draft.topics.has(key);
+      return `<label style="display:flex;align-items:flex-start;gap:8px;padding:4px 0;font-size:12.5px;color:var(--text)">
+                <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleDraftTopic('${escapeJsAttr(key)}', this.checked)" style="margin-top:2px">
+                <span>${escapeHtml(t)}</span>
+              </label>`;
+    }).join('');
+    return `<div style="margin-bottom:10px">
+              <div style="font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:2px">${escapeHtml(g.name)}</div>
+              ${itemsHTML}
+            </div>`;
+  }).join('');
+
+  const overrides = load(STORE_KEYS.DAY_OVERRIDES, {});
+  const existingNotes = (overrides[dateStr] && overrides[dateStr].notes) || '';
+
+  return `
+    <div class="day-editor">
+      <div class="section-title" style="margin-bottom:6px">Day type (pick any)</div>
+      <div>${tagChipsHTML}</div>
+      <div class="section-title" style="margin:14px 0 6px">Topics</div>
+      <div style="max-height:260px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;padding:10px;background:var(--card-2)">
+        ${topicGroupsHTML}
+      </div>
+      <div class="section-title" style="margin:14px 0 6px">Notes / remarks</div>
+      <textarea id="day-editor-notes" placeholder="Anything you want to remember about this day...">${escapeHtml(existingNotes)}</textarea>
+      <div class="actions" style="margin-top:12px">
+        <button class="btn primary" onclick="saveDayOverride('${dateStr}')">Save</button>
+        <button class="btn muted" onclick="cancelEditDay()">Cancel</button>
+      </div>
+    </div>
+  `;
+}
+
 // =====================================================================
 // CALENDAR VIEW
 // =====================================================================
 let selectedCalDate = null;
+let editingDayDate = null;   // date currently being edited in the day-schedule editor, or null
+let dayEditDraft = null;     // { tags: Set, topics: Set } — in-progress edits before Save
+
+const DAY_TAGS = ['CONCEPT', 'DRILL', 'REVIEW', 'MOCK', 'REST'];
 
 function renderCalendar() {
   const root = document.getElementById('view-calendar');
@@ -2544,37 +3105,13 @@ function renderCalendar() {
   const monthName = fmtMonthName(calendarMonth, false) + ' ' + calendarMonth.getFullYear();
   const planStart = fromYMD(PLAN.weeks[0].startDate);
   const planEnd   = fromYMD(EXAM_DATE);
-  const earliest  = new Date(2026, 8, 1);
-  const latest    = new Date(2026, 10, 1);
+  const earliest  = new Date(2024, 0, 1);  // widened: mocks/day-overrides can be logged on any date, not just within the plan window
+  const latest    = new Date(2029, 0, 1);
   const canPrev   = calendarMonth > earliest;
   const canNext   = calendarMonth < latest;
 
   // ── Build mock lookup: dateISO → { ids[], anyChecked } ──────────────
-  // Derived entirely from MOCK_INVENTORY.dateHint — covers all 12 mocks
-  // including blitz days and Take 2 dates not in the plan markdown.
-  const mockByDate = {};
-  for (const inv of MOCK_INVENTORY) {
-    if (!inv.dateHint) continue;
-    const parts = inv.dateHint.trim().split(/\s+/);
-    const mo    = MONTH_MAP[parts[0]];
-    const da    = parseInt(parts[1], 10);
-    if (mo === undefined || isNaN(da)) continue;
-    const ds = ymd(new Date(PLAN_YEAR, mo, da));
-    if (!mockByDate[ds]) mockByDate[ds] = { ids: [], anyChecked: false };
-    mockByDate[ds].ids.push(inv.id);
-  }
-  // Overlay checked state from saved mocks
-  for (const m of (state.mocks || [])) {
-    if (!m.checked) continue;
-    const inv = MOCK_INVENTORY.find(x => x.id === m.id);
-    if (!inv || !inv.dateHint) continue;
-    const parts = inv.dateHint.trim().split(/\s+/);
-    const mo    = MONTH_MAP[parts[0]];
-    const da    = parseInt(parts[1], 10);
-    if (mo === undefined || isNaN(da)) continue;
-    const ds = ymd(new Date(PLAN_YEAR, mo, da));
-    if (mockByDate[ds]) mockByDate[ds].anyChecked = true;
-  }
+  const mockByDate = buildMockByDate(state.mocks);
 
   // ── Calendar grid ───────────────────────────────────────────────────
   const year        = calendarMonth.getFullYear();
@@ -2593,8 +3130,8 @@ function renderCalendar() {
     const dateObj  = new Date(year, month, d);
     const dateStr  = ymd(dateObj);
     const inRange  = (dateObj >= planStart && dateObj <= planEnd);
-    const planDay  = DAY_BY_DATE[dateStr];
     const mockInfo = mockByDate[dateStr];
+    const override = state.dayOverrides[dateStr];
     const isToday  = (dateStr === todayYMD());
     const isDone   = !!state.days[dateStr];
     const isSelected = (selectedCalDate === dateStr);
@@ -2606,22 +3143,28 @@ function renderCalendar() {
     if (isSelected)             cls += ' selected';
     if (mockInfo && mockInfo.anyChecked) cls += ' mockdone';
 
-    // Dot colour — mock dates always red; otherwise use plan day type
+    // Dot colour — only reflects what's actually been logged: a custom day
+    // schedule's tag, or a logged mock. The original plan no longer influences
+    // this at all — an unedited day simply shows no dot.
     let dotColor = 'transparent';
-    if (mockInfo) {
+    const colorForType = (t) => {
+      if      (t === 'CONCEPT') return 'var(--c-concept)';
+      else if (t === 'DRILL')   return 'var(--c-drill)';
+      else if (t === 'REVIEW')  return 'var(--c-review)';
+      else if (t === 'MOCK')    return 'var(--c-mock)';
+      else if (t === 'EXAM')    return 'var(--text)';
+      else                      return 'var(--c-slip)';
+    };
+    if (override && override.tags && override.tags.length) {
+      dotColor = colorForType(override.tags[0]);
+    } else if (mockInfo) {
       dotColor = 'var(--c-mock)';
-    } else if (planDay) {
-      const t = planDay.type;
-      if      (t === 'CONCEPT') dotColor = 'var(--c-concept)';
-      else if (t === 'DRILL')   dotColor = 'var(--c-drill)';
-      else if (t === 'REVIEW')  dotColor = 'var(--c-review)';
-      else if (t === 'MOCK')    dotColor = 'var(--c-mock)';
-      else if (t === 'EXAM')    dotColor = 'var(--text)';
-      else                      dotColor = 'var(--c-slip)';
     }
 
     const opacity       = (mockInfo && !mockInfo.anyChecked) ? ';opacity:0.45' : '';
-    const clickHandler  = inRange ? `onclick="selectCalDate('${dateStr}')"` : '';
+    // Every day is clickable now — you can view/add a schedule or log a mock on any date,
+    // not just within the original plan window.
+    const clickHandler  = `onclick="selectCalDate('${dateStr}')"`;
     const doneDot       = (isDone && !mockInfo) ? `<span class="donedot"></span>` : '';
     const mockBadge     = (mockInfo && mockInfo.ids.length > 1)
                             ? `<span style="position:absolute;top:2px;right:2px;background:var(--c-mock);color:#fff;font-size:8px;font-weight:900;width:12px;height:12px;border-radius:50%;display:flex;align-items:center;justify-content:center">${mockInfo.ids.length}</span>`
@@ -2639,90 +3182,71 @@ function renderCalendar() {
   // ── Detail panel ─────────────────────────────────────────────────────
   let detailHTML = '';
   if (selectedCalDate) {
-    const planDay  = DAY_BY_DATE[selectedCalDate];
     const mockInfo = mockByDate[selectedCalDate];
     const dateObj  = fromYMD(selectedCalDate);
     const dateLbl  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][dateObj.getDay()]
                      + ', ' + fmtMonthName(dateObj, false) + ' ' + dateObj.getDate();
 
-    // Helper: week number for any date
+    // Helper: week number for any date (kept purely as navigational context —
+    // not treated as "plan content", so it's fine to keep showing it)
     const wNum = (() => {
       for (const w of PLAN.weeks) {
         if (selectedCalDate >= w.startDate && selectedCalDate <= w.endDate) return w.weekNum;
       }
       return null;
     })();
-    const wObj  = wNum ? PLAN.weeks.find(x => x.weekNum === wNum) : null;
-    const phase = wObj ? wObj.phase : '';
 
-    // Mock list snippet — only shown when plan day is NOT itself a mock
-    // (if planDay.type === 'MOCK', the plan topic already shows the mock name)
-    const mockListHTML = (mockInfo && planDay && planDay.type !== 'MOCK') ? (() => {
-      const rows = mockInfo.ids.map(id => {
-        const inv     = MOCK_INVENTORY.find(x => x.id === id);
-        const mState  = (state.mocks || []).find(x => x.id === id);
-        const checked = mState && mState.checked;
-        const name    = inv ? inv.name : id;
-        return `<div style="font-size:12px;color:${checked ? 'var(--success)' : 'var(--c-mock)'};margin-top:4px;font-weight:600">`
-             + `${checked ? '✓' : '🎯'} ${escapeHtml(name)}</div>`;
-      }).join('');
-      return `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">${rows}</div>`;
-    })() : '';
+    const overrides = load(STORE_KEYS.DAY_OVERRIDES, {});
+    const override = overrides[selectedCalDate];
+    const isDone = !!state.days[selectedCalDate];
 
-    if (planDay) {
-      // ── Normal plan day (may also have a mock scheduled) ──
-      const isDone = !!state.days[selectedCalDate];
+    if (editingDayDate === 'clear:' + selectedCalDate) {
+      // ── Confirm removing a custom day schedule ──
       detailHTML = `
         <div class="cal-detail">
           <div class="head">
             <div>
               <div class="date-lbl">${dateLbl}</div>
-              <div class="meta-line">${wNum ? `Week ${wNum} · ` : ''}${escapeHtml(phase)} · <span class="badge-type ${planDay.type}">${planDay.type}</span></div>
+              <div class="meta-line">Remove your custom schedule for this day?</div>
             </div>
             <button class="close-btn" onclick="closeCalDetail()">✕</button>
           </div>
-          <div class="topic-line${isDone ? ' done' : ''}">${escapeHtml(planDay.topic)}</div>
-          ${planDay.resource ? `<div class="field"><strong>Resource:</strong> ${escapeHtml(planDay.resource)}</div>` : ''}
-          ${planDay.task     ? `<div class="field"><strong>Task:</strong> ${escapeHtml(planDay.task)}</div>`         : ''}
-          ${planDay.staywarm ? `<div class="field"><strong>Stay-warm:</strong> ${escapeHtml(planDay.staywarm)}</div>` : ''}
-          ${planDay.time     ? `<div class="field"><strong>Time:</strong> ${escapeHtml(planDay.time)}</div>`         : ''}
-          ${mockListHTML}
           <div class="actions">
-            <button class="btn ${isDone ? 'success' : 'primary'}" onclick="toggleDay('${selectedCalDate}')">
-              ${isDone ? '✓ Done' : 'Mark done'}
-            </button>
+            <button class="btn" style="background:var(--danger,#FF5252);color:#fff" onclick="clearDayOverride('${selectedCalDate}')">Yes, remove</button>
+            <button class="btn muted" onclick="cancelClearDayOverride()">Cancel</button>
           </div>
         </div>`;
 
-    } else if (mockInfo) {
-      // ── Mock-only date (GMAT Club blitz / Take 2 dates not in plan) ──
+    } else if (editingDayDate === selectedCalDate) {
+      // ── Editing this day's schedule ──
       detailHTML = `
         <div class="cal-detail">
           <div class="head">
             <div>
               <div class="date-lbl">${dateLbl}</div>
-              <div class="meta-line">${wNum ? `Week ${wNum} · ` : ''}<span class="badge-type MOCK">MOCK</span></div>
+              <div class="meta-line">${wNum ? `Week ${wNum}` : 'Edit schedule'}</div>
             </div>
             <button class="close-btn" onclick="closeCalDetail()">✕</button>
           </div>
-          <div class="topic-line">Mock Day</div>
-          ${mockListHTML}
-          <div class="field" style="margin-top:8px">Full 2h15m · No pausing · Review same day</div>
-          <div class="actions">
-            <button class="btn muted small" onclick="closeCalDetail()">Close</button>
-          </div>
+          ${renderDayEditorHTML(selectedCalDate)}
         </div>`;
 
     } else {
-      // ── Outside plan range ──
+      // ── Read-only view — shows ONLY what's been logged (tags/topics/notes/mock), nothing prewritten ──
       detailHTML = `
         <div class="cal-detail">
           <div class="head">
             <div>
               <div class="date-lbl">${dateLbl}</div>
-              <div class="meta-line">Outside the plan range.</div>
+              <div class="meta-line">${wNum ? `Week ${wNum}` : ''}</div>
             </div>
             <button class="close-btn" onclick="closeCalDetail()">✕</button>
+          </div>
+          ${renderDayContentHTML(selectedCalDate, mockInfo, state.mocks)}
+          <div class="actions" style="margin-top:12px">
+            <button class="btn ${isDone ? 'success' : 'primary'}" onclick="toggleDay('${selectedCalDate}')">${isDone ? '✓ Done' : 'Mark done'}</button>
+            <button class="btn muted" onclick="startEditDay('${selectedCalDate}')">${override ? 'Edit' : '+ Add schedule'}</button>
+            ${override ? `<button class="btn muted small" onclick="requestClearDayOverride('${selectedCalDate}')">Remove</button>` : ''}
           </div>
         </div>`;
     }
@@ -2731,7 +3255,7 @@ function renderCalendar() {
   // ── Assemble ─────────────────────────────────────────────────────────
   root.innerHTML = `
     <div class="top-strip">
-      <div class="brand"><b>CALENDAR</b> · Sep–Nov 2026</div>
+      <div class="brand"><b>CALENDAR</b> · ${monthName}</div>
       <div class="exam-cd">${daysUntilExam()}d to exam</div>
     </div>
     <div class="cal-header">
@@ -2755,8 +3279,8 @@ function renderCalendar() {
 
 function changeMonth(delta) {
   const m = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + delta, 1);
-  const earliest = new Date(2026, 8, 1);
-  const latest   = new Date(2026, 10, 1);
+  const earliest = new Date(2024, 0, 1);
+  const latest   = new Date(2029, 0, 1);
   if (m < earliest || m > latest) return;
   calendarMonth = m;
   selectedCalDate = null;
@@ -2764,10 +3288,77 @@ function changeMonth(delta) {
 }
 function selectCalDate(dateStr) {
   selectedCalDate = (selectedCalDate === dateStr) ? null : dateStr;
+  editingDayDate = null;
+  dayEditDraft = null;
   renderCalendar();
 }
 function closeCalDetail() {
   selectedCalDate = null;
+  editingDayDate = null;
+  dayEditDraft = null;
+  renderCalendar();
+}
+
+// ── Day schedule editor (Calendar tab) ────────────────────────────────
+// Lets the person set their own tags (concept/drill/review/mock/rest),
+// topics (pulled live from the Topics tab list), and notes for any date —
+// overriding whatever the plan originally said for that day, or filling in
+// a day the plan doesn't cover at all.
+function startEditDay(dateStr) {
+  const overrides = load(STORE_KEYS.DAY_OVERRIDES, {});
+  const existing = overrides[dateStr];
+  dayEditDraft = {
+    tags: new Set(existing ? existing.tags : []),
+    topics: new Set(existing ? existing.topics : [])
+  };
+  editingDayDate = dateStr;
+  renderCalendar();
+}
+function cancelEditDay() {
+  editingDayDate = null;
+  dayEditDraft = null;
+  renderCalendar();
+}
+function toggleDraftTag(el, tag) {
+  if (!dayEditDraft) return;
+  if (dayEditDraft.tags.has(tag)) dayEditDraft.tags.delete(tag);
+  else dayEditDraft.tags.add(tag);
+  if (el) el.classList.toggle('selected');
+}
+function toggleDraftTopic(key, isChecked) {
+  if (!dayEditDraft) return;
+  if (isChecked) dayEditDraft.topics.add(key);
+  else dayEditDraft.topics.delete(key);
+}
+function saveDayOverride(dateStr) {
+  if (!dayEditDraft) return;
+  const notesEl = document.getElementById('day-editor-notes');
+  const notes = notesEl ? notesEl.value.trim() : '';
+  const overrides = load(STORE_KEYS.DAY_OVERRIDES, {});
+  overrides[dateStr] = {
+    tags: Array.from(dayEditDraft.tags),
+    topics: Array.from(dayEditDraft.topics),
+    notes
+  };
+  save(STORE_KEYS.DAY_OVERRIDES, overrides);
+  editingDayDate = null;
+  dayEditDraft = null;
+  renderCalendar();
+}
+function requestClearDayOverride(dateStr) {
+  editingDayDate = 'clear:' + dateStr;
+  renderCalendar();
+}
+function cancelClearDayOverride() {
+  editingDayDate = null;
+  renderCalendar();
+}
+function clearDayOverride(dateStr) {
+  const overrides = load(STORE_KEYS.DAY_OVERRIDES, {});
+  delete overrides[dateStr];
+  save(STORE_KEYS.DAY_OVERRIDES, overrides);
+  editingDayDate = null;
+  dayEditDraft = null;
   renderCalendar();
 }
 
