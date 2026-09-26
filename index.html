@@ -19,6 +19,7 @@
     --card-2: #2a2a32;
     --border: #2e2e36;
     --accent: #4F8EF7;
+    --accent-soft: rgba(79, 142, 247, 0.16);
     --success: #3DDC84;
     --warning: #FFBB33;
     --danger: #FF5252;
@@ -167,7 +168,7 @@
     transition: background 160ms, border-color 160ms;
   }
   .btn:active { background: var(--card-2); }
-  .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn.primary { background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent); }
   .btn.success { background: var(--success); color: #0F0F11; border-color: var(--success); }
   .btn.warning { background: var(--warning); color: #0F0F11; border-color: var(--warning); }
   .btn.muted   { background: var(--surface); color: var(--muted); }
@@ -398,7 +399,68 @@
     display: none;
     box-shadow: 0 4px 14px rgba(0,0,0,0.35);
     max-width: 220px;
-    white-space: nowrap;
+    white-space: normal;
+  }
+  .topic-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 10000;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .topic-modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px 16px 0 0;
+    width: 100%;
+    max-width: 480px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 16px 18px 22px;
+    box-shadow: 0 -8px 30px rgba(0,0,0,0.4);
+  }
+  @media (min-width: 520px) {
+    .topic-modal-overlay { align-items: center; }
+    .topic-modal { border-radius: 16px; }
+  }
+  .topic-modal-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    position: sticky;
+    top: 0;
+    background: var(--card);
+  }
+  .topic-modal-title { font-size: 16px; font-weight: 800; }
+  .topic-modal-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .topic-modal-close {
+    background: var(--card-2);
+    border: none;
+    color: var(--text);
+    border-radius: 8px;
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .topic-modal-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .topic-modal-list li {
+    font-size: 13px;
+    color: var(--text);
+    background: var(--card-2);
+    border-radius: 10px;
+    padding: 8px 10px;
   }
   .sparkline-card .stats {
     display: flex;
@@ -482,6 +544,8 @@
     margin-bottom: 4px;
   }
   .attempt-row .scores strong { color: var(--text); }
+  .attempt-row .mockname { font-weight: 700; color: var(--text); margin-top: 4px; font-size: 12.5px; }
+  .attempt-row .date-line { color: var(--muted); font-size: 11px; margin-top: 2px; }
   .attempt-row .notes { color: var(--muted); font-style: italic; }
 
   .score-form .grid2 {
@@ -532,6 +596,18 @@
     align-items: baseline;
     margin-bottom: 10px;
   }
+  .topic-group > summary.ghead { cursor: pointer; list-style: none; }
+  .topic-group > summary.ghead::-webkit-details-marker { display: none; }
+  .topic-group > summary.ghead::marker { content: ''; }
+  .topic-group > summary.ghead .gname::before {
+    content: '▸';
+    display: inline-block;
+    margin-right: 6px;
+    font-size: 11px;
+    color: var(--muted);
+    transition: transform 150ms;
+  }
+  .topic-group[open] > summary.ghead .gname::before { transform: rotate(90deg); }
   .topic-group .gname { font-size: 14px; font-weight: 700; }
   .topic-group .gstats { font-size: 11px; color: var(--muted); }
   .topic-group .gbar {
@@ -638,15 +714,6 @@
     width: 8px;
     height: 8px;
     border-radius: 2px;
-  }
-  .cal-cell .donedot {
-    position: absolute;
-    bottom: 3px;
-    right: 3px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--success);
   }
   .mockdone-tick {
     position: absolute;
@@ -2149,6 +2216,17 @@ function renderDayContentHTML(dateStr, mockInfo, mocksArr) {
            + `${hasScores ? '✓' : '🎯'} ${escapeHtml(name)}</div>`;
     }).join('');
     html += `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">${rows}</div>`;
+  } else {
+    // No attempt logged for this day yet — but if this is the date scheduled
+    // in the Next Mock widget, show it as "due" so it isn't invisible until
+    // a score is actually logged.
+    const nextMockPlan = load(STORE_KEYS.NEXT_MOCK, null);
+    if (nextMockPlan && nextMockPlan.date === dateStr) {
+      const timeLabel = nextMockPlan.time ? ' · ' + escapeHtml(nextMockPlan.time) : '';
+      html += `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
+        <div style="font-size:12px;color:var(--c-mock);opacity:0.75;margin-top:4px;font-weight:600">🎯 ${escapeHtml(nextMockPlan.name || 'Mock')} — due${timeLabel}</div>
+      </div>`;
+    }
   }
 
   if (!html) {
@@ -2441,6 +2519,17 @@ function nextMockDefaultName() {
   const mocks = load(STORE_KEYS.MOCKS, []);
   return 'Mock ' + (mocks.length + 1);
 }
+// The custom "mock name" (e.g. "Official Mock 3") belongs to the mock as a
+// whole, not to any one attempt — it's the same exam whether this is the
+// first take or a retake, so it's entered once and carries over. Falls back
+// to reading it off any attempt that has one, for compatibility with mocks
+// saved before this field moved up to the mock level.
+function getMockDisplayName(m) {
+  if (!m) return '';
+  if (m.mockName) return m.mockName;
+  const withName = (m.attempts || []).find(a => a.mockName);
+  return withName ? withName.mockName : '';
+}
 function addMock(rawName) {
   const mocks = load(STORE_KEYS.MOCKS, []);
   const name = (rawName || '').trim() || nextMockDefaultName();
@@ -2501,6 +2590,38 @@ function escapeHtml(s) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+// ── Score Trend sparkline: 4 switchable metrics (Overall/Quant/Verbal/DI),
+// selected via tabs or a left/right swipe on the chart.
+const SPARK_METRICS = [
+  { key: 'total',  label: 'Overall' },
+  { key: 'quant',  label: 'Quant' },
+  { key: 'verbal', label: 'Verbal' },
+  { key: 'di',     label: 'DI' }
+];
+let sparkMetricIndex = 0;
+let sparkTouchStartX = null;
+function setSparkMetric(i) {
+  if (i < 0) i = SPARK_METRICS.length - 1;
+  if (i >= SPARK_METRICS.length) i = 0;
+  sparkMetricIndex = i;
+  renderMocks();
+}
+function sparkTouchStart(evt) {
+  sparkTouchStartX = (evt.touches && evt.touches[0]) ? evt.touches[0].clientX : null;
+}
+function sparkTouchEnd(evt) {
+  if (sparkTouchStartX === null) return;
+  const t = evt.changedTouches && evt.changedTouches[0];
+  const endX = t ? t.clientX : null;
+  const startX = sparkTouchStartX;
+  sparkTouchStartX = null;
+  if (endX === null) return;
+  const dx = endX - startX;
+  if (Math.abs(dx) < 30) return; // ignore small/accidental movements
+  if (dx < 0) setSparkMetric(sparkMetricIndex + 1); // swipe left -> next section
+  else setSparkMetric(sparkMetricIndex - 1);        // swipe right -> previous section
 }
 
 // ── Score Trend sparkline tooltip: works on both hover (desktop) and
@@ -2728,8 +2849,7 @@ function renderWeek() {
         </div>
         ${renderDayContentHTML(d.date, mockInfo, state.mocks)}
         <div class="actions">
-          <button class="btn ${isDone ? 'success' : 'primary'}" onclick="toggleDay('${d.date}')">${isDone ? '✓ Done' : 'Mark done'}</button>
-          <button class="btn muted" onclick="selectCalDate('${d.date}'); showView('calendar')">${override ? 'Edit' : '+ Add schedule'}</button>
+          <button class="btn primary" onclick="editDayFromWeek('${d.date}')">${override ? 'Edit' : '+ Add schedule'}</button>
         </div>
       </div>
     `;
@@ -2816,15 +2936,18 @@ function renderMocks() {
   const root = document.getElementById('view-mocks');
   const ordered = load(STORE_KEYS.MOCKS, []);
 
-  // Sparkline
+  // Sparkline — one metric shown at a time (Overall/Quant/Verbal/DI), switched
+  // via tabs or a left/right swipe on the chart itself.
+  const activeMetric = SPARK_METRICS[sparkMetricIndex] || SPARK_METRICS[0];
   const allAttempts = [];
   for (const m of ordered) {
     (m.attempts || []).forEach((a, idx) => {
-      const total = parseInt(a.scores && a.scores.total, 10);
-      if (total) {
+      const value = parseInt(a.scores && a.scores[activeMetric.key], 10);
+      if (value) {
         allAttempts.push({
           mock: m.name,
-          total,
+          mockName: getMockDisplayName(m),
+          value,
           date: a.date || '',
           attemptNum: a.attemptNum || (idx + 1),
           isRetake: (a.attemptNum || (idx + 1)) > 1
@@ -2840,11 +2963,18 @@ function renderMocks() {
     return a.attemptNum - b.attemptNum;
   });
 
+  const tabsHTML = SPARK_METRICS.map((m, i) => {
+    const sel = i === sparkMetricIndex;
+    return `<button type="button" onclick="setSparkMetric(${i})" style="flex:1;padding:6px 0;border-radius:8px;border:none;cursor:pointer;font-size:11px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;background:${sel ? 'var(--warning)' : 'transparent'};color:${sel ? '#0F0F11' : 'var(--muted)'}">${m.label}</button>`;
+  }).join('');
+  const tabsRowHTML = `<div style="display:flex;gap:4px;background:var(--card-2);border-radius:10px;padding:3px;margin-bottom:10px">${tabsHTML}</div>`;
+  const swipeHandlers = `ontouchstart="sparkTouchStart(event)" ontouchend="sparkTouchEnd(event)"`;
+
   let sparkHTML = '';
   if (allAttempts.length >= 2) {
-    const totals = allAttempts.map(a => a.total);
-    const minT = Math.min(...totals);
-    const maxT = Math.max(...totals);
+    const values = allAttempts.map(a => a.value);
+    const minT = Math.min(...values);
+    const maxT = Math.max(...values);
     const range = Math.max(maxT - minT, 50);
     const W = 380, H = 90, padX = 20, padY = 14;
     const stepX = (W - 2*padX) / (allAttempts.length - 1 || 1);
@@ -2853,15 +2983,22 @@ function renderMocks() {
     // Pre-built tooltip HTML per dot, looked up by index at hover/tap time —
     // keeps the inline event-handler attributes simple (no HTML-in-attribute
     // escaping headaches) while still showing full detail: which mock, which
-    // attempt/retake, the score, and the date.
+    // attempt/retake, the score, and the date. Rebuilt for whichever metric
+    // is currently active, so hover/tap detail works on every section.
     window.__sparkTips = allAttempts.map(a => {
-      const label = `${escapeHtml(a.mock)}${a.isRetake ? ' — Retake ' + a.attemptNum : ' — Attempt 1'}`;
+      const attemptLabel = `${escapeHtml(a.mock)}${a.isRetake ? ' — Retake ' + a.attemptNum : ' — Attempt 1'}`;
+      // Lead with the custom mock name when one's been set (e.g. "Official
+      // Mock 3") since that's what the person actually recognizes it by;
+      // the generic Mock N / attempt label becomes a smaller subtitle. Falls
+      // back to the old single-line look when no custom name is set.
+      const titleLine = a.mockName ? escapeHtml(a.mockName) : attemptLabel;
+      const subLine = a.mockName ? `<div style="color:var(--muted);font-size:10.5px;margin-top:1px">${attemptLabel}</div>` : '';
       const dateLine = a.date ? `<div style="color:var(--muted);font-size:10.5px;margin-top:2px">${escapeHtml(a.date)}</div>` : '';
-      return `<div style="font-weight:800;margin-bottom:2px">${label}</div><div>Score: ${escapeHtml(String(a.total))}</div>${dateLine}`;
+      return `<div style="font-weight:800;margin-bottom:2px">${titleLine}</div>${subLine}<div>${escapeHtml(activeMetric.label)}: ${escapeHtml(String(a.value))}</div>${dateLine}`;
     });
     allAttempts.forEach((a, i) => {
       const x = padX + i * stepX;
-      const yNorm = (a.total - minT) / range;
+      const yNorm = (a.value - minT) / range;
       const y = H - padY - yNorm * (H - 2*padY);
       pathD += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
       const color = a.isRetake ? '#FFBB33' : '#4F8EF7';
@@ -2873,8 +3010,9 @@ function renderMocks() {
     });
     sparkHTML = `
       <div class="sparkline-card">
-        <div class="section-title" style="margin-bottom:6px">Score Trend</div>
-        <div class="sparkline">
+        <div class="section-title" style="margin-bottom:6px">Score Trend — ${escapeHtml(activeMetric.label)}</div>
+        ${tabsRowHTML}
+        <div class="sparkline" ${swipeHandlers}>
           <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
             <path d="${pathD}" fill="none" stroke="#4F8EF7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
             ${dots}
@@ -2888,12 +3026,15 @@ function renderMocks() {
         <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:6px">
           <span style="color:#4F8EF7">●</span> First take &nbsp; <span style="color:#FFBB33">●</span> Retake
         </div>
+        <div style="font-size:9.5px;color:var(--muted);text-align:center;margin-top:4px">Swipe or tap a tab to switch sections</div>
       </div>
     `;
   } else {
     sparkHTML = `
       <div class="sparkline-card">
-        <div class="empty-state">Log 2+ mock scores to see your trend</div>
+        <div class="section-title" style="margin-bottom:6px">Score Trend — ${escapeHtml(activeMetric.label)}</div>
+        ${tabsRowHTML}
+        <div class="empty-state" ${swipeHandlers}>Log 2+ ${escapeHtml(activeMetric.label)} scores to see this trend</div>
       </div>
     `;
   }
@@ -2932,6 +3073,10 @@ function renderMocks() {
       ? (attemptDates.length === 1 ? attemptDates[0] : attemptDates.length + ' attempts logged')
       : 'No attempts logged yet';
 
+    // The custom mock name belongs to the mock itself, so it's the same
+    // across every attempt/retake of it — entered once, shown on every row.
+    const mockDisplayName = getMockDisplayName(m);
+
     // Attempts rendering
     let attemptsHTML = '';
     if (attempts.length > 0) {
@@ -2939,18 +3084,26 @@ function renderMocks() {
         const s = a.scores || {};
         const deleteKey = m.id + '-' + a.attemptNum;
         const confirming = pendingDeleteAttempt === deleteKey;
-        const deleteControlHTML = confirming
+        const isEditing = editingAttemptKey === deleteKey;
+
+        if (isEditing) {
+          return renderAttemptEditFormHTML(m, a);
+        }
+
+        const controlsHTML = confirming
           ? `<div style="margin-top:6px;display:flex;gap:8px;align-items:center">
                <span style="font-size:12px;color:var(--danger,#FF5252);font-weight:600">Delete this attempt?</span>
                <button class="btn small" style="background:var(--danger,#FF5252);color:#fff" onclick="deleteAttempt('${m.id}', ${a.attemptNum})">Yes, delete</button>
                <button class="btn small muted" onclick="cancelDeleteAttempt()">Cancel</button>
              </div>`
-          : `<div style="margin-top:6px"><button class="btn small muted" onclick="requestDeleteAttempt('${m.id}', ${a.attemptNum})">Delete</button></div>`;
+          : `<div style="margin-top:6px;display:flex;gap:8px">
+               <button class="btn small muted" onclick="startEditAttempt('${m.id}', ${a.attemptNum})">Edit</button>
+               <button class="btn small muted" onclick="requestDeleteAttempt('${m.id}', ${a.attemptNum})">Delete</button>
+             </div>`;
         return `
           <div class="attempt-row">
             <div class="topl">
               <span>Attempt ${a.attemptNum}</span>
-              <span class="muted">${escapeHtml(a.date || '')}</span>
             </div>
             <div class="scores">
               <strong>Total:</strong> ${escapeHtml(s.total || '—')} ·
@@ -2958,8 +3111,10 @@ function renderMocks() {
               <strong>V:</strong> ${escapeHtml(s.verbal || '—')} ·
               <strong>DI:</strong> ${escapeHtml(s.di || '—')}
             </div>
+            ${mockDisplayName ? `<div class="mockname">${escapeHtml(mockDisplayName)}</div>` : ''}
+            <div class="date-line">${escapeHtml(a.date || '')}</div>
             ${a.notes ? `<div class="notes">${escapeHtml(a.notes)}</div>` : ''}
-            ${deleteControlHTML}
+            ${controlsHTML}
           </div>
         `;
       }).join('');
@@ -2970,6 +3125,10 @@ function renderMocks() {
     const formHTML = `
         <div class="score-form">
           <div class="section-title" style="font-size:10px;margin-bottom:8px">${nextAttemptNum === 1 ? 'Log Score' : 'Log Retake — Attempt ' + nextAttemptNum}</div>
+          <div>
+            <label>Mock name (optional — set once, carries over to retakes)</label>
+            <input type="text" id="mockname-${m.id}" placeholder="e.g. Official Mock 3" value="${escapeHtml(mockDisplayName)}">
+          </div>
           <div>
             <label>Date</label>
             <input type="date" id="date-${m.id}-${nextAttemptNum}" value="${todayYMD()}">
@@ -3062,6 +3221,10 @@ function saveAttempt(id, attemptNum) {
   const mocks = load(STORE_KEYS.MOCKS, []);
   const m = mocks.find(x => x.id === id);
   if (!m) return;
+  // Mock name is stored once on the mock itself — same field, whether this
+  // is the first attempt or a retake, so it's never re-typed.
+  const mockNameEl = document.getElementById('mockname-' + id);
+  if (mockNameEl) m.mockName = mockNameEl.value.trim();
   const date  = document.getElementById('date-'  + id + '-' + attemptNum).value;
   const total = document.getElementById('total-' + id + '-' + attemptNum).value;
   const quant = document.getElementById('quant-' + id + '-' + attemptNum).value;
@@ -3105,15 +3268,222 @@ function deleteAttempt(id, attemptNum) {
   renderCalendar();
 }
 
+// ── Editing an already-logged attempt (separate from the "log new attempt"
+// form above it) — every field (mock name, date, scores, notes) can be
+// corrected in place without deleting and re-entering the attempt.
+let editingAttemptKey = null; // "id-attemptNum" of an attempt currently open for editing, or null
+function renderAttemptEditFormHTML(m, a) {
+  const s = a.scores || {};
+  return `
+    <div class="score-form">
+      <div class="section-title" style="font-size:10px;margin-bottom:8px">Editing Attempt ${a.attemptNum}</div>
+      <div>
+        <label>Mock name (optional — shared across all attempts of this mock)</label>
+        <input type="text" id="edit-mockname-${m.id}-${a.attemptNum}" placeholder="e.g. Official Mock 3" value="${escapeHtml(getMockDisplayName(m))}">
+      </div>
+      <div>
+        <label>Date</label>
+        <input type="date" id="edit-date-${m.id}-${a.attemptNum}" value="${escapeHtml(a.date || '')}">
+      </div>
+      <div class="grid2">
+        <div>
+          <label>Total (205–805)</label>
+          <input type="number" id="edit-total-${m.id}-${a.attemptNum}" value="${escapeHtml(s.total || '')}" min="205" max="805">
+        </div>
+        <div>
+          <label>Quant (60–90)</label>
+          <input type="number" id="edit-quant-${m.id}-${a.attemptNum}" value="${escapeHtml(s.quant || '')}" min="60" max="90">
+        </div>
+        <div>
+          <label>Verbal (60–90)</label>
+          <input type="number" id="edit-verbal-${m.id}-${a.attemptNum}" value="${escapeHtml(s.verbal || '')}" min="60" max="90">
+        </div>
+        <div>
+          <label>DI (60–90)</label>
+          <input type="number" id="edit-di-${m.id}-${a.attemptNum}" value="${escapeHtml(s.di || '')}" min="60" max="90">
+        </div>
+      </div>
+      <div>
+        <label>Notes (Concept / Careless / Timing)</label>
+        <textarea id="edit-notes-${m.id}-${a.attemptNum}" placeholder="What broke under fatigue?">${escapeHtml(a.notes || '')}</textarea>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn primary" onclick="saveEditedAttempt('${m.id}', ${a.attemptNum})">Save changes</button>
+        <button class="btn muted" onclick="cancelEditAttempt()">Cancel</button>
+      </div>
+    </div>
+  `;
+}
+function startEditAttempt(id, attemptNum) {
+  editingAttemptKey = id + '-' + attemptNum;
+  pendingDeleteAttempt = null; // don't show a delete-confirm and an edit form at once
+  openMockCards.add(id); // keep the card expanded while editing
+  renderMocks();
+}
+function cancelEditAttempt() {
+  editingAttemptKey = null;
+  renderMocks();
+}
+function saveEditedAttempt(id, attemptNum) {
+  const mocks = load(STORE_KEYS.MOCKS, []);
+  const m = mocks.find(x => x.id === id);
+  if (!m) return;
+  const a = (m.attempts || []).find(x => x.attemptNum === attemptNum);
+  if (!a) return;
+  const mockName = document.getElementById('edit-mockname-' + id + '-' + attemptNum).value.trim();
+  const date  = document.getElementById('edit-date-'  + id + '-' + attemptNum).value;
+  const total = document.getElementById('edit-total-' + id + '-' + attemptNum).value;
+  const quant = document.getElementById('edit-quant-' + id + '-' + attemptNum).value;
+  const verbal= document.getElementById('edit-verbal-'+ id + '-' + attemptNum).value;
+  const di    = document.getElementById('edit-di-'    + id + '-' + attemptNum).value;
+  const notes = document.getElementById('edit-notes-' + id + '-' + attemptNum).value;
+  // Mock name lives on the mock itself (shared across all its attempts),
+  // not on this one attempt — see getMockDisplayName/saveAttempt.
+  m.mockName = mockName;
+  delete a.mockName; // clear any stale per-attempt copy from before this moved up
+  a.date = date;
+  a.scores = { total, quant, verbal, di };
+  a.notes = notes;
+  m.checked = (m.attempts || []).length > 0;
+  save(STORE_KEYS.MOCKS, mocks);
+  editingAttemptKey = null;
+  renderMocks();
+  renderCalendar();
+}
+
 // =====================================================================
 // TOPICS VIEW
 // =====================================================================
+// Dynamic mastery donut chart for the Topics tab — shows the Mastered / In
+// progress / Not started split as a ring with the overall % in the center,
+// plus a text legend below it (so the breakdown is visible without
+// interaction) and a hover/tap tooltip per segment (reusing the same
+// tooltip plumbing as the Score Trend sparkline) for the exact counts.
+function buildMasteryDonutHTML(topicsByStatus, totalAll) {
+  const masteredAll   = topicsByStatus.mastered.length;
+  const inProgAll      = topicsByStatus.in_progress.length;
+  const notStartedAll = topicsByStatus.not_started.length;
+  const size = 120, r = 46, strokeW = 16;
+  const circumference = 2 * Math.PI * r;
+  const segments = [
+    { key: 'mastered', label: 'Mastered', color: 'var(--success)', value: masteredAll },
+    { key: 'in_progress', label: 'In progress', color: 'var(--warning)', value: inProgAll },
+    { key: 'not_started', label: 'Not started', color: 'var(--border)', value: notStartedAll }
+  ].filter(s => s.value > 0);
+
+  // The wheel and legend are clickable — tapping either opens a full-list
+  // panel with every topic name for that status (see openTopicListModal),
+  // so the person can check exactly which topics are mastered/in
+  // progress/not started without a cramped scrolling tooltip. Hover just
+  // gives a quick count/percentage, kept short on purpose.
+  window.__donutFullLists = topicsByStatus;
+  window.__donutTotalAll = totalAll;
+  window.__donutTips = segments.map(s => {
+    const pct = totalAll ? Math.round((s.value / totalAll) * 100) : 0;
+    return `<div style="font-weight:800">${escapeHtml(s.label)}</div><div style="font-size:10.5px;color:var(--muted);margin-top:1px">${s.value} topic${s.value === 1 ? '' : 's'} · ${pct}%</div><div style="font-size:9.5px;color:var(--muted);margin-top:4px">Tap to see the full list</div>`;
+  });
+
+  let offsetAcc = 0;
+  const segsHTML = segments.map((s, i) => {
+    const frac = totalAll ? s.value / totalAll : 0;
+    const arcLen = frac * circumference;
+    const dashOffset = -offsetAcc;
+    offsetAcc += arcLen;
+    const handlers = `onmouseenter="showSparkTooltip(event, window.__donutTips[${i}])" onmousemove="positionSparkTooltip(event)" onmouseleave="hideSparkTooltip()" onclick="event.stopPropagation(); hideSparkTooltip(); openTopicListModal('${s.key}')"`;
+    return `<circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${s.color}" stroke-width="${strokeW}" stroke-dasharray="${arcLen} ${circumference - arcLen}" stroke-dashoffset="${dashOffset}" style="cursor:pointer" ${handlers}></circle>`;
+  }).join('');
+
+  const overallPct = totalAll ? Math.round((masteredAll / totalAll) * 100) : 0;
+
+  const legendRow = (key, color, label, count) =>
+    `<div style="cursor:pointer" onclick="openTopicListModal('${key}')"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:${color};margin-right:7px"></span>${label} — ${count}/${totalAll}</div>`;
+
+  return `
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <div style="position:relative;width:${size}px;height:${size}px;flex-shrink:0">
+        <svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" style="transform:rotate(-90deg)">
+          <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--card-2)" stroke-width="${strokeW}"></circle>
+          ${segsHTML}
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none">
+          <div style="font-size:20px;font-weight:800;color:var(--text)">${overallPct}%</div>
+          <div style="font-size:8.5px;color:var(--muted);letter-spacing:.4px;text-transform:uppercase">Mastered</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:12.5px;color:var(--text);min-width:150px">
+        ${legendRow('mastered', 'var(--success)', 'Mastered', masteredAll)}
+        ${legendRow('in_progress', 'var(--warning)', 'In progress', inProgAll)}
+        ${legendRow('not_started', 'var(--border)', 'Not started', notStartedAll)}
+        <div style="font-size:9.5px;color:var(--muted);margin-top:2px">Tap the ring or a row for the full list</div>
+      </div>
+    </div>
+  `;
+}
+
+// Full-list panel for a mastery-status bucket — opened by tapping the donut
+// ring or a legend row. Shows every topic name with no cap and no nested
+// scrollbar-in-a-tooltip; it's a proper bottom-sheet/modal instead, so long
+// lists (e.g. 40+ "Not started" topics) are easy to read.
+function closeTopicListModal() {
+  const el = document.getElementById('topic-list-modal-overlay');
+  if (el && el.remove) el.remove();
+}
+function openTopicListModal(statusKey) {
+  closeTopicListModal();
+  const meta = {
+    mastered: { label: 'Mastered', color: 'var(--success)' },
+    in_progress: { label: 'In progress', color: 'var(--warning)' },
+    not_started: { label: 'Not started', color: 'var(--border)' }
+  }[statusKey] || { label: '', color: 'var(--text)' };
+  const names = (window.__donutFullLists && window.__donutFullLists[statusKey]) || [];
+  const totalAll = window.__donutTotalAll || 0;
+  const pct = totalAll ? Math.round((names.length / totalAll) * 100) : 0;
+  const itemsHTML = names.length
+    ? names.map(n => `<li>${escapeHtml(n)}</li>`).join('')
+    : `<div style="color:var(--muted);font-size:12px;padding:6px 0 2px">No topics here yet.</div>`;
+
+  if (!document.body || !document.createElement) return;
+  const overlay = document.createElement('div');
+  overlay.id = 'topic-list-modal-overlay';
+  overlay.className = 'topic-modal-overlay';
+  overlay.innerHTML = `
+    <div class="topic-modal">
+      <div class="topic-modal-head">
+        <div>
+          <div class="topic-modal-title" style="color:${meta.color}">${escapeHtml(meta.label)}</div>
+          <div class="topic-modal-sub">${names.length} topic${names.length === 1 ? '' : 's'} · ${pct}%</div>
+        </div>
+        <button type="button" class="topic-modal-close" onclick="closeTopicListModal()">✕</button>
+      </div>
+      <ul class="topic-modal-list">${itemsHTML}</ul>
+    </div>
+  `;
+  if (overlay.addEventListener) {
+    overlay.addEventListener('click', function (e) {
+      if (e.target === overlay) closeTopicListModal();
+    });
+  }
+  document.body.appendChild(overlay);
+}
+
+// Which topic-group headers are expanded, persisted across re-renders
+// (cycling a chip re-renders the whole tab, so this can't just live in the
+// DOM's <details open> state — same reasoning as openMockCards elsewhere).
+// null = not yet initialized for this session.
+let openTopicGroups = null;
+function toggleTopicGroupOpen(name, isOpen) {
+  if (!openTopicGroups) openTopicGroups = new Set();
+  if (isOpen) openTopicGroups.add(name);
+  else openTopicGroups.delete(name);
+}
+
 function renderTopics() {
   const root = document.getElementById('view-topics');
   const state = load(STORE_KEYS.TOPICS, {});
 
   let groupsHTML = '';
-  let totalAll = 0, masteredAll = 0;
+  let totalAll = 0, masteredAll = 0, inProgAll = 0;
+  const topicsByStatus = { mastered: [], in_progress: [], not_started: [] };
   for (const g of TOPIC_GROUPS) {
     let mastered = 0, inProg = 0;
     let chips = '';
@@ -3122,29 +3492,46 @@ function renderTopics() {
       const st = state[key] || 'not_started';
       if (st === 'mastered') mastered++;
       if (st === 'in_progress') inProg++;
+      const bucket = topicsByStatus[st] || topicsByStatus.not_started;
+      bucket.push(g.name + ': ' + t);
       chips += `<span class="chip ${st}" onclick="cycleTopic('${escapeJsAttr(key)}')">${escapeHtml(t)}</span>`;
     }
     totalAll += g.topics.length;
     masteredAll += mastered;
+    inProgAll += inProg;
     const pct = Math.round((mastered / g.topics.length) * 100);
+
+    // Default a group open the first time it's seen if it already has some
+    // progress logged; collapsed otherwise. After that, the person's own
+    // manual expand/collapse (tracked in openTopicGroups) always wins.
+    if (openTopicGroups === null) openTopicGroups = new Set();
+    if (!openTopicGroups.has('__seen:' + g.name)) {
+      openTopicGroups.add('__seen:' + g.name);
+      if (mastered > 0 || inProg > 0) openTopicGroups.add(g.name);
+    }
+    const isOpen = openTopicGroups.has(g.name);
+
     groupsHTML += `
-      <div class="topic-group">
-        <div class="ghead">
+      <details class="topic-group"${isOpen ? ' open' : ''} ontoggle="toggleTopicGroupOpen('${escapeJsAttr(g.name)}', this.open)">
+        <summary class="ghead">
           <div class="gname">${escapeHtml(g.name)}</div>
           <div class="gstats">${mastered}/${g.topics.length} mastered · ${inProg} in progress</div>
-        </div>
+        </summary>
         <div class="gbar"><div class="fill" style="width:${pct}%"></div></div>
         <div class="chips">${chips}</div>
-      </div>
+      </details>
     `;
   }
 
-  const overallPct = totalAll ? Math.round(masteredAll / totalAll * 100) : 0;
+  const donutHTML = buildMasteryDonutHTML(topicsByStatus, totalAll);
 
   root.innerHTML = `
     <div class="top-strip">
-      <div class="brand"><b>TOPICS</b> · ${masteredAll}/${totalAll} mastered (${overallPct}%)</div>
+      <div class="brand"><b>TOPICS</b></div>
       <div class="exam-cd">${daysUntilExam()}d to exam</div>
+    </div>
+    <div class="sparkline-card">
+      ${donutHTML}
     </div>
     <div class="cal-legend" style="margin-bottom:18px">
       <span class="lg-item"><span class="sw" style="background:var(--card-2);border:1px solid var(--border)"></span>Not started</span>
@@ -3218,14 +3605,17 @@ function renderDayEditorHTML(dateStr) {
 
   return `
     <div class="day-editor">
-      <div class="section-title" style="margin-bottom:6px">1. Tagging as</div>
+      <div class="section-title" style="margin-bottom:6px">Whole-day tag — tap directly, no topics needed (e.g. a Mock exam day, a Rest day)</div>
+      <div>${generalChipsHTML}</div>
+
+      <div class="section-title" style="margin:16px 0 2px;padding-top:14px;border-top:1px solid var(--border)">Or, tag specific topics you covered</div>
+      <div class="section-title" style="margin-bottom:6px;font-size:10px">1. Tagging as</div>
       <div>${activeChipsHTML}</div>
-      <div class="section-title" style="margin:14px 0 6px">2. Tick the topics you covered</div>
+      <div class="section-title" style="margin:14px 0 6px;font-size:10px">2. Tick the topics you covered</div>
       <div style="max-height:260px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;padding:10px;background:var(--card-2)">
         ${topicGroupsHTML}
       </div>
-      <div class="section-title" style="margin:14px 0 6px">No specific topic? Tag the whole day (optional)</div>
-      <div>${generalChipsHTML}</div>
+
       <div class="section-title" style="margin:14px 0 6px">Notes / remarks</div>
       <textarea id="day-editor-notes" placeholder="Anything you want to remember about this day...">${escapeHtml(existingNotes)}</textarea>
       <div class="actions" style="margin-top:12px">
@@ -3267,6 +3657,7 @@ function renderCalendar() {
 
   // ── Build mock lookup: dateISO → { ids[], anyChecked } ──────────────
   const mockByDate = buildMockByDate(state.mocks);
+  const nextMockPlan = load(STORE_KEYS.NEXT_MOCK, null);
 
   // ── Calendar grid ───────────────────────────────────────────────────
   const year        = calendarMonth.getFullYear();
@@ -3288,7 +3679,6 @@ function renderCalendar() {
     const mockInfo = mockByDate[dateStr];
     const override = normalizeOverride(state.dayOverrides[dateStr]);
     const isToday  = (dateStr === todayYMD());
-    const isDone   = !!state.days[dateStr];
     const isSelected = (selectedCalDate === dateStr);
 
     // CSS classes — identical logic to original
@@ -3298,20 +3688,23 @@ function renderCalendar() {
     if (isSelected)             cls += ' selected';
 
     // Dots — one per distinct tag actually used that day (from the whole-day
-    // tags plus every individually-tagged topic), plus a mock dot. Only
-    // reflects what's actually been logged; the original plan never
-    // influences this — an unedited day simply shows no dots.
+    // tags plus every individually-tagged topic), plus a mock dot for a
+    // logged attempt (solid) or the Next Mock widget's scheduled date
+    // (dimmed — "due" rather than "done"). Only reflects what's actually
+    // been logged/scheduled; the original plan never influences this — an
+    // unedited day simply shows no dots.
     const distinctTags = new Set();
     if (override) {
       (override.generalTags || []).forEach(t => distinctTags.add(t));
       Object.values(override.topicTags || {}).forEach(t => distinctTags.add(t));
     }
-    const opacity = (mockInfo && !mockInfo.anyChecked) ? ';opacity:0.45' : '';
     let dotsHTML = Array.from(distinctTags).slice(0, 4).map(t =>
       `<span class="tdot-mini" style="background:${tagColorVar(t)}"></span>`
     ).join('');
     if (mockInfo) {
-      dotsHTML += `<span class="tdot-mini" style="background:var(--c-mock)${opacity}"></span>`;
+      dotsHTML += `<span class="tdot-mini" style="background:var(--c-mock)"></span>`;
+    } else if (nextMockPlan && nextMockPlan.date === dateStr && !distinctTags.has('MOCK')) {
+      dotsHTML += `<span class="tdot-mini" style="background:var(--c-mock);opacity:0.45"></span>`;
     }
     if (!dotsHTML) {
       dotsHTML = `<span class="tdot-mini" style="background:transparent"></span>`;
@@ -3320,7 +3713,6 @@ function renderCalendar() {
     // Every day is clickable now — you can view/add a schedule or log a mock on any date,
     // not just within the original plan window.
     const clickHandler  = `onclick="selectCalDate('${dateStr}')"`;
-    const doneDot       = (isDone && !mockInfo) ? `<span class="donedot"></span>` : '';
     const mockBadge     = (mockInfo && mockInfo.ids.length > 1)
                             ? `<span style="position:absolute;top:2px;right:2px;background:var(--c-mock);color:#fff;font-size:8px;font-weight:900;width:12px;height:12px;border-radius:50%;display:flex;align-items:center;justify-content:center">${mockInfo.ids.length}</span>`
                             : '';
@@ -3329,7 +3721,7 @@ function renderCalendar() {
       <div class="${cls}" ${clickHandler}>
         <span class="dnum">${d}</span>
         <span class="tdot-row">${dotsHTML}</span>
-        ${doneDot}${mockBadge}
+        ${mockBadge}
       </div>`;
   }
   gridHTML += '</div>';
@@ -3353,7 +3745,6 @@ function renderCalendar() {
 
     const overrides = load(STORE_KEYS.DAY_OVERRIDES, {});
     const override = overrides[selectedCalDate];
-    const isDone = !!state.days[selectedCalDate];
 
     if (editingDayDate === 'clear:' + selectedCalDate) {
       // ── Confirm removing a custom day schedule ──
@@ -3399,8 +3790,7 @@ function renderCalendar() {
           </div>
           ${renderDayContentHTML(selectedCalDate, mockInfo, state.mocks)}
           <div class="actions" style="margin-top:12px">
-            <button class="btn ${isDone ? 'success' : 'primary'}" onclick="toggleDay('${selectedCalDate}')">${isDone ? '✓ Done' : 'Mark done'}</button>
-            <button class="btn muted" onclick="startEditDay('${selectedCalDate}')">${override ? 'Edit' : '+ Add schedule'}</button>
+            <button class="btn primary" onclick="startEditDay('${selectedCalDate}')">${override ? 'Edit' : '+ Add schedule'}</button>
             ${override ? `<button class="btn muted small" onclick="requestClearDayOverride('${selectedCalDate}')">Remove</button>` : ''}
           </div>
         </div>`;
@@ -3452,6 +3842,16 @@ function closeCalDetail() {
   editingDayDate = null;
   dayEditDraft = null;
   renderCalendar();
+}
+// Jumping to "Edit" from a Week-tab day card should land straight in the
+// Calendar tab's day editor for that date — not just the read-only detail
+// view, which would need a second tap on its own Edit button.
+function editDayFromWeek(dateStr) {
+  const d = fromYMD(dateStr);
+  calendarMonth = new Date(d.getFullYear(), d.getMonth(), 1);
+  selectedCalDate = dateStr;
+  showView('calendar');
+  startEditDay(dateStr);
 }
 
 // ── Day schedule editor (Calendar tab) ────────────────────────────────
@@ -3531,6 +3931,7 @@ function saveDayOverride(dateStr) {
   save(STORE_KEYS.DAY_OVERRIDES, overrides);
   editingDayDate = null;
   dayEditDraft = null;
+  burstConfetti();
   renderCalendar();
 }
 function requestClearDayOverride(dateStr) {
