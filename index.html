@@ -142,6 +142,16 @@
   .day-editor .badge-type { opacity: 0.35; transition: opacity .12s; }
   .day-editor .badge-type.selected { opacity: 1; }
   .badge-type.EXAM    { background: var(--text); color: #0F0F11; }
+  .topic-tag-badge {
+    font-size: 9.5px;
+    font-weight: 800;
+    color: #0F0F11;
+    padding: 2px 7px;
+    border-radius: 6px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
 
   .btn {
     min-height: 48px;
@@ -374,6 +384,22 @@
     padding: 14px;
     margin-bottom: 16px;
   }
+  .spark-tooltip {
+    position: fixed;
+    z-index: 9999;
+    background: #1A1A1F;
+    color: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 11.5px;
+    line-height: 1.4;
+    pointer-events: none;
+    display: none;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    max-width: 220px;
+    white-space: nowrap;
+  }
   .sparkline-card .stats {
     display: flex;
     justify-content: space-around;
@@ -602,10 +628,16 @@
   .cal-cell.selected { background: rgba(255, 187, 51, 0.16); box-shadow: 0 0 0 2px var(--warning); }
   .cal-cell .dnum { font-size: 13px; font-weight: 700; color: var(--text); }
   .cal-cell.outside .dnum { color: var(--muted); }
-  .cal-cell .tdot {
-    width: 12px;
-    height: 12px;
-    border-radius: 3px;
+  .cal-cell .tdot-row {
+    display: flex;
+    gap: 3px;
+    flex-wrap: wrap;
+    max-width: 26px;
+  }
+  .cal-cell .tdot-mini {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
   }
   .cal-cell .donedot {
     position: absolute;
@@ -615,9 +647,6 @@
     height: 6px;
     border-radius: 50%;
     background: var(--success);
-  }
-  .cal-cell.mockdone .tdot {
-    background: var(--c-mock) !important;
   }
   .mockdone-tick {
     position: absolute;
@@ -2028,27 +2057,84 @@ function buildMockByDate(mocks) {
   return byDate;
 }
 
+// Colour lookup shared by the day-editor, the week/calendar day-content
+// renderer, and the calendar grid dots. Keep in sync with the CSS
+// custom properties (--c-concept etc.) and .badge-type.<TAG> classes.
+function tagColorVar(tag) {
+  if      (tag === 'CONCEPT') return 'var(--c-concept)';
+  else if (tag === 'DRILL')   return 'var(--c-drill)';
+  else if (tag === 'REVIEW')  return 'var(--c-review)';
+  else if (tag === 'MOCK')    return 'var(--c-mock)';
+  else if (tag === 'EXAM')    return 'var(--text)';
+  else                        return 'var(--c-slip)'; // REST / unknown
+}
+
+// Migrates an older saved override (flat { tags:[], topics:[], notes }) into
+// the current shape ({ topicTags: {key:TAG}, generalTags: [TAG...], notes }).
+// Already-current overrides pass through unchanged. Returns null for no
+// override, so callers can keep writing `if (override) ...`.
+function normalizeOverride(raw) {
+  if (!raw) return null;
+  if (raw.topicTags || raw.generalTags) {
+    return {
+      topicTags: raw.topicTags || {},
+      generalTags: raw.generalTags || [],
+      notes: raw.notes || ''
+    };
+  }
+  // Old shape: a flat list of day-level tags applied to every selected topic.
+  const firstTag = (raw.tags && raw.tags[0]) || null;
+  const topicTags = {};
+  (raw.topics || []).forEach(k => { if (firstTag) topicTags[k] = firstTag; });
+  return {
+    topicTags,
+    generalTags: (raw.topics && raw.topics.length) ? [] : (raw.tags || []),
+    notes: raw.notes || ''
+  };
+}
+
 // Shared by the Week and Calendar tabs: renders ONLY what the person has
-// actually logged for a day — their chosen tags, chosen topics, their notes,
-// and any mock attempt logged that day. Never renders the original plan's
-// prewritten topic/resource/task/stay-warm/time content.
+// actually logged for a day — their chosen tags, chosen topics (grouped by
+// their own individually-assigned tag), their notes, and any mock attempt
+// logged that day. Never renders the original plan's prewritten
+// topic/resource/task/stay-warm/time content.
 function renderDayContentHTML(dateStr, mockInfo, mocksArr) {
   const overrides = load(STORE_KEYS.DAY_OVERRIDES, {});
-  const override = overrides[dateStr];
+  const override = normalizeOverride(overrides[dateStr]);
   let html = '';
 
   if (override) {
-    const tagsHTML = (override.tags || []).map(t =>
+    const generalHTML = (override.generalTags || []).map(t =>
       `<span class="badge-type ${t}" style="margin:0 6px 6px 0;display:inline-block">${t}</span>`
     ).join('');
-    if (tagsHTML) html += `<div style="margin-top:2px">${tagsHTML}</div>`;
+    if (generalHTML) html += `<div style="margin-top:2px">${generalHTML}</div>`;
 
-    if ((override.topics || []).length) {
-      html += `<div class="section-title" style="margin-top:10px">Topics</div>
-        <ul style="margin:4px 0 0;padding-left:18px;font-size:13px;color:var(--text)">
-          ${override.topics.map(k => `<li>${escapeHtml(k.split('::').pop())}</li>`).join('')}
-        </ul>`;
-    }
+    // Group topics by their own individually-assigned tag, each under its
+    // own colored section — so a Concept topic and a Drill topic on the
+    // same day show up separately, not lumped together.
+    const byTag = {};
+    Object.keys(override.topicTags || {}).forEach(key => {
+      const tag = override.topicTags[key];
+      if (!byTag[tag]) byTag[tag] = [];
+      byTag[tag].push(key);
+    });
+    const tagOrder = ['CONCEPT', 'DRILL', 'REVIEW', 'MOCK', 'REST'];
+    const groupsHTML = tagOrder
+      .filter(tag => byTag[tag] && byTag[tag].length)
+      .map(tag => {
+        const items = byTag[tag].map(k =>
+          `<li>${escapeHtml(k.split('::').pop())}</li>`
+        ).join('');
+        return `<div style="margin-top:10px">
+          <div class="section-title" style="display:flex;align-items:center;gap:6px">
+            <span style="width:9px;height:9px;border-radius:3px;display:inline-block;background:${tagColorVar(tag)}"></span>
+            ${tag}
+          </div>
+          <ul style="margin:4px 0 0;padding-left:18px;font-size:13px;color:var(--text)">${items}</ul>
+        </div>`;
+      }).join('');
+    if (groupsHTML) html += groupsHTML;
+
     if (override.notes) {
       html += `<div class="section-title" style="margin-top:10px">Notes</div><div class="field">${escapeHtml(override.notes)}</div>`;
     }
@@ -2057,10 +2143,10 @@ function renderDayContentHTML(dateStr, mockInfo, mocksArr) {
   if (mockInfo) {
     const rows = mockInfo.ids.map(id => {
       const mState  = (mocksArr || []).find(x => x.id === id);
-      const checked = mState && mState.checked;
+      const hasScores = mState && (mState.attempts || []).some(a => a.scores && a.scores.total);
       const name    = mState ? mState.name : id;
-      return `<div style="font-size:12px;color:${checked ? 'var(--success)' : 'var(--c-mock)'};margin-top:4px;font-weight:600">`
-           + `${checked ? '✓' : '🎯'} ${escapeHtml(name)}</div>`;
+      return `<div style="font-size:12px;color:${hasScores ? 'var(--success)' : 'var(--c-mock)'};margin-top:4px;font-weight:600">`
+           + `${hasScores ? '✓' : '🎯'} ${escapeHtml(name)}</div>`;
     }).join('');
     html += `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">${rows}</div>`;
   }
@@ -2417,6 +2503,54 @@ function escapeHtml(s) {
     .replace(/'/g, '&#39;');
 }
 
+// ── Score Trend sparkline tooltip: works on both hover (desktop) and
+// tap (touch/mobile), since native SVG <title> tooltips don't show
+// reliably on touch devices or in embedded webviews.
+let sparkTooltipPinned = false;
+function ensureSparkTooltipEl() {
+  let el = document.getElementById('spark-tooltip');
+  if (!el && document.body) {
+    el = document.createElement('div');
+    el.id = 'spark-tooltip';
+    el.className = 'spark-tooltip';
+    document.body.appendChild(el);
+  }
+  return el;
+}
+function positionSparkTooltip(evt) {
+  const el = document.getElementById('spark-tooltip');
+  if (!el || el.style.display !== 'block' || !evt) return;
+  el.style.left = (evt.clientX + 12) + 'px';
+  el.style.top  = (evt.clientY - 12) + 'px';
+}
+function showSparkTooltip(evt, html) {
+  const el = ensureSparkTooltipEl();
+  if (!el) return;
+  el.innerHTML = html;
+  el.style.display = 'block';
+  positionSparkTooltip(evt);
+}
+function hideSparkTooltip() {
+  const el = document.getElementById('spark-tooltip');
+  if (el) el.style.display = 'none';
+}
+function toggleSparkTooltip(evt, html) {
+  const el = ensureSparkTooltipEl();
+  if (!el) return;
+  if (sparkTooltipPinned && el.style.display === 'block') {
+    hideSparkTooltip();
+    sparkTooltipPinned = false;
+  } else {
+    showSparkTooltip(evt, html);
+    sparkTooltipPinned = true;
+  }
+}
+if (typeof document !== 'undefined' && document.addEventListener) {
+  document.addEventListener('click', function () {
+    if (sparkTooltipPinned) { hideSparkTooltip(); sparkTooltipPinned = false; }
+  });
+}
+
 function daysUntilExam() {
   const today = new Date();
   today.setHours(0,0,0,0);
@@ -2716,13 +2850,26 @@ function renderMocks() {
     const stepX = (W - 2*padX) / (allAttempts.length - 1 || 1);
     let pathD = '';
     let dots = '';
+    // Pre-built tooltip HTML per dot, looked up by index at hover/tap time —
+    // keeps the inline event-handler attributes simple (no HTML-in-attribute
+    // escaping headaches) while still showing full detail: which mock, which
+    // attempt/retake, the score, and the date.
+    window.__sparkTips = allAttempts.map(a => {
+      const label = `${escapeHtml(a.mock)}${a.isRetake ? ' — Retake ' + a.attemptNum : ' — Attempt 1'}`;
+      const dateLine = a.date ? `<div style="color:var(--muted);font-size:10.5px;margin-top:2px">${escapeHtml(a.date)}</div>` : '';
+      return `<div style="font-weight:800;margin-bottom:2px">${label}</div><div>Score: ${escapeHtml(String(a.total))}</div>${dateLine}`;
+    });
     allAttempts.forEach((a, i) => {
       const x = padX + i * stepX;
       const yNorm = (a.total - minT) / range;
       const y = H - padY - yNorm * (H - 2*padY);
       pathD += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
       const color = a.isRetake ? '#FFBB33' : '#4F8EF7';
-      dots += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" fill="${color}" stroke="#1A1A1F" stroke-width="2"/>`;
+      const handlers = `onmouseenter="showSparkTooltip(event, window.__sparkTips[${i}])" onmousemove="positionSparkTooltip(event)" onmouseleave="hideSparkTooltip()" onclick="event.stopPropagation(); toggleSparkTooltip(event, window.__sparkTips[${i}])"`;
+      // A larger invisible circle first (bigger tap target for touch), then
+      // the visible dot on top — both carry the same handlers.
+      dots += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="10" fill="transparent" style="cursor:pointer" ${handlers}></circle>`;
+      dots += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" fill="${color}" stroke="#1A1A1F" stroke-width="2" style="cursor:pointer" ${handlers}></circle>`;
     });
     sparkHTML = `
       <div class="sparkline-card">
@@ -2756,7 +2903,7 @@ function renderMocks() {
 
   // Summary bar counts
   const totalMocks = ordered.length;
-  const takenMocks = ordered.filter(m => m.checked).length;
+  const takenMocks = ordered.filter(m => (m.attempts || []).some(a => a.scores && a.scores.total)).length;
   cardsHTML += `
     <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:16px;display:flex;justify-content:space-around;text-align:center;">
       <div><span style="font-size:22px;font-weight:800;color:var(--text)">${totalMocks}</span><div style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-top:2px">TOTAL</div></div>
@@ -2776,9 +2923,9 @@ function renderMocks() {
   `;
 
   for (const m of ordered) {
-    const checked = !!m.checked;
     const hasScores = (m.attempts || []).some(a => a.scores && a.scores.total);
-    const status = hasScores ? 'Scores logged' : (checked ? '✓ Taken' : 'Not taken');
+    const checked = hasScores;
+    const status = hasScores ? 'Scores logged' : 'Not taken';
     const attempts = m.attempts || [];
     const attemptDates = attempts.map(a => a.date).filter(Boolean);
     const subLine = attemptDates.length
@@ -2867,7 +3014,7 @@ function renderMocks() {
     cardsHTML += `
       <div class="mock-card${checked ? ' checked' : ''}${openMockCards.has(m.id) ? ' open' : ''}" id="mock-${m.id}">
         <div class="head">
-          <div class="cbox" onclick="event.stopPropagation(); toggleMockCheck('${m.id}')"></div>
+          <div class="cbox" onclick="toggleMockPanel('${m.id}')" title="${hasScores ? 'Scores logged' : 'Not taken yet — log a score below'}"></div>
           <div class="info" onclick="toggleMockPanel('${m.id}')">
             <div class="name">${escapeHtml(m.name)}</div>
             <div class="sub">${escapeHtml(subLine)}</div>
@@ -2910,18 +3057,6 @@ function toggleMockPanel(id) {
   else openMockCards.add(id);
   const el = document.getElementById('mock-' + id);
   if (el) el.classList.toggle('open');
-}
-function toggleMockCheck(id) {
-  const mocks = load(STORE_KEYS.MOCKS, []);
-  const m = mocks.find(x => x.id === id);
-  if (!m) return;
-  const wasChecked = !!m.checked;
-  m.checked = !wasChecked;
-  save(STORE_KEYS.MOCKS, mocks);
-  if (!wasChecked) burstConfetti();
-  renderMocks();
-  renderCalendar();
-  renderWeek();
 }
 function saveAttempt(id, attemptNum) {
   const mocks = load(STORE_KEYS.MOCKS, []);
@@ -3038,26 +3173,44 @@ function cycleTopic(key) {
 // live from TOPIC_GROUPS, the same list the Topics tab uses) + a notes field.
 // Tag/topic selections mutate dayEditDraft directly via onclick/onchange (no
 // re-render), so the notes textarea never loses focus or unsent text mid-edit.
+// Options for the per-topic tag dropdown. Empty value = no tag assigned.
+// Simple 2-step flow: (1) pick the type you're tagging as, (2) tick the
+// topics you did — they get stamped with whichever type is active. Switch
+// the active type and tick more topics to mix types on the same day.
+// Replaces the old per-topic dropdown, which meant scanning a dropdown for
+// every single topic even when only 1-2 were actually worked on.
 function renderDayEditorHTML(dateStr) {
-  const draft = dayEditDraft || { tags: new Set(), topics: new Set() };
-  const tagChipsHTML = DAY_TAGS.map(tag => {
-    const sel = draft.tags.has(tag);
-    return `<span class="badge-type ${tag}${sel ? ' selected' : ''}" style="cursor:pointer;margin:0 6px 6px 0;display:inline-block" onclick="toggleDraftTag(this,'${tag}')">${tag}</span>`;
+  const draft = dayEditDraft || { topicTags: {}, generalTags: new Set(), activeTag: 'CONCEPT' };
+  if (!draft.activeTag) draft.activeTag = 'CONCEPT';
+
+  const activeChipsHTML = DAY_TAGS.map(tag => {
+    const sel = draft.activeTag === tag;
+    return `<span class="badge-type ${tag}${sel ? ' selected' : ''}" style="cursor:pointer;margin:0 6px 6px 0;display:inline-block" onclick="setActiveTag(this,'${tag}')">${tag}</span>`;
   }).join('');
 
-  const topicGroupsHTML = TOPIC_GROUPS.map(g => {
-    const itemsHTML = g.topics.map(t => {
+  const topicGroupsHTML = TOPIC_GROUPS.map((g, gi) => {
+    const groupHasTags = g.topics.some(t => draft.topicTags[g.name + '::' + t]);
+    const itemsHTML = g.topics.map((t, ti) => {
       const key = g.name + '::' + t;
-      const checked = draft.topics.has(key);
-      return `<label style="display:flex;align-items:flex-start;gap:8px;padding:4px 0;font-size:12.5px;color:var(--text)">
-                <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleDraftTopic('${escapeJsAttr(key)}', this.checked)" style="margin-top:2px">
-                <span>${escapeHtml(t)}</span>
+      const currentTag = draft.topicTags[key] || '';
+      const badgeId = `topic-badge-${gi}-${ti}`;
+      return `<label style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12.5px;color:var(--text)">
+                <input type="checkbox" data-topic-key="${escapeJsAttr(key)}" data-badge-id="${badgeId}" ${currentTag ? 'checked' : ''} onchange="toggleTopicCheckbox(this)">
+                <span style="flex:1">${escapeHtml(t)}</span>
+                <span id="${badgeId}" class="topic-tag-badge" style="${currentTag ? '' : 'display:none;'}background:${currentTag ? tagColorVar(currentTag) : 'transparent'}">${currentTag}</span>
               </label>`;
     }).join('');
-    return `<div style="margin-bottom:10px">
-              <div style="font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:2px">${escapeHtml(g.name)}</div>
-              ${itemsHTML}
-            </div>`;
+    return `<details${groupHasTags ? ' open' : ''} style="margin-bottom:6px">
+              <summary style="cursor:pointer;font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);padding:4px 0">${escapeHtml(g.name)}</summary>
+              <div style="padding-left:2px">${itemsHTML}</div>
+            </details>`;
+  }).join('');
+
+  // Whole-day tags — for days with no specific topic to tag (a full Rest day,
+  // an unplanned mock, etc). Kept separate from per-topic tags above.
+  const generalChipsHTML = DAY_TAGS.map(tag => {
+    const sel = draft.generalTags.has(tag);
+    return `<span class="badge-type ${tag}${sel ? ' selected' : ''}" style="cursor:pointer;margin:0 6px 6px 0;display:inline-block" onclick="toggleDraftGeneralTag(this,'${tag}')">${tag}</span>`;
   }).join('');
 
   const overrides = load(STORE_KEYS.DAY_OVERRIDES, {});
@@ -3065,12 +3218,14 @@ function renderDayEditorHTML(dateStr) {
 
   return `
     <div class="day-editor">
-      <div class="section-title" style="margin-bottom:6px">Day type (pick any)</div>
-      <div>${tagChipsHTML}</div>
-      <div class="section-title" style="margin:14px 0 6px">Topics</div>
+      <div class="section-title" style="margin-bottom:6px">1. Tagging as</div>
+      <div>${activeChipsHTML}</div>
+      <div class="section-title" style="margin:14px 0 6px">2. Tick the topics you covered</div>
       <div style="max-height:260px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;padding:10px;background:var(--card-2)">
         ${topicGroupsHTML}
       </div>
+      <div class="section-title" style="margin:14px 0 6px">No specific topic? Tag the whole day (optional)</div>
+      <div>${generalChipsHTML}</div>
       <div class="section-title" style="margin:14px 0 6px">Notes / remarks</div>
       <textarea id="day-editor-notes" placeholder="Anything you want to remember about this day...">${escapeHtml(existingNotes)}</textarea>
       <div class="actions" style="margin-top:12px">
@@ -3086,7 +3241,7 @@ function renderDayEditorHTML(dateStr) {
 // =====================================================================
 let selectedCalDate = null;
 let editingDayDate = null;   // date currently being edited in the day-schedule editor, or null
-let dayEditDraft = null;     // { tags: Set, topics: Set } — in-progress edits before Save
+let dayEditDraft = null;     // { topicTags: {key: TAG}, generalTags: Set, activeTag: TAG } — in-progress edits before Save
 
 const DAY_TAGS = ['CONCEPT', 'DRILL', 'REVIEW', 'MOCK', 'REST'];
 
@@ -3131,7 +3286,7 @@ function renderCalendar() {
     const dateStr  = ymd(dateObj);
     const inRange  = (dateObj >= planStart && dateObj <= planEnd);
     const mockInfo = mockByDate[dateStr];
-    const override = state.dayOverrides[dateStr];
+    const override = normalizeOverride(state.dayOverrides[dateStr]);
     const isToday  = (dateStr === todayYMD());
     const isDone   = !!state.days[dateStr];
     const isSelected = (selectedCalDate === dateStr);
@@ -3141,27 +3296,27 @@ function renderCalendar() {
     if (!inRange)               cls += ' outside';
     if (isToday)                cls += ' today';
     if (isSelected)             cls += ' selected';
-    if (mockInfo && mockInfo.anyChecked) cls += ' mockdone';
 
-    // Dot colour — only reflects what's actually been logged: a custom day
-    // schedule's tag, or a logged mock. The original plan no longer influences
-    // this at all — an unedited day simply shows no dot.
-    let dotColor = 'transparent';
-    const colorForType = (t) => {
-      if      (t === 'CONCEPT') return 'var(--c-concept)';
-      else if (t === 'DRILL')   return 'var(--c-drill)';
-      else if (t === 'REVIEW')  return 'var(--c-review)';
-      else if (t === 'MOCK')    return 'var(--c-mock)';
-      else if (t === 'EXAM')    return 'var(--text)';
-      else                      return 'var(--c-slip)';
-    };
-    if (override && override.tags && override.tags.length) {
-      dotColor = colorForType(override.tags[0]);
-    } else if (mockInfo) {
-      dotColor = 'var(--c-mock)';
+    // Dots — one per distinct tag actually used that day (from the whole-day
+    // tags plus every individually-tagged topic), plus a mock dot. Only
+    // reflects what's actually been logged; the original plan never
+    // influences this — an unedited day simply shows no dots.
+    const distinctTags = new Set();
+    if (override) {
+      (override.generalTags || []).forEach(t => distinctTags.add(t));
+      Object.values(override.topicTags || {}).forEach(t => distinctTags.add(t));
+    }
+    const opacity = (mockInfo && !mockInfo.anyChecked) ? ';opacity:0.45' : '';
+    let dotsHTML = Array.from(distinctTags).slice(0, 4).map(t =>
+      `<span class="tdot-mini" style="background:${tagColorVar(t)}"></span>`
+    ).join('');
+    if (mockInfo) {
+      dotsHTML += `<span class="tdot-mini" style="background:var(--c-mock)${opacity}"></span>`;
+    }
+    if (!dotsHTML) {
+      dotsHTML = `<span class="tdot-mini" style="background:transparent"></span>`;
     }
 
-    const opacity       = (mockInfo && !mockInfo.anyChecked) ? ';opacity:0.45' : '';
     // Every day is clickable now — you can view/add a schedule or log a mock on any date,
     // not just within the original plan window.
     const clickHandler  = `onclick="selectCalDate('${dateStr}')"`;
@@ -3173,7 +3328,7 @@ function renderCalendar() {
     gridHTML += `
       <div class="${cls}" ${clickHandler}>
         <span class="dnum">${d}</span>
-        <span class="tdot" style="background:${dotColor}${opacity}"></span>
+        <span class="tdot-row">${dotsHTML}</span>
         ${doneDot}${mockBadge}
       </div>`;
   }
@@ -3306,10 +3461,11 @@ function closeCalDetail() {
 // a day the plan doesn't cover at all.
 function startEditDay(dateStr) {
   const overrides = load(STORE_KEYS.DAY_OVERRIDES, {});
-  const existing = overrides[dateStr];
+  const existing = normalizeOverride(overrides[dateStr]);
   dayEditDraft = {
-    tags: new Set(existing ? existing.tags : []),
-    topics: new Set(existing ? existing.topics : [])
+    topicTags: Object.assign({}, existing ? existing.topicTags : {}),
+    generalTags: new Set(existing ? existing.generalTags : []),
+    activeTag: 'CONCEPT'
   };
   editingDayDate = dateStr;
   renderCalendar();
@@ -3319,16 +3475,48 @@ function cancelEditDay() {
   dayEditDraft = null;
   renderCalendar();
 }
-function toggleDraftTag(el, tag) {
+function toggleDraftGeneralTag(el, tag) {
   if (!dayEditDraft) return;
-  if (dayEditDraft.tags.has(tag)) dayEditDraft.tags.delete(tag);
-  else dayEditDraft.tags.add(tag);
+  if (dayEditDraft.generalTags.has(tag)) dayEditDraft.generalTags.delete(tag);
+  else dayEditDraft.generalTags.add(tag);
   if (el) el.classList.toggle('selected');
 }
-function toggleDraftTopic(key, isChecked) {
+// Called from a "Tagging as" chip. Sets which type gets stamped onto the
+// next topics ticked below. Updates the chip row in place — no full
+// re-render — so in-progress notes text isn't disturbed.
+function setActiveTag(el, tag) {
   if (!dayEditDraft) return;
-  if (isChecked) dayEditDraft.topics.add(key);
-  else dayEditDraft.topics.delete(key);
+  dayEditDraft.activeTag = tag;
+  if (el && el.parentElement && el.parentElement.children) {
+    Array.from(el.parentElement.children).forEach(c => {
+      if (c.classList) c.classList.remove('selected');
+    });
+  }
+  if (el && el.classList) el.classList.add('selected');
+}
+// Called from a topic checkbox onchange. Ticking a topic stamps it with the
+// currently active tag; unticking clears its tag. Updates the draft and
+// that row's little colored badge directly, without a full re-render.
+function toggleTopicCheckbox(checkboxEl) {
+  if (!dayEditDraft || !checkboxEl) return;
+  const key = checkboxEl.getAttribute('data-topic-key');
+  const badgeId = checkboxEl.getAttribute('data-badge-id');
+  const badge = badgeId ? document.getElementById(badgeId) : null;
+  if (checkboxEl.checked) {
+    const tag = dayEditDraft.activeTag || 'CONCEPT';
+    dayEditDraft.topicTags[key] = tag;
+    if (badge) {
+      badge.textContent = tag;
+      badge.style.display = '';
+      badge.style.background = tagColorVar(tag);
+    }
+  } else {
+    delete dayEditDraft.topicTags[key];
+    if (badge) {
+      badge.textContent = '';
+      badge.style.display = 'none';
+    }
+  }
 }
 function saveDayOverride(dateStr) {
   if (!dayEditDraft) return;
@@ -3336,8 +3524,8 @@ function saveDayOverride(dateStr) {
   const notes = notesEl ? notesEl.value.trim() : '';
   const overrides = load(STORE_KEYS.DAY_OVERRIDES, {});
   overrides[dateStr] = {
-    tags: Array.from(dayEditDraft.tags),
-    topics: Array.from(dayEditDraft.topics),
+    topicTags: Object.assign({}, dayEditDraft.topicTags),
+    generalTags: Array.from(dayEditDraft.generalTags),
     notes
   };
   save(STORE_KEYS.DAY_OVERRIDES, overrides);
